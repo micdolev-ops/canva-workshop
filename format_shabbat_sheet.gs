@@ -1,16 +1,12 @@
 /**
  * Google Apps Script - עיצוב גיליון שבת משפחת ליבן
+ * גרסה מהירה - מעצבת הכל בפעולה אחת במקום שורה אחר שורה
  *
  * שימוש:
  * 1. פתחו את הגיליון ב-Google Sheets
- * 2. כלים (Extensions) > Apps Script
+ * 2. תוספות > Apps Script
  * 3. הדבקו את הקוד הזה ושמרו
  * 4. הריצו את הפונקציה: formatShabbatSheet
- *
- * הסקריפט מגדיר:
- * - כיוון ימין לשמאל (RTL)
- * - קידוד צבעים לפי קטגוריות וסקציות
- * - רוחב עמודות מותאם
  */
 
 function formatShabbatSheet() {
@@ -43,105 +39,105 @@ function formatShabbatSheet() {
     'תינוקות ופעוטות':     '#FFCCBC',
   };
 
-  sheet.getRange(1, 1, lastRow, lastCol)
-    .setBackground('#FFFFFF')
-    .setFontColor('#000000')
-    .setFontWeight('normal')
-    .setFontSize(11)
-    .setFontFamily('Arial')
-    .setVerticalAlignment('middle')
-    .setHorizontalAlignment('right');
+  // בניית מערכי צבע לכל שורה - פעולה אחת מהירה
+  const bgColors   = [];
+  const fontColors = [];
+  const fontWeights = [];
+  const fontSizes  = [];
 
   let currentSection = '';
   let currentCategoryColor = '#FFFFFF';
 
-  for (let i = 0; i < allData.length; i++) {
-    const row = allData[i];
-    const rowNum = i + 1;
-    const rowRange = sheet.getRange(rowNum, 1, 1, lastCol);
+  for (let i = 0; i < lastRow; i++) {
+    const row = i < allData.length ? allData[i] : [];
     const firstCell = String(row[0] || '');
 
-    if (rowNum <= 5 && firstCell) {
-      rowRange
-        .setBackground(rowNum === 1 ? '#1A237E' : '#283593')
-        .setFontColor('#FFFFFF')
-        .setFontWeight('bold')
-        .setFontSize(rowNum === 1 ? 14 : 11);
-      continue;
-    }
+    // ערכי ברירת מחדל לשורה
+    let bg = '#FFFFFF';
+    let fc = '#000000';
+    let fw = 'normal';
+    let fs = 11;
 
-    if (!firstCell && !String(row[1] || '')) {
-      rowRange.setBackground('#FFFFFF');
+    if (i < 5 && firstCell) {
+      bg = i === 0 ? '#1A237E' : '#283593';
+      fc = '#FFFFFF';
+      fw = 'bold';
+      fs = i === 0 ? 14 : 11;
+
+    } else if (!firstCell && !String(row[1] || '')) {
+      bg = '#FFFFFF';
       currentCategoryColor = '#FFFFFF';
-      continue;
-    }
 
-    const isSectionHeader =
+    } else if (
       firstCell &&
       !String(row[1] || '') &&
       !String(row[2] || '') &&
       !String(row[3] || '') &&
-      !String(row[4] || '');
-
-    if (isSectionHeader) {
+      !String(row[4] || '')
+    ) {
       currentSection = firstCell;
       currentCategoryColor = '#FFFFFF';
-      rowRange
-        .setBackground('#37474F')
-        .setFontColor('#FFFFFF')
-        .setFontWeight('bold')
-        .setFontSize(12);
-      continue;
-    }
+      bg = '#37474F';
+      fc = '#FFFFFF';
+      fw = 'bold';
+      fs = 12;
 
-    const isColumnHeader =
+    } else if (
       firstCell === 'קטגוריה' ||
       firstCell === 'תפילה' ||
       firstCell === 'קבוצת גיל' ||
-      firstCell === 'משפחה';
+      firstCell === 'משפחה'
+    ) {
+      bg = '#546E7A';
+      fc = '#FFFFFF';
+      fw = 'bold';
 
-    if (isColumnHeader) {
-      rowRange
-        .setBackground('#546E7A')
-        .setFontColor('#FFFFFF')
-        .setFontWeight('bold');
-      continue;
-    }
-
-    if (currentSection === 'לוח משימות') {
+    } else if (currentSection === 'לוח משימות') {
       if (CATEGORY_COLORS[firstCell]) {
         currentCategoryColor = CATEGORY_COLORS[firstCell];
       }
-      rowRange.setBackground(currentCategoryColor || '#F5F5F5');
+      bg = currentCategoryColor || '#F5F5F5';
 
     } else if (currentSection === 'לוח תפילות ושיבוץ תפקידים') {
-      rowRange.setBackground(i % 2 === 0 ? '#EDE7F6' : '#D1C4E9');
+      bg = i % 2 === 0 ? '#EDE7F6' : '#D1C4E9';
 
     } else if (currentSection === 'פילוח משתתפים לפי גיל') {
-      const bg = AGE_COLORS[firstCell] ||
+      bg = AGE_COLORS[firstCell] ||
         (firstCell.includes('סה') ? '#B2DFDB' : '#F5F5F5');
-      rowRange.setBackground(bg);
 
     } else if (currentSection === 'רשימת משפחות') {
-      rowRange.setBackground(i % 2 === 0 ? '#E3F2FD' : '#BBDEFB');
+      bg = i % 2 === 0 ? '#E3F2FD' : '#BBDEFB';
     }
+
+    // שורה אחת במערך = עמודות רבות (אותו ערך לכל עמודה)
+    const rowBg = Array(lastCol).fill(bg);
+    const rowFc = Array(lastCol).fill(fc);
+    const rowFw = Array(lastCol).fill(fw);
+    const rowFs = Array(lastCol).fill(fs);
+
+    bgColors.push(rowBg);
+    fontColors.push(rowFc);
+    fontWeights.push(rowFw);
+    fontSizes.push(rowFs);
   }
 
-  try {
-    sheet.setColumnWidth(1, 210);
-    sheet.setColumnWidth(2, 290);
-    sheet.setColumnWidth(3, 150);
-    sheet.setColumnWidth(4, 130);
-    sheet.setColumnWidth(5, 110);
-    sheet.setColumnWidth(6, 210);
-  } catch (e) {}
+  // הגדרת עיצוב בפעולה אחת מהירה
+  const range = sheet.getRange(1, 1, lastRow, lastCol);
+  range.setBackgrounds(bgColors);
+  range.setFontColors(fontColors);
+  range.setFontWeights(fontWeights);
+  range.setFontSizes(fontSizes);
+  range.setFontFamily('Arial');
+  range.setVerticalAlignment('middle');
+  range.setHorizontalAlignment('right');
 
-  sheet.getRange(1, 1, lastRow, lastCol)
-    .setBorder(
-      null, null, null, null, true, true,
-      '#E0E0E0',
-      SpreadsheetApp.BorderStyle.SOLID
-    );
+  // רוחב עמודות
+  sheet.setColumnWidth(1, 210);
+  sheet.setColumnWidth(2, 290);
+  sheet.setColumnWidth(3, 150);
+  sheet.setColumnWidth(4, 130);
+  sheet.setColumnWidth(5, 110);
+  sheet.setColumnWidth(6, 210);
 
   SpreadsheetApp.getUi().alert(
     'עיצוב הושלם!\n\n' +
