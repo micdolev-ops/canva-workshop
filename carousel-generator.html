@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>במו ידייך - סטודיו לנשים יוצרות לעסק | מחולל קרוסלות</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Noto+Sans+Hebrew:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- html2canvas for high-res slide export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navyDark: '#0D1B2A',
+                        purpleDark: '#1A0533',
+                        turquoise: '#00C4CC',
+                        accentPurple: '#8B5CF6',
+                        gold: '#C9A84C',
+                        goldMuted: '#967A3C',
+                        bodyGray: '#BEBEBD',
+                    },
+                    fontFamily: {
+                        heebo: ['Heebo', 'sans-serif'],
+                        noto: ['Noto Sans Hebrew', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Animations & Backgrounds */
+        .theme-default { background: linear-gradient(135deg, #0D1B2A 0%, #0F091D 40%, #1A0533 100%); }
+
+        /* New Style Themes */
+        .style-watercolor {
+            background: #FDFBF7;
+            color: #2D3748;
+        }
+        .style-watercolor #canvas-title { color: #1A202C; text-shadow: none; font-weight: 800; }
+        .style-watercolor #canvas-body { color: #4A5568; font-weight: 500; }
+        .style-watercolor .gold-line { background: #E2E8F0; }
+
+        .style-realistic {
+            background: linear-gradient(to bottom, #111, #000);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+        }
+        .style-realistic #canvas-title { text-shadow: 0 10px 20px rgba(0,0,0,0.8); letter-spacing: -1px; }
+
+        .style-funny {
+            background: #FFD700;
+            color: #000;
+            background-image: radial-gradient(circle, #FFF 10%, transparent 10%), radial-gradient(circle, #FFF 10%, transparent 10%);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+        }
+        .style-funny #canvas-title { color: #000; font-family: 'Noto Sans Hebrew', sans-serif; font-weight: 900; text-shadow: 3px 3px 0px #FFF; }
+        .style-funny #canvas-body { color: #222; font-weight: 700; }
+
+        .style-delicate {
+            background: #F0F4F8;
+            color: #2C5282;
+        }
+        .style-delicate #canvas-title { font-weight: 300; letter-spacing: 2px; color: #2B6CB0; text-shadow: none;}
+        .style-delicate #canvas-body { font-weight: 300; color: #4A5568; }
+
+        .style-loud {
+            background: #FF0055;
+            color: #FFF;
+        }
+        .style-loud #canvas-title { font-size: 70px; text-transform: uppercase; font-weight: 900; line-height: 1; text-shadow: 5px 5px 0px #000; }
+        .style-loud #canvas-body { font-weight: 800; text-shadow: 2px 2px 0px #000; }
+
+        .glow-turquoise { box-shadow: 0 0 80px 30px rgba(0, 196, 204, 0.15); }
+        .glow-purple { box-shadow: 0 0 80px 30px rgba(139, 92, 246, 0.15); }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.2; }
+            50% { transform: translateY(-30px) translateX(15px) rotate(180deg); opacity: 0.6; }
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float-slow 8s ease-in-out infinite;
+        }
+
+        #canvas-wrapper { transition: transform 0.3s ease; }
+
+        input[type="file"]::file-selector-button {
+            border: 1px solid #C9A84C; background: rgba(201, 168, 76, 0.1); color: #C9A84C;
+            padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s ease-in-out; margin-inline-end: 12px;
+        }
+        input[type="file"]::file-selector-button:hover { background: rgba(201, 168, 76, 0.2); }
+
+        /* Class for the background image overlay */
+        .bg-image-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0.3; /* Keep it subtle so text is readable */
+            z-index: 0;
+            mix-blend-mode: overlay; /* Blends nicely with the gradient */
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-[#080B11] text-white font-heebo min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-turquoise selection:text-navyDark">
+
+    <!-- Header / Branding Bar -->
+    <header class="border-b border-gray-800/80 bg-[#080B11]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accentPurple to-turquoise flex items-center justify-center shadow-lg">
+                    <span class="text-white font-black text-xl">ב</span>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-bodyGray to-gold bg-clip-text text-transparent">סטודיו קרוסלות אוטומטי</h1>
+                    <p class="text-xs text-turquoise">במו ידייך — סטודיו לנשים יוצרות לעסק</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="px-3 py-1 bg-yellow-500/10 text-yellow-400 text-xs rounded-full border border-yellow-500/20 font-medium">✨ עיצוב בדיגיטל</span>
+                <span class="px-3 py-1 bg-turquoise/10 text-turquoise text-xs rounded-full border border-turquoise/20 font-medium">📐 פורמט 1080×1350px</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl mx-auto w-full p-4 md:p-6 lg:p-8 flex flex-col items-center">
+
+        <!-- CENTERED Auto-Generator Box -->
+        <section class="w-full max-w-4xl mb-10 z-20">
+            <div class="bg-gradient-to-br from-[#121826] to-[#0A0F1D] border-2 border-gold/40 p-8 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden group transition-all hover:border-gold/60">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full blur-[80px] pointer-events-none transition-all"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-accentPurple/10 rounded-full blur-[80px] pointer-events-none transition-all"></div>
+
+                <h2 class="text-2xl font-black text-gold flex items-center justify-center gap-3 mb-3 relative z-10">
+                    <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    מחולל קרוסלות לאינסטגרם
+                </h2>
+                <p class="text-sm text-gray-300 mb-6 leading-relaxed relative z-10 max-w-xl mx-auto text-center">
+                    הדביקי את התוכן שלך או העלי מסמך, והמערכת תייצר עבורך עיצוב מרהיב אוטומטית.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8 relative z-10">
+                    <!-- Paste Text Area -->
+                    <div class="flex flex-col gap-3 bg-black/40 p-5 rounded-2xl border border-white/5">
+                        <label class="text-sm font-bold text-turquoise">אפשרות 1: הדבקת טקסט חופשי</label>
+                        <textarea id="paste-text-input" rows="4" class="w-full bg-[#080B11] border border-gray-700 focus:border-turquoise rounded-xl px-4 py-3 text-white text-sm outline-none resize-none placeholder-gray-600" placeholder="הדביקי כאן... (למשל: 'שקופית 1&#10;כותרת: ...&#10;טקסט: ...')"></textarea>
+                        <button onclick="handlePasteText()" class="w-full bg-turquoise hover:bg-[#00e5ff] text-navyDark font-bold text-sm py-2.5 rounded-xl transition shadow-[0_0_15px_rgba(0,196,204,0.3)]">יצירת קרוסלה מהטקסט</button>
+                    </div>
+
+                    <!-- Upload File Area -->
+                    <div class="flex flex-col gap-3 bg-black/40 p-5 rounded-2xl border border-white/5 items-center justify-center text-center">
+                        <label class="text-sm font-bold text-gold">אפשרות 2: העלאת מסמך מוכן</label>
+                        <p class="text-xs text-gray-400 mb-2">כתבת מראש? העלי קובץ txt</p>
+                        <input type="file" id="file-upload" accept=".txt" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gold/20 file:text-gold hover:file:bg-gold/30 cursor-pointer" onchange="handleFileUpload(event)">
+
+                        <button onclick="downloadTemplateFile()" class="text-xs text-turquoise hover:text-white underline transition mt-2">
+                            הורידי קובץ תבנית לדוגמה
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-col lg:flex-row gap-8 w-full items-start">
+
+            <!-- Left Side: Controls & Editor -->
+            <section class="w-full lg:w-5/12 flex flex-col gap-6 lg:sticky lg:top-24">
+
+                <!-- Branding Uploads (Logo & Palette) -->
+                <div class="bg-[#0E131F] border border-gray-800/80 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
+                    <h2 class="text-md font-bold text-white flex items-center gap-2">
+                        <span class="text-gold">🎨</span> מיתוג וסגנון אישי
+                    </h2>
+                    <p class="text-xs text-gray-400">העלי את הלוגו שלך ופלטת הצבעים כדי שילוו אותך בעריכה.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                        <div class="bg-black/40 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center">
+                            <label class="block text-xs text-turquoise font-bold mb-2">העלאת לוגו העסק:</label>
+                            <input type="file" id="logo-upload" accept="image/*" class="w-full text-xs text-gray-500 file:px-2 file:py-1 file:rounded file:border-0 file:bg-gray-800 file:text-white cursor-pointer file:cursor-pointer" onchange="handleLogoUpload(event)">
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl border border-white/5 flex flex-col items-center text-center">
+                            <label class="block text-xs text-accentPurple font-bold mb-2">פלטת צבעים (לרפרנס):</label>
+                            <input type="file" id="colors-upload" accept="image/*" class="w-full text-xs text-gray-500 file:px-2 file:py-1 file:rounded file:border-0 file:bg-gray-800 file:text-white cursor-pointer file:cursor-pointer" onchange="handleColorsUpload(event)">
+                        </div>
+                    </div>
+
+                    <!-- Previews box -->
+                    <div id="branding-previews" class="hidden flex gap-4 mt-2 p-4 bg-black/60 rounded-xl border border-white/5 items-center justify-center">
+                        <img id="preview-logo" class="h-10 object-contain hidden drop-shadow-md" alt="לוגו" />
+                        <div class="h-8 w-[1px] bg-gray-700 hidden" id="preview-divider"></div>
+                        <img id="preview-palette" class="h-10 rounded object-cover hidden shadow-md border border-gray-700" alt="פלטה" />
+                    </div>
+                </div>
+
+                <!-- Active Slide Editor Panel -->
+                <div class="bg-[#0E131F] border border-gray-800/80 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
+                    <div class="flex justify-between items-center mb-2 border-b border-gray-800 pb-3">
+                        <h2 class="text-md font-bold text-white flex items-center gap-2">
+                            <span class="text-turquoise">✏️</span> עריכה ידנית לשקופית
+                        </h2>
+                        <span class="text-xs text-navyDark bg-turquoise font-bold uppercase tracking-wider px-2 py-1 rounded" id="editor-slide-num">שקופית 1</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-300 font-semibold mb-1">כותרת:</label>
+                        <textarea id="edit-title" rows="2" class="w-full bg-[#151B2B] border border-gray-700 focus:border-turquoise focus:ring-1 focus:ring-turquoise rounded-xl px-4 py-2.5 text-white text-sm outline-none transition duration-200 resize-none shadow-inner"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-300 font-semibold mb-1">טקסט הגוף:</label>
+                        <textarea id="edit-body" rows="3" class="w-full bg-[#151B2B] border border-gray-700 focus:border-turquoise focus:ring-1 focus:ring-turquoise rounded-xl px-4 py-2.5 text-white text-sm outline-none transition duration-200 resize-none shadow-inner"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-300 font-semibold mb-1">תגית צפה:</label>
+                            <input type="text" id="edit-badge" placeholder="למשל: ✦ טיפ זהב" class="w-full bg-[#151B2B] border border-gray-700 focus:border-turquoise focus:ring-1 focus:ring-turquoise rounded-xl px-4 py-2.5 text-white text-sm outline-none transition duration-200 shadow-inner">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 font-semibold mb-1">עיצוב / סגנון:</label>
+                            <select id="edit-style" class="w-full bg-[#151B2B] border border-gray-700 focus:border-turquoise focus:ring-1 focus:ring-turquoise rounded-xl px-4 py-2.5 text-white text-sm outline-none transition duration-200 appearance-none shadow-inner">
+                                <option value="default">רגיל (המותג שלי)</option>
+                                <option value="realistic">ריאליסטי וכהה</option>
+                                <option value="delicate">עדין ונקי</option>
+                                <option value="watercolor">צבעי מים / בהיר</option>
+                                <option value="funny">שמח / אימוג'י</option>
+                                <option value="loud">צועק / בולט</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Background Image Upload -->
+                    <div>
+                        <label class="block text-sm text-gray-300 font-semibold mb-1">תמונת אווירה ברקע:</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="file" id="edit-bg-image-upload" accept="image/*" class="w-full text-xs text-gray-400 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-700 file:text-white hover:file:bg-gray-600 cursor-pointer file:cursor-pointer" onchange="handleBgImageUpload(event)">
+                            <button onclick="clearBackgroundImage()" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">הסרה</button>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mt-1">העלי תמונה מהמחשב — היא תופיע ברקע השקופית הנוכחית ותרד יחד איתה.</p>
+                    </div>
+
+                    <hr class="border-gray-800 my-2">
+
+                    <button onclick="downloadActiveSlide()" class="w-full bg-gradient-to-r from-turquoise via-[#00c4cc] to-accentPurple hover:brightness-110 active:scale-95 text-navyDark font-black text-sm py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(0,196,204,0.4)] transition duration-200 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <span>הורדת שקופית (PNG)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Side: The Premium Instagram Canvas Container -->
+            <section class="w-full lg:w-7/12 flex flex-col items-center gap-4">
+
+                <!-- Controls Header -->
+                <div class="w-full flex justify-between items-center bg-[#0E131F] border border-gray-800/80 px-5 py-3.5 rounded-xl shadow-lg">
+                    <div class="flex items-center gap-2">
+                        <button onclick="prevSlide()" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-white transition shadow-sm border border-white/10">
+                            <svg class="w-5 h-5 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                        <span class="text-sm font-bold tracking-widest text-turquoise px-3" id="slide-counter">שקופית 1 מתוך 9</span>
+                        <button onclick="nextSlide()" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-white transition shadow-sm border border-white/10">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Viewport -->
+                <div class="w-full overflow-hidden flex justify-center items-center rounded-2xl bg-black border border-gray-800 p-2 sm:p-4 shadow-2xl">
+                    <div id="canvas-container-scale" class="origin-top my-4">
+
+                        <!-- THE ABSOLUTE 1080x1350 INSTAGRAM POST CANVAS -->
+                        <div id="instagram-canvas" class="theme-default relative overflow-hidden select-none flex flex-col justify-between" style="width: 1080px; height: 1350px; direction: rtl;">
+
+                            <!-- Dynamic Background Image Overlay -->
+                            <div id="canvas-bg-image" class="bg-image-overlay hidden"></div>
+
+                            <!-- Visual Ambient Background Glows -->
+                            <div class="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] rounded-full glow-turquoise pointer-events-none opacity-80 z-0"></div>
+                            <div class="absolute bottom-[-100px] left-[-100px] w-[600px] h-[600px] rounded-full glow-purple pointer-events-none opacity-80 z-0"></div>
+
+                            <!-- Light Particles in background -->
+                            <div id="particles-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+                            <!-- Header -->
+                            <div class="w-full pt-16 px-20 flex justify-between items-center z-10 relative">
+                                <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                                    <span class="h-2 w-2 rounded-full bg-turquoise animate-pulse shadow-[0_0_8px_#00C4CC]"></span>
+                                    <span class="text-xs font-bold uppercase tracking-widest text-turquoise" id="header-slug">סטודיו לעיצוב</span>
+                                </div>
+                                <span class="text-xs text-white/90 font-bold bg-white/10 border border-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm shadow-md" id="slide-num-indicator">שקופית 01</span>
+                            </div>
+
+                            <!-- Main Content -->
+                            <div class="px-20 flex flex-col justify-center items-start gap-10 z-10 flex-grow pt-10 relative">
+
+                                <div id="canvas-tool-badge" class="hidden transform -rotate-1 translate-y-2">
+                                    <span class="bg-gradient-to-r from-gold/20 to-turquoise/10 text-white border border-gold/50 text-lg font-black tracking-wide px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(201,168,76,0.3)] inline-flex items-center gap-2 backdrop-blur-md">
+                                        <span class="text-turquoise text-xl">✦</span>
+                                        <span id="canvas-tool-text">...</span>
+                                    </span>
+                                </div>
+
+                                <div class="w-full flex flex-col items-start gap-4">
+                                    <div class="w-24 h-[4px] bg-gradient-to-r from-turquoise via-turquoise/80 to-transparent rounded-full shadow-[0_0_10px_#00C4CC] gold-line"></div>
+                                    <h3 id="canvas-title" class="text-[54px] leading-[1.25] font-black text-white font-heebo tracking-tight drop-shadow-xl text-right w-full transition-all duration-300">
+                                        טוען שקופית...
+                                    </h3>
+                                    <div class="w-48 h-[2px] bg-gradient-to-l from-gold via-gold/50 to-transparent rounded-full gold-line"></div>
+                                </div>
+
+                                <div class="flex items-center gap-2">
+                                    <span class="h-3 w-3 rounded-full bg-gold shadow-[0_0_10px_#C9A84C]"></span>
+                                    <div class="h-[1px] w-12 bg-gold/40 gold-line"></div>
+                                </div>
+
+                                <p id="canvas-body" class="text-[30px] leading-[1.6] text-bodyGray font-normal text-right w-full max-w-[880px] font-heebo whitespace-pre-line transition-all duration-300">
+                                    טוען טקסט...
+                                </p>
+                            </div>
+
+                            <!-- Footer / Branding -->
+                            <div class="w-full pb-16 px-20 flex justify-between items-end z-10 relative">
+                                <div class="flex items-center gap-3 bg-black/30 border border-white/10 px-5 py-3 rounded-full backdrop-blur-md" id="swipe-indicator">
+                                    <span class="text-sm text-turquoise font-bold">החליקי שמאלה</span>
+                                    <svg class="w-5 h-5 text-gold animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                </div>
+
+                                <!-- Logo Display Engine -->
+                                <div class="flex flex-col items-end gap-2 select-none" id="canvas-logo-wrapper">
+
+                                    <!-- Default SVG Logo (without purple string) -->
+                                    <div id="default-logo-svg" class="flex items-end gap-2.5">
+                                        <div class="flex flex-col items-end">
+                                            <div class="text-[36px] font-black leading-none text-right tracking-tight text-white flex items-center gap-1 drop-shadow-lg">
+                                                <span class="text-gold">במו</span>
+                                                <span class="text-white">ידייך</span>
+                                            </div>
+                                        </div>
+                                        <div class="w-14 h-14 bg-white/5 rounded-xl border border-turquoise/40 flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(0,196,204,0.2)] backdrop-blur-sm">
+                                            <svg class="w-full h-full text-turquoise" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <!-- Mouse Base -->
+                                                <rect x="25" y="30" width="50" height="60" rx="25" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                                                <line x1="50" y1="30" x2="50" y2="60" stroke="currentColor" stroke-width="3"/>
+                                                <line x1="25" y1="60" x2="75" y2="60" stroke="currentColor" stroke-width="3"/>
+                                                <!-- Hand curve -->
+                                                <path d="M25 40C35 40 45 20 60 20C75 20 85 45 65 65" stroke="#C9A84C" stroke-width="4" stroke-linecap="round"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Uploaded User Logo -->
+                                    <img id="user-uploaded-logo-img" class="hidden max-h-[80px] max-w-[200px] object-contain drop-shadow-xl" alt="לוגו משתמשת" />
+
+                                    <div class="flex items-center gap-1 w-full justify-end mt-1">
+                                        <div class="h-[1px] w-12 bg-turquoise/40"></div>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+                                        <div class="h-[1px] w-12 bg-turquoise/40"></div>
+                                    </div>
+
+                                    <span class="text-[14px] font-medium tracking-widest text-[#E2E8F0]/80 font-heebo">סטודיו לנשים יוצרות לעסק</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnails Map -->
+                <div class="w-full bg-[#0E131F] border border-gray-800/80 p-4 rounded-xl shadow-lg mt-2">
+                    <h3 class="text-xs text-turquoise font-bold uppercase tracking-wider mb-3 text-right">מפת השקופיות בקרוסלה:</h3>
+                    <div class="flex gap-2 overflow-x-auto pb-2 justify-start" id="thumbnails-container"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast Notification System -->
+    <div id="toast-notification" class="fixed bottom-6 right-6 border-l-4 border-turquoise px-6 py-4 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-[#1A0C2E]">
+        <div class="w-8 h-8 rounded-full bg-turquoise/20 flex items-center justify-center border border-turquoise/50">
+            <span class="text-turquoise text-lg" id="toast-icon">✨</span>
+        </div>
+        <div>
+            <h4 class="font-bold text-white text-sm" id="toast-title">הודעה</h4>
+            <p class="text-xs text-gray-300 font-medium mt-0.5" id="toast-message">פרטים כאן</p>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        let slidesData = [
+            { id: 1, title: "פתחת קנבה ועיצבת בעצמך?", body: "המערכת שלנו עוזרת לך להפוך כל טקסט לעיצוב מושלם ברגע.", badge: "✦ קרוסלות אוטומטיות", style: "default", bgImage: "" },
+            { id: 2, title: "פשוט הדביקי טקסט", body: "בלי לשבור את הראש, תראי איך העיצוב מתעדכן אוטומטית לשקופית הבאה.", badge: "", style: "realistic", bgImage: "" }
+        ];
+
+        let currentSlideIndex = 0;
+
+        /* BRANDING UPLOADS LOGIC */
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const src = e.target.result;
+                    document.getElementById('default-logo-svg').classList.add('hidden');
+                    document.getElementById('user-uploaded-logo-img').src = src;
+                    document.getElementById('user-uploaded-logo-img').classList.remove('hidden');
+
+                    document.getElementById('branding-previews').classList.remove('hidden');
+                    document.getElementById('preview-logo').src = src;
+                    document.getElementById('preview-logo').classList.remove('hidden');
+                    checkDivider();
+                    showToast("לוגו עודכן!", "הלוגו שלך הוצב אוטומטית בכל השקופיות.", "bg-[#0D1B2A]");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleColorsUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const src = e.target.result;
+                    document.getElementById('branding-previews').classList.remove('hidden');
+                    document.getElementById('preview-palette').src = src;
+                    document.getElementById('preview-palette').classList.remove('hidden');
+                    checkDivider();
+                    showToast("פלטה נטענה", "פלטת הצבעים זמינה לך כעת בדשבורד.", "bg-[#0D1B2A]");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function checkDivider() {
+            const logo = document.getElementById('preview-logo');
+            const pal = document.getElementById('preview-palette');
+            const div = document.getElementById('preview-divider');
+            if(!logo.classList.contains('hidden') && !pal.classList.contains('hidden')) div.classList.remove('hidden');
+        }
+
+        /* AUTO GENERATOR PARSER */
+        function handlePasteText() {
+            const text = document.getElementById('paste-text-input').value;
+            if(!text || text.trim() === "") {
+                showToast("שגיאה", "אנא הדביקי טקסט לתיבה תחילה.", "bg-red-900");
+                return;
+            }
+            parseTextToSlides(text);
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('paste-text-input').value = e.target.result;
+                parseTextToSlides(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseTextToSlides(text) {
+            const lines = text.split('\n');
+            let newSlides = [];
+            let currentSlide = null;
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (line === '') return;
+
+                if (line.startsWith('שקופית')) {
+                    if (currentSlide) newSlides.push(currentSlide);
+                    currentSlide = { id: newSlides.length + 1, title: '', body: '', badge: '', style: 'default', bgImage: '' };
+                }
+                else if (line.startsWith('כותרת:') && currentSlide) currentSlide.title = line.replace('כותרת:', '').trim();
+                else if (line.startsWith('טקסט:') && currentSlide) {
+                    if (currentSlide.body !== '') currentSlide.body += '\n';
+                    currentSlide.body += line.replace('טקסט:', '').trim();
+                }
+                else if (line.startsWith('תגית:') && currentSlide) currentSlide.badge = line.replace('תגית:', '').trim();
+                else if (line.startsWith('סגנון:') && currentSlide) {
+                    let requestedStyle = line.replace('סגנון:', '').trim();
+                    if (requestedStyle.includes('ריאליסטי')) currentSlide.style = 'realistic';
+                    else if (requestedStyle.includes('מים') || requestedStyle.includes('בהיר')) currentSlide.style = 'watercolor';
+                    else if (requestedStyle.includes('מצחיק') || requestedStyle.includes('שמח')) currentSlide.style = 'funny';
+                    else if (requestedStyle.includes('עדין')) currentSlide.style = 'delicate';
+                    else if (requestedStyle.includes('צועק')) currentSlide.style = 'loud';
+                    else currentSlide.style = 'default';
+                }
+            });
+
+            if (currentSlide) newSlides.push(currentSlide);
+
+            if (newSlides.length > 0) {
+                slidesData = newSlides;
+                currentSlideIndex = 0;
+                setupUI();
+                updateCanvas();
+                showToast("התוכן נטען בהצלחה!", `יצרנו עבורך ${slidesData.length} שקופיות קרוסלה.`, "bg-[#0D1B2A]");
+            } else {
+                showToast("שגיאה בזיהוי התוכן", "לא מצאנו שקופיות. ודאי שכתבת 'שקופית 1' בתחילת המקטע.", "bg-red-900");
+            }
+        }
+
+        function downloadTemplateFile() {
+            const templateText = `שקופית 1\nכותרת: הכותרת המהממת שלי כאן\nטקסט: פסקת ההסבר של השקופית הראשונה.\nתגית: ✦ פתיח\nסגנון: רגיל\n\nשקופית 2\nכותרת: הבעיה שכולן חוות\nטקסט: הבעיה בצורה שנוגעת בכאב של הלקוחה.\nתגית:\nסגנון: ריאליסטי\n`;
+            const blob = new Blob([templateText], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "תבנית_קרוסלה_במו_ידייך.txt";
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        /* PARTICLES & RESIZING */
+        function generateParticles() {
+            const container = document.getElementById('particles-layer');
+            if(!container) return;
+            container.innerHTML = '';
+            const particleColors = ['#00C4CC', '#8B5CF6', '#C9A84C', '#FFFFFF'];
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                const size = Math.random() * 5 + 2;
+                particle.className = 'particle';
+                particle.style.width = `${size}px`; particle.style.height = `${size}px`;
+                particle.style.top = `${Math.random() * 100}%`; particle.style.left = `${Math.random() * 100}%`;
+                particle.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
+                particle.style.boxShadow = `0 0 8px ${particle.style.backgroundColor}`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${Math.random() * 6 + 6}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        function handleCanvasResize() {
+            const container = document.getElementById('canvas-container-scale');
+            const parentWidth = container.parentElement.clientWidth;
+            const scale = Math.min(parentWidth / 1080, 0.75);
+            container.style.width = `1080px`; container.style.height = `1350px`;
+            container.style.transform = `scale(${scale})`;
+            container.parentElement.style.height = `${1350 * scale + 32}px`;
+        }
+
+        function applyCanvasStyle(styleClass) {
+            const canvas = document.getElementById('instagram-canvas');
+            // Remove all existing style classes
+            canvas.classList.remove('theme-default', 'style-realistic', 'style-watercolor', 'style-funny', 'style-delicate', 'style-loud');
+
+            // Apply the selected style class
+            if (styleClass === 'default') {
+                canvas.classList.add('theme-default');
+            } else {
+                canvas.classList.add(`style-${styleClass}`);
+            }
+        }
+
+        /* BACKGROUND IMAGE: local file upload (works offline + exports cleanly, no CORS taint) */
+        function handleBgImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const src = e.target.result;
+                slidesData[currentSlideIndex].bgImage = src;
+                const bgElement = document.getElementById('canvas-bg-image');
+                bgElement.style.backgroundImage = `url('${src}')`;
+                bgElement.classList.remove('hidden');
+                showToast("תמונת רקע עודכנה", "הרקע הוצב בשקופית הנוכחית.", "bg-[#0D1B2A]");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearBackgroundImage() {
+            slidesData[currentSlideIndex].bgImage = "";
+            const bgElement = document.getElementById('canvas-bg-image');
+            bgElement.style.backgroundImage = 'none';
+            bgElement.classList.add('hidden');
+            const input = document.getElementById('edit-bg-image-upload');
+            if (input) input.value = "";
+            showToast("הרקע הוסר", "השקופית חזרה לרקע ברירת המחדל.", "bg-[#0D1B2A]");
+        }
+
+        /* UI LOGIC */
+        function setupUI() {
+            const thumbsContainer = document.getElementById('thumbnails-container');
+            thumbsContainer.innerHTML = '';
+
+            slidesData.forEach((slide, index) => {
+                const thumb = document.createElement('div');
+                thumb.onclick = () => selectSlide(index);
+
+                let borderHint = 'border-gray-800';
+                if(slide.style !== 'default') borderHint = 'border-turquoise/50';
+
+                thumb.className = `flex-shrink-0 w-24 h-28 rounded-lg cursor-pointer transition p-2 relative overflow-hidden flex flex-col justify-between border ${index === currentSlideIndex ? 'border-turquoise ring-2 ring-turquoise/50 bg-[#1A0C2E]' : `${borderHint} bg-[#0A0F1D]/80 opacity-60 hover:opacity-100`}`;
+
+                const rawTitle = slide.title || "ללא כותרת";
+                const miniTitle = rawTitle.length > 16 ? rawTitle.substring(0, 16) + '…' : rawTitle;
+                const pct = ((index + 1) / slidesData.length) * 100;
+
+                thumb.innerHTML = `
+                    <span class="text-[9px] text-turquoise font-bold block">שקופית ${slide.id}</span>
+                    <span class="thumb-title text-[10px] text-white/90 leading-tight block text-right font-bold line-clamp-3"></span>
+                    <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mt-1">
+                        <div class="h-full bg-gradient-to-r from-turquoise to-accentPurple" style="width: ${pct}%"></div>
+                    </div>
+                `;
+                // Set the user-provided title via textContent to avoid HTML injection / broken rendering
+                thumb.querySelector('.thumb-title').textContent = miniTitle;
+                thumbsContainer.appendChild(thumb);
+            });
+        }
+
+        function selectSlide(index) {
+            currentSlideIndex = index;
+            updateCanvas();
+            setupUI();
+        }
+
+        function prevSlide() { selectSlide(currentSlideIndex > 0 ? currentSlideIndex - 1 : slidesData.length - 1); }
+        function nextSlide() { selectSlide(currentSlideIndex < slidesData.length - 1 ? currentSlideIndex + 1 : 0); }
+
+        function updateCanvas() {
+            if(slidesData.length === 0) return;
+            const slide = slidesData[currentSlideIndex];
+            const paddedNum = String(slide.id).padStart(2, '0');
+
+            document.getElementById('canvas-title').textContent = slide.title;
+            document.getElementById('canvas-body').textContent = slide.body;
+            document.getElementById('slide-counter').innerText = `שקופית ${slide.id} מתוך ${slidesData.length}`;
+            document.getElementById('slide-num-indicator').innerText = `שקופית ${paddedNum}`;
+            document.getElementById('editor-slide-num').innerText = `שקופית ${slide.id}`;
+
+            if(currentSlideIndex === slidesData.length - 1) document.getElementById('swipe-indicator').classList.add('hidden');
+            else document.getElementById('swipe-indicator').classList.remove('hidden');
+
+            const badgeContainer = document.getElementById('canvas-tool-badge');
+            const badgeText = document.getElementById('canvas-tool-text');
+
+            if (slide.badge && slide.badge.trim() !== "") {
+                badgeContainer.classList.remove('hidden');
+                badgeText.innerText = slide.badge;
+            } else {
+                badgeContainer.classList.add('hidden');
+            }
+
+            // Handle Background Image display
+            const bgElement = document.getElementById('canvas-bg-image');
+            if (slide.bgImage && slide.bgImage !== "") {
+                bgElement.style.backgroundImage = `url('${slide.bgImage}')`;
+                bgElement.classList.remove('hidden');
+            } else {
+                bgElement.style.backgroundImage = 'none';
+                bgElement.classList.add('hidden');
+            }
+
+            document.getElementById('edit-title').value = slide.title;
+            document.getElementById('edit-body').value = slide.body;
+            document.getElementById('edit-badge').value = slide.badge || "";
+            document.getElementById('edit-style').value = slide.style || 'default';
+            // Reset the background-image file input for this slide
+            document.getElementById('edit-bg-image-upload').value = "";
+
+            applyCanvasStyle(slide.style || 'default');
+        }
+
+        // Live Editor Listeners
+        document.getElementById('edit-title').addEventListener('input', (e) => { slidesData[currentSlideIndex].title = e.target.value; document.getElementById('canvas-title').textContent = e.target.value; setupUI(); });
+        document.getElementById('edit-body').addEventListener('input', (e) => { slidesData[currentSlideIndex].body = e.target.value; document.getElementById('canvas-body').textContent = e.target.value; });
+        document.getElementById('edit-badge').addEventListener('input', (e) => { slidesData[currentSlideIndex].badge = e.target.value; updateCanvas(); });
+        document.getElementById('edit-style').addEventListener('change', (e) => { slidesData[currentSlideIndex].style = e.target.value; applyCanvasStyle(e.target.value); setupUI(); });
+
+        /* EXPORT LOGIC */
+        function downloadActiveSlide() {
+            const canvasElement = document.getElementById('instagram-canvas');
+            // useCORS keeps cross-origin assets exportable; allowTaint:false ensures toDataURL never throws a SecurityError.
+            html2canvas(canvasElement, { width: 1080, height: 1350, scale: 2, useCORS: true, allowTaint: false, backgroundColor: null })
+            .then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = `קרוסלה_שקופית_${slidesData[currentSlideIndex].id}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                showToast("העיצוב מוכן!", "השקופית תרד מיד למחשב.", "bg-[#0D1B2A]");
+            })
+            .catch(function(err) {
+                console.error('html2canvas export failed:', err);
+                showToast("שגיאה בייצוא", "לא הצלחנו לייצא את השקופית. נסי שוב.", "bg-red-900");
+            });
+        }
+
+        function showToast(title, message, bgClass) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+            toast.className = `fixed bottom-6 right-6 border-l-4 border-turquoise px-6 py-4 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-50 transform transition-all duration-300 pointer-events-none flex items-center gap-3 ${bgClass}`;
+            requestAnimationFrame(() => { toast.classList.remove('translate-y-20', 'opacity-0'); toast.classList.add('translate-y-0', 'opacity-100'); });
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); toast.classList.remove('translate-y-0', 'opacity-100'); }, 3500);
+        }
+
+        /* INITIALIZATION */
+        window.onload = function () {
+            if (document.getElementById('particles-layer')) {
+                 generateParticles();
+            }
+            updateCanvas();
+            setupUI();
+            handleCanvasResize();
+            window.addEventListener('resize', handleCanvasResize);
+        }
+    </script>
+</body>
+</html>
