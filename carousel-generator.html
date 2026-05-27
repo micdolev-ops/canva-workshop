@@ -8,8 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Noto+Sans+Hebrew:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <!-- html2canvas for high-res slide export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- html-to-image: renders slides exactly like the browser (correct RTL/Hebrew spacing) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     <!-- JSZip for exporting the whole carousel as one ZIP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -865,24 +865,22 @@
         });
 
         /* ---------- EXPORT ---------- */
-        function downloadActiveSlide() {
-            const canvasElement = document.getElementById('instagram-canvas');
-            html2canvas(canvasElement, { width: 1080, height: 1350, scale: 2, useCORS: true, allowTaint: false, backgroundColor: null })
-                .then(function (canvas) {
-                    const link = document.createElement('a');
-                    link.download = `קרוסלה_שקופית_${String(slidesData[currentSlideIndex].id).padStart(2, '0')}.png`;
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                    showToast("העיצוב מוכן!", "השקופית תרד מיד למחשב.", "bg-[#1A0A33]");
-                })
-                .catch(function (err) {
-                    console.error('html2canvas export failed:', err);
-                    showToast("שגיאה בייצוא", "לא הצלחנו לייצא את השקופית. נסי שוב.", "bg-red-900");
-                });
-        }
+        const EXPORT_OPTS = { pixelRatio: 2, width: 1080, height: 1350, cacheBust: true };
 
-        function canvasToBlob(canvas) {
-            return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        async function downloadActiveSlide() {
+            const node = document.getElementById('instagram-canvas');
+            try {
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const dataUrl = await htmlToImage.toPng(node, EXPORT_OPTS);
+                const link = document.createElement('a');
+                link.download = `קרוסלה_שקופית_${String(slidesData[currentSlideIndex].id).padStart(2, '0')}.png`;
+                link.href = dataUrl;
+                link.click();
+                showToast("העיצוב מוכן!", "השקופית תרד מיד למחשב.", "bg-[#1A0A33]");
+            } catch (err) {
+                console.error('export failed:', err);
+                showToast("שגיאה בייצוא", "לא הצלחנו לייצא את השקופית. נסי שוב.", "bg-red-900");
+            }
         }
 
         async function downloadAllSlides() {
@@ -894,17 +892,17 @@
             const label = btn.querySelector('span');
             const originalLabel = label.textContent;
             const originalIndex = currentSlideIndex;
-            const canvasElement = document.getElementById('instagram-canvas');
+            const node = document.getElementById('instagram-canvas');
             const zip = new JSZip();
             btn.disabled = true;
             try {
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
                 for (let i = 0; i < slidesData.length; i++) {
                     currentSlideIndex = i;
                     updateCanvas();
                     label.textContent = `מכינה שקופית ${i + 1}/${slidesData.length}...`;
-                    await new Promise(r => setTimeout(r, 350)); // let the canvas paint
-                    const canvas = await html2canvas(canvasElement, { width: 1080, height: 1350, scale: 2, useCORS: true, allowTaint: false, backgroundColor: null });
-                    const blob = await canvasToBlob(canvas);
+                    await new Promise(r => setTimeout(r, 250)); // let the slide paint
+                    const blob = await htmlToImage.toBlob(node, EXPORT_OPTS);
                     zip.file(`קרוסלה_שקופית_${String(slidesData[i].id).padStart(2, '0')}.png`, blob);
                 }
                 const content = await zip.generateAsync({ type: 'blob' });
