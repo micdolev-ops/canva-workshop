@@ -36,50 +36,34 @@
     </script>
     <style>
         /* Custom Animations & Backgrounds */
-        /* Higher-specificity rule ensures the canvas always has a visible background
-           even if a stale custom value got stuck. background-color is a hard fallback. */
-        #instagram-canvas.theme-default {
-            background-color: #170628;
-            background-image: linear-gradient(135deg, #4A1B62 0%, #2D124C 50%, #170628 100%);
-        }
-        .theme-default { background: linear-gradient(135deg, #4A1B62 0%, #2D124C 50%, #170628 100%); }
+        /* Hard purple fallback at the canvas level — ALWAYS visible behind anything.
+           Style themes layer their own image on top via background-image only. */
+        #instagram-canvas { background-color: #170628; }
+        .theme-default { background-image: linear-gradient(135deg, #4A1B62 0%, #2D124C 50%, #170628 100%); }
+        .style-realistic { background-color: #000; background-image: linear-gradient(to bottom, #111, #000); }
+        .style-watercolor { background-color: #FDFBF7; background-image: none; }
+        .style-funny { background-color: #FFD700; background-image: radial-gradient(circle, #FFF 10%, transparent 10%), radial-gradient(circle, #FFF 10%, transparent 10%); }
+        .style-delicate { background-color: #F0F4F8; background-image: none; }
+        .style-loud { background-color: #FF0055; background-image: none; }
 
-        /* New Style Themes */
-        .style-watercolor {
-            background: #FDFBF7;
-            color: #2D3748;
-        }
+        /* New Style Themes — text/extras only; background-color/image set in the consolidated block above */
+        .style-watercolor { color: #2D3748; }
         .style-watercolor #canvas-title { color: #1A202C; text-shadow: none; font-weight: 800; }
         .style-watercolor #canvas-body { color: #4A5568; font-weight: 500; }
         .style-watercolor .gold-line { background: #E2E8F0; }
 
-        .style-realistic {
-            background: linear-gradient(to bottom, #111, #000);
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
-        }
+        .style-realistic { box-shadow: inset 0 0 100px rgba(0,0,0,0.8); }
         .style-realistic #canvas-title { text-shadow: 0 10px 20px rgba(0,0,0,0.8); letter-spacing: -1px; }
 
-        .style-funny {
-            background: #FFD700;
-            color: #000;
-            background-image: radial-gradient(circle, #FFF 10%, transparent 10%), radial-gradient(circle, #FFF 10%, transparent 10%);
-            background-size: 50px 50px;
-            background-position: 0 0, 25px 25px;
-        }
+        .style-funny { color: #000; background-size: 50px 50px; background-position: 0 0, 25px 25px; }
         .style-funny #canvas-title { color: #000; font-family: 'Noto Sans Hebrew', sans-serif; font-weight: 900; text-shadow: 3px 3px 0px #FFF; }
         .style-funny #canvas-body { color: #222; font-weight: 700; }
 
-        .style-delicate {
-            background: #F0F4F8;
-            color: #2C5282;
-        }
+        .style-delicate { color: #2C5282; }
         .style-delicate #canvas-title { font-weight: 300; letter-spacing: 2px; color: #2B6CB0; text-shadow: none;}
         .style-delicate #canvas-body { font-weight: 300; color: #4A5568; }
 
-        .style-loud {
-            background: #FF0055;
-            color: #FFF;
-        }
+        .style-loud { color: #FFF; }
         .style-loud #canvas-title { font-size: 70px; text-transform: uppercase; font-weight: 900; line-height: 1; text-shadow: 5px 5px 0px #000; }
         .style-loud #canvas-body { font-weight: 800; text-shadow: 2px 2px 0px #000; }
 
@@ -160,6 +144,7 @@
             <div class="flex items-center gap-2 flex-wrap justify-center">
                 <span class="px-3 py-1 bg-accentPurple/15 text-accentPurple text-xs rounded-full border border-accentPurple/30 font-medium">✨ עיצוב בדיגיטל</span>
                 <span class="px-3 py-1 bg-turquoise/10 text-turquoise text-xs rounded-full border border-turquoise/20 font-medium">📐 פורמט 1080×1350px</span>
+                <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full border border-gold/30 font-bold">🆕 גרסה 8</span>
             </div>
         </div>
     </header>
@@ -291,6 +276,9 @@
                         </div>
                         <p class="text-[10px] text-gray-500 mt-1">העלי תמונה מהמחשב — היא תופיע ברקע השקופית הנוכחית ותרד יחד איתה.</p>
                     </div>
+
+                    <!-- Reset slide background entirely (clears bg image + custom palette bg) -->
+                    <button onclick="resetSlideBackground()" class="bg-red-900/30 hover:bg-red-900/50 text-red-200 border border-red-700/50 text-xs font-bold py-2 px-3 rounded-lg transition self-start">🧹 אפסי את כל הרקע של השקופית (לתיקון שקופית שחורה)</button>
 
                     <!-- Text position controls -->
                     <div class="bg-black/30 border border-white/5 rounded-xl p-3 flex items-center justify-between gap-3">
@@ -493,12 +481,26 @@
         }
 
         function loadState() {
+            const VALID_STYLES = ['default','realistic','watercolor','funny','delicate','loud'];
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (!raw) return false;
                 const state = JSON.parse(raw);
                 if (state.slides && state.slides.length) {
-                    slidesData = state.slides.map(s => ({ bgImage: "", customBg: "", badge: "", style: "default", ...s }));
+                    slidesData = state.slides.map(s => {
+                        const merged = { bgImage: "", customBg: "", badge: "", style: "default", textPos: null, ...s };
+                        if (!VALID_STYLES.includes(merged.style)) merged.style = 'default';
+                        // Strip stale custom backgrounds that don't look like real CSS values
+                        if (merged.customBg && typeof merged.customBg === 'string') {
+                            const cb = merged.customBg.trim();
+                            if (!(cb.includes('gradient(') || cb.startsWith('#') || cb.startsWith('rgb'))) {
+                                merged.customBg = '';
+                            }
+                        } else {
+                            merged.customBg = '';
+                        }
+                        return merged;
+                    });
                     if (state.logo) applyLogoSrc(state.logo);
                     return true;
                 }
@@ -784,6 +786,22 @@
             reader.readAsDataURL(file);
         }
 
+        function resetSlideBackground() {
+            const slide = slidesData[currentSlideIndex];
+            slide.bgImage = "";
+            slide.customBg = "";
+            const bgElement = document.getElementById('canvas-bg-image');
+            bgElement.style.backgroundImage = 'none';
+            bgElement.classList.add('hidden');
+            document.getElementById('canvas-bg-tint').classList.add('hidden');
+            document.getElementById('instagram-canvas').classList.remove('has-bg-image');
+            const input = document.getElementById('edit-bg-image-upload');
+            if (input) input.value = "";
+            updateCanvas();
+            saveState();
+            showToast("הרקע אופס", "השקופית חזרה לרקע ברירת המחדל (סגול).", "bg-[#1A0A33]");
+        }
+
         function clearBackgroundImage() {
             slidesData[currentSlideIndex].bgImage = "";
             const bgElement = document.getElementById('canvas-bg-image');
@@ -891,9 +909,12 @@
 
             applyCanvasStyle(slide.style || 'default');
 
-            // Custom palette background overrides the theme background when set
+            // Custom palette background overrides the theme background-image when set.
+            // Use background-image (not the shorthand) so background-color stays intact as a fallback.
             const canvas = document.getElementById('instagram-canvas');
-            canvas.style.background = slide.customBg ? slide.customBg : '';
+            const isValidCustomBg = slide.customBg && typeof slide.customBg === 'string' &&
+                (slide.customBg.includes('gradient(') || slide.customBg.trim().startsWith('#') || slide.customBg.trim().startsWith('rgb'));
+            canvas.style.backgroundImage = isValidCustomBg ? slide.customBg : '';
 
             applyTextPos();
             checkOverflow();
