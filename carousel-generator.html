@@ -144,7 +144,7 @@
             <div class="flex items-center gap-2 flex-wrap justify-center">
                 <span class="px-3 py-1 bg-accentPurple/15 text-accentPurple text-xs rounded-full border border-accentPurple/30 font-medium">✨ עיצוב בדיגיטל</span>
                 <span class="px-3 py-1 bg-turquoise/10 text-turquoise text-xs rounded-full border border-turquoise/20 font-medium">📐 פורמט 1080×1350px</span>
-                <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full border border-gold/30 font-bold">🆕 גרסה 8</span>
+                <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full border border-gold/30 font-bold">🆕 גרסה 9</span>
             </div>
         </div>
     </header>
@@ -186,7 +186,8 @@
                     </div>
                 </div>
 
-                <div class="relative z-10 mt-5 text-center">
+                <div class="relative z-10 mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button onclick="resetAllBackgrounds()" class="bg-red-900/40 hover:bg-red-900/60 text-red-200 border border-red-700/50 text-xs font-bold py-2 px-4 rounded-lg transition">🧹 איפוס רקע בכל השקופיות (שומר טקסט)</button>
                     <button onclick="startFresh()" class="text-xs text-gray-500 hover:text-red-400 underline transition">התחלה מחדש (ניקוי כל התוכן השמור)</button>
                 </div>
             </div>
@@ -324,7 +325,7 @@
                 </div>
 
                 <!-- Canvas Viewport -->
-                <div class="w-full overflow-hidden flex justify-center items-center rounded-2xl bg-black border border-purple-900/40 p-2 sm:p-4 shadow-2xl">
+                <div class="w-full overflow-hidden flex justify-center items-center rounded-2xl bg-[#170628] border border-purple-900/40 p-2 sm:p-4 shadow-2xl">
                     <div id="canvas-container-scale" class="origin-top my-4">
 
                         <!-- THE ABSOLUTE 1080x1350 INSTAGRAM POST CANVAS -->
@@ -750,9 +751,13 @@
 
         function handleCanvasResize() {
             const container = document.getElementById('canvas-container-scale');
+            if (!container || !container.parentElement) return;
             const parentWidth = container.parentElement.clientWidth;
-            const scale = Math.min(parentWidth / 1080, 0.75);
-            container.style.width = `1080px`; container.style.height = `1350px`;
+            let scale = Math.min(parentWidth / 1080, 0.75);
+            // Fallback if the parent hasn't laid out yet (clientWidth==0 → scale==0 → invisible canvas)
+            if (!scale || scale < 0.1) scale = 0.33;
+            container.style.width = '1080px';
+            container.style.height = '1350px';
             container.style.transform = `scale(${scale})`;
             container.parentElement.style.height = `${1350 * scale + 32}px`;
         }
@@ -784,6 +789,15 @@
                 showToast("תמונת רקע עודכנה", "הרקע הוצב בשקופית הנוכחית.", "bg-[#1A0A33]");
             };
             reader.readAsDataURL(file);
+        }
+
+        function resetAllBackgrounds() {
+            if (!confirm('זה ימחק את כל הרקעים (תמונה ופלטה מותאמת) מכל ' + slidesData.length + ' השקופיות. הכותרות והטקסטים יישמרו. להמשיך?')) return;
+            slidesData.forEach(s => { s.bgImage = ''; s.customBg = ''; });
+            updateCanvas();
+            setupUI();
+            saveState();
+            showToast('כל הרקעים אופסו', slidesData.length + ' שקופיות חזרו לרקע סגול ברירת מחדל.', 'bg-[#1A0A33]');
         }
 
         function resetSlideBackground() {
@@ -1099,6 +1113,11 @@
             updateCanvas();
             setupUI();
             handleCanvasResize();
+            // Defensive: re-run resize across multiple ticks in case the layout wasn't ready yet
+            setTimeout(handleCanvasResize, 100);
+            setTimeout(handleCanvasResize, 500);
+            setTimeout(handleCanvasResize, 1500);
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(handleCanvasResize);
             window.addEventListener('resize', handleCanvasResize);
 
             // Wire the draggable text block
