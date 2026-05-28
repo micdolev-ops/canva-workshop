@@ -36,7 +36,7 @@
     </script>
     <style>
         /* Custom Animations & Backgrounds */
-        .theme-default { background: linear-gradient(135deg, #2A0E45 0%, #190A33 45%, #0C0418 100%); }
+        .theme-default { background: linear-gradient(135deg, #4A1B62 0%, #2D124C 50%, #170628 100%); }
 
         /* New Style Themes */
         .style-watercolor {
@@ -101,14 +101,21 @@
         }
         input[type="file"]::file-selector-button:hover { background: rgba(232, 58, 180, 0.22); }
 
-        /* Class for the background image overlay */
+        /* Background image overlay — show uploaded designs clearly */
         .bg-image-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            opacity: 0.3; /* Keep it subtle so text is readable */
+            opacity: 0.85;
             z-index: 0;
-            mix-blend-mode: overlay; /* Blends nicely with the gradient */
+            pointer-events: none;
+        }
+        /* Light tint over the bg image to keep text readable without washing the image out */
+        .bg-image-tint {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(20,8,40,0.30) 0%, rgba(20,8,40,0.20) 50%, rgba(20,8,40,0.55) 100%);
+            z-index: 0;
             pointer-events: none;
         }
     </style>
@@ -305,8 +312,9 @@
                         <!-- THE ABSOLUTE 1080x1350 INSTAGRAM POST CANVAS -->
                         <div id="instagram-canvas" class="theme-default relative overflow-hidden select-none flex flex-col justify-between" style="width: 1080px; height: 1350px; direction: rtl;">
 
-                            <!-- Dynamic Background Image Overlay -->
+                            <!-- Dynamic Background Image Overlay + tint for text contrast -->
                             <div id="canvas-bg-image" class="bg-image-overlay hidden"></div>
+                            <div id="canvas-bg-tint" class="bg-image-tint hidden"></div>
 
                             <!-- Visual Ambient Background Glows -->
                             <div class="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] rounded-full glow-turquoise pointer-events-none opacity-80 z-0"></div>
@@ -316,7 +324,7 @@
                             <div id="particles-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
 
                             <!-- Header -->
-                            <div class="w-full pt-16 px-20 flex justify-between items-center z-10 relative">
+                            <div class="w-full pt-14 px-24 flex justify-between items-center z-10 relative">
                                 <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
                                     <span class="h-2 w-2 rounded-full bg-turquoise animate-pulse shadow-[0_0_8px_#2DE2E6]"></span>
                                     <span class="text-xs font-bold uppercase tracking-widest text-turquoise" id="header-slug">סטודיו לעיצוב</span>
@@ -325,7 +333,7 @@
                             </div>
 
                             <!-- Main Content -->
-                            <div class="px-20 flex flex-col justify-center items-start gap-10 z-10 flex-grow pt-10 relative">
+                            <div class="px-24 flex flex-col justify-center items-start gap-10 z-10 flex-grow pt-10 relative">
 
                                 <div id="canvas-tool-badge" class="hidden transform -rotate-1 translate-y-2">
                                     <span class="bg-gradient-to-r from-gold/20 to-turquoise/10 text-white border border-gold/50 text-lg font-black tracking-wide px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(232,58,180,0.3)] inline-flex items-center gap-2 backdrop-blur-md">
@@ -353,7 +361,7 @@
                             </div>
 
                             <!-- Footer / Branding -->
-                            <div class="w-full pb-16 px-20 flex justify-between items-end z-10 relative">
+                            <div class="w-full pb-14 px-24 flex justify-between items-end z-10 relative">
                                 <div class="flex items-center gap-3 bg-black/30 border border-white/10 px-5 py-3 rounded-full backdrop-blur-md" id="swipe-indicator">
                                     <span class="text-sm text-turquoise font-bold">החליקי שמאלה</span>
                                     <svg class="w-5 h-5 text-gold animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -731,6 +739,7 @@
                 const bgElement = document.getElementById('canvas-bg-image');
                 bgElement.style.backgroundImage = `url('${src}')`;
                 bgElement.classList.remove('hidden');
+                document.getElementById('canvas-bg-tint').classList.remove('hidden');
                 saveState();
                 showToast("תמונת רקע עודכנה", "הרקע הוצב בשקופית הנוכחית.", "bg-[#1A0A33]");
             };
@@ -742,6 +751,7 @@
             const bgElement = document.getElementById('canvas-bg-image');
             bgElement.style.backgroundImage = 'none';
             bgElement.classList.add('hidden');
+            document.getElementById('canvas-bg-tint').classList.add('hidden');
             const input = document.getElementById('edit-bg-image-upload');
             if (input) input.value = "";
             saveState();
@@ -820,12 +830,15 @@
             }
 
             const bgElement = document.getElementById('canvas-bg-image');
+            const tintElement = document.getElementById('canvas-bg-tint');
             if (slide.bgImage && slide.bgImage !== "") {
                 bgElement.style.backgroundImage = `url('${slide.bgImage}')`;
                 bgElement.classList.remove('hidden');
+                tintElement.classList.remove('hidden');
             } else {
                 bgElement.style.backgroundImage = 'none';
                 bgElement.classList.add('hidden');
+                tintElement.classList.add('hidden');
             }
 
             document.getElementById('edit-title').value = slide.title;
