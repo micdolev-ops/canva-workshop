@@ -118,6 +118,17 @@
             z-index: 0;
             pointer-events: none;
         }
+        /* Auto-fitting backdrop behind the title/body, ONLY when a bg image is uploaded */
+        .has-bg-image #canvas-title,
+        .has-bg-image #canvas-body {
+            display: block;
+            width: max-content;
+            background: rgba(18, 6, 36, 0.65);
+            padding: 16px 32px;
+            border-radius: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        }
+        .has-bg-image #canvas-body { max-width: 880px; }
     </style>
 </head>
 <body class="bg-[#0A0512] text-white font-heebo min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-turquoise selection:text-navyDark">
@@ -324,12 +335,8 @@
                             <div id="particles-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
 
                             <!-- Header -->
-                            <div class="w-full pt-14 px-24 flex justify-between items-center z-10 relative">
-                                <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                                    <span class="h-2 w-2 rounded-full bg-turquoise animate-pulse shadow-[0_0_8px_#2DE2E6]"></span>
-                                    <span class="text-xs font-bold uppercase tracking-widest text-turquoise" id="header-slug">סטודיו לעיצוב</span>
-                                </div>
-                                <span class="text-xs text-white/90 font-bold bg-white/10 border border-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm shadow-md" id="slide-num-indicator">שקופית 01</span>
+                            <div class="w-full pt-14 px-24 flex justify-end items-center z-10 relative">
+                                <span class="text-sm text-white/90 font-bold bg-white/10 border border-white/20 px-5 py-2 rounded-full backdrop-blur-sm shadow-md whitespace-nowrap inline-flex items-center" id="slide-num-indicator">שקופית 01</span>
                             </div>
 
                             <!-- Main Content -->
@@ -740,6 +747,7 @@
                 bgElement.style.backgroundImage = `url('${src}')`;
                 bgElement.classList.remove('hidden');
                 document.getElementById('canvas-bg-tint').classList.remove('hidden');
+                document.getElementById('instagram-canvas').classList.add('has-bg-image');
                 saveState();
                 showToast("תמונת רקע עודכנה", "הרקע הוצב בשקופית הנוכחית.", "bg-[#1A0A33]");
             };
@@ -752,6 +760,7 @@
             bgElement.style.backgroundImage = 'none';
             bgElement.classList.add('hidden');
             document.getElementById('canvas-bg-tint').classList.add('hidden');
+            document.getElementById('instagram-canvas').classList.remove('has-bg-image');
             const input = document.getElementById('edit-bg-image-upload');
             if (input) input.value = "";
             saveState();
@@ -831,14 +840,17 @@
 
             const bgElement = document.getElementById('canvas-bg-image');
             const tintElement = document.getElementById('canvas-bg-tint');
+            const canvasEl = document.getElementById('instagram-canvas');
             if (slide.bgImage && slide.bgImage !== "") {
                 bgElement.style.backgroundImage = `url('${slide.bgImage}')`;
                 bgElement.classList.remove('hidden');
                 tintElement.classList.remove('hidden');
+                canvasEl.classList.add('has-bg-image');
             } else {
                 bgElement.style.backgroundImage = 'none';
                 bgElement.classList.add('hidden');
                 tintElement.classList.add('hidden');
+                canvasEl.classList.remove('has-bg-image');
             }
 
             document.getElementById('edit-title').value = slide.title;
