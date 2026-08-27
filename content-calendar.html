@@ -1,0 +1,568 @@
+<title>לוח התוכן — במו ידייך</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap">
+
+<style>
+  :root{
+    --ground:#FBF8F2; --surface:#FFFFFF; --surface-2:#F3EDE2;
+    --ink:#2A1E38; --ink-soft:#5F5170; --ink-faint:#8B7F98; --rule:#E4DACB;
+    --accent:#4A3463; --accent-soft:#EEE9F3;
+    --gold:#A8843C; --gold-soft:#F7EFDD;
+    --alert:#A8442F; --alert-soft:#F7E6E0;
+    --good:#5F7238; --good-soft:#EBEFDD;
+    --shadow:0 1px 2px rgba(42,30,56,.05), 0 8px 24px rgba(42,30,56,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+      --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+      --accent:#B79BD6; --accent-soft:#291F38;
+      --gold:#D9BC85; --gold-soft:#2E2617;
+      --alert:#E28E76; --alert-soft:#331F1A;
+      --good:#A8BC72; --good-soft:#232B18;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+    --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+    --accent:#B79BD6; --accent-soft:#291F38;
+    --gold:#D9BC85; --gold-soft:#2E2617;
+    --alert:#E28E76; --alert-soft:#331F1A;
+    --good:#A8BC72; --good-soft:#232B18;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box}
+  body{direction:rtl;background:var(--ground);color:var(--ink);
+    font-family:"Assistant",-apple-system,"Segoe UI",sans-serif;
+    font-size:17px;line-height:1.65;margin:0;padding:0 20px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto}
+
+  h1,h2,h3{font-family:"Frank Ruhl Libre",Georgia,serif;text-wrap:balance;margin:0;line-height:1.25}
+  h1{font-size:clamp(2.05rem,5.4vw,3rem);font-weight:900;letter-spacing:-.01em}
+  h2{font-size:clamp(1.45rem,3.3vw,1.95rem);font-weight:700}
+  h3{font-size:1.1rem;font-weight:700}
+  p{margin:0}
+
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+  header.top{padding:70px 0 38px;display:flex;flex-direction:column;gap:16px}
+  header.top .verdict{font-size:1.15rem;color:var(--ink-soft);max-width:62ch}
+  header.top .meta{font-size:.84rem;color:var(--ink-faint);border-top:1px solid var(--rule);padding-top:14px}
+
+  section{padding:40px 0;border-top:1px solid var(--rule)}
+  .sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+  .sec-head p{color:var(--ink-soft);max-width:64ch}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .kpi{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:18px;
+       display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow)}
+  .kpi .num{font-family:"Frank Ruhl Libre",Georgia,serif;font-weight:700;font-size:1.9rem;
+            line-height:1;font-variant-numeric:tabular-nums}
+  .kpi .lbl{font-size:.85rem;color:var(--ink-soft)}
+  .kpi.is-alert .num{color:var(--alert)}
+  .kpi.is-good .num{color:var(--good)}
+
+  .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:680px;font-size:.88rem}
+  th,td{padding:10px 13px;text-align:right;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);
+     font-weight:700;background:var(--surface-2);white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.d{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+  td.t{font-variant-numeric:tabular-nums;color:var(--ink-faint);white-space:nowrap}
+  tr.black td{background:var(--surface-2);color:var(--ink-faint);font-style:italic}
+  tr.ads td{background:var(--gold-soft)}
+  tr.done td{color:var(--ink-faint)}
+  .kind{display:inline-block;padding:2px 8px;border-radius:3px;font-size:.73rem;font-weight:700;white-space:nowrap}
+  .kind.c{background:var(--accent-soft);color:var(--accent)}
+  .kind.r{background:var(--good-soft);color:var(--good)}
+  .kind.a{background:var(--gold-soft);color:var(--gold)}
+  .st{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.72rem;font-weight:700;white-space:nowrap}
+  .st.ok{background:var(--good-soft);color:var(--good)}
+  .st.no{background:var(--alert-soft);color:var(--alert)}
+  .st.mid{background:var(--gold-soft);color:var(--gold)}
+
+  /* post cards */
+  .phase{margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--accent);
+         display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .phase .n{font-family:"Frank Ruhl Libre",Georgia,serif;font-size:.8rem;font-weight:700;
+            letter-spacing:.11em;color:var(--accent)}
+  .phase .g{font-size:.88rem;color:var(--ink-soft)}
+  .posts{display:flex;flex-direction:column;gap:16px;margin-bottom:40px}
+  .post{background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+        padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+  .p-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+         padding-bottom:12px;border-bottom:1px solid var(--rule)}
+  .p-date{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .p-time{color:var(--ink-faint);font-size:.85rem;font-variant-numeric:tabular-nums}
+  .p-asset{margin-inline-start:auto;font-size:.76rem;color:var(--ink-faint);white-space:nowrap}
+  .hook{font-size:1.06rem;font-weight:700;line-height:1.45}
+  .hook .lab{display:block;font-size:.7rem;font-weight:700;letter-spacing:.09em;
+             text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .cap{background:var(--surface-2);border-radius:4px;padding:15px 17px;
+       font-size:.92rem;white-space:pre-line;line-height:1.75;color:var(--ink-soft)}
+  .tags{font-size:.82rem;color:var(--accent);word-spacing:.2em;line-height:1.7}
+  .note{font-size:.85rem;color:var(--ink-faint)}
+  .note b{color:var(--ink-soft)}
+
+  .callout{background:var(--accent-soft);border-right:3px solid var(--accent);border-radius:3px;
+           padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+  .callout.gold{background:var(--gold-soft);border-right-color:var(--gold)}
+  .callout p{max-width:66ch}
+
+  ul.clean{margin:0;padding-inline-start:1.2em;display:flex;flex-direction:column;gap:8px}
+  ul.clean li{color:var(--ink-soft)}
+  ul.clean li b{color:var(--ink)}
+
+  a{color:var(--accent)}
+  a:focus-visible,*:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  @media (max-width:600px){
+    body{font-size:16px;padding:0 16px 64px}
+    .post{padding:18px}
+    .p-asset{margin-inline-start:0;width:100%}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">לוח תוכן · 27.8 – 8.10.2026</div>
+  <h1>לוח התוכן המלא, מוכן לתזמון</h1>
+  <p class="verdict">20 פריטים, פריט אחד ביום, כל אחד עם הוק וכיתוב מלא. סדר הקרוסלות 1-8 נשמר בדיוק כפי שביקשת. מה שחסר זה נכסים — לא קופי.</p>
+  <p class="meta">בנוי על התוכנית השיווקית אוג־אוקט · תוקן לפי נתוני Metricool · עומד בצ׳ק-ליסט 30 השניות ובמבחן הצ׳ק</p>
+</header>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">מצב הכנה</div>
+    <h2>מה מוכן ומה חוסם</h2>
+  </div>
+  <div class="kpis">
+    <div class="kpi is-good"><span class="num">20</span><span class="lbl">כיתובים כתובים</span></div>
+    <div class="kpi is-good"><span class="num">1</span><span class="lbl">פורסם כבר (קרוסלה 1)</span></div>
+    <div class="kpi is-alert"><span class="num">2</span><span class="lbl">פריטים עם מדיה קיימת</span></div>
+    <div class="kpi is-alert"><span class="num">7</span><span class="lbl">קרוסלות לעצב (2-8)</span></div>
+    <div class="kpi is-alert"><span class="num">11</span><span class="lbl">קליפים להעלות</span></div>
+  </div>
+  <div style="height:18px"></div>
+  <div class="callout gold">
+    <p><strong>הקופי לא חוסם כלום.</strong> כל 20 הכיתובים למטה מוכנים להעתקה. שני החסמים היחידים הם עיצוב הקרוסלות 2-8 בקנבה, והעלאת הקליפים לתיקיות 02, 03 ו-04 בדרייב — שכרגע ריקות.</p>
+    <p>וכדי שאוכל לתזמן בפועל: צריך לחבר את Google Drive בהגדרות Metricool. בלי זה הוא לא מצליח למשוך את הקבצים.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">מבט על</div>
+    <h2>כל הלוח בטבלה אחת</h2>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>תאריך</th><th>שעה</th><th>סוג</th><th>נושא</th><th>נכס</th><th>מוכן?</th></tr></thead>
+      <tbody>
+        <tr class="done"><td class="d">27.08 ה׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>1 · מיתוג זה לא לוגו</td><td>01</td><td><span class="st ok">פורסם</span></td></tr>
+        <tr><td class="d">30.08 א׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מיתוג זו התחושה</td><td>05</td><td><span class="st ok">מדיה קיימת</span></td></tr>
+        <tr><td class="d">31.08 ב׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>2 · פסיכולוגיית צבעים</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d">01.09 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>את לא צריכה 12 צבעים</td><td>02</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">02.09 ד׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>3 · פונטים</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d">03.09 ה׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מבחן מטר אחורה</td><td>02</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">06.09 א׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>4 · לוגו</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d">07.09 ב׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>השם שלך הוא לוגו</td><td>03</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">08.09 ג׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>5 · סגנון כתיבה</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d">09.09 ד׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>היי יקרה או בואי תכלס</td><td>03</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">10.09 ה׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>6 · ערכי המותג · הוק הצ׳ק</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr class="black"><td colspan="6">⛔ 11–13.09 · ראש השנה</td></tr>
+        <tr><td class="d">14.09 ב׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מבחן ילד בן 8</td><td>03</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">15.09 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>ההדרכה — חלק 1</td><td>03/04</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">16.09 ד׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>7 · 5 טעויות נפוצות</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d">17.09 ה׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעות 1 · פונט חדש בכל פוסט</td><td>03</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr class="black"><td colspan="6">⛔ 20–21.09 · יום כיפור</td></tr>
+        <tr><td class="d">22.09 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעות 2 · צבע מפוסט שאהבת</td><td>03</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">23.09 ד׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעויות 3-5 · סיכום</td><td>03</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr class="black"><td colspan="6">⛔ 25.09–03.10 · סוכות ושמחת תורה</td></tr>
+        <tr><td class="d">04.10 א׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>חזרה לאוויר · מיחזור המנצח</td><td>—</td><td><span class="st mid">ייבחר מנתונים</span></td></tr>
+        <tr><td class="d">05.10 ב׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>8 · המגנט</td><td>01</td><td><span class="st no">חסר</span></td></tr>
+        <tr><td class="d">06.10 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>ההדרכה המלאה</td><td>04</td><td><span class="st no">תיקייה ריקה</span></td></tr>
+        <tr><td class="d">07.10 ד׳</td><td class="t">—</td><td></td><td>יום נשימה · סטוריז בלבד</td><td>—</td><td><span class="st ok">אין צורך</span></td></tr>
+        <tr class="ads"><td class="d">08.10 ה׳</td><td class="t">—</td><td><span class="kind a">ממומן</span></td><td>פתיחה · קהל תחומי עניין</td><td>—</td><td><span class="st mid">להגדיר</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">הכיתובים</div>
+    <h2>כל פוסט, מוכן להעתקה</h2>
+    <p>ההוק הוא מה שנאמר או נכתב על המסך בשנייה 0–1.5. הכיתוב הוא מה שהולך לתיאור. אף פוסט לא עולה בלי שניהם.</p>
+  </div>
+
+  <div class="phase"><span class="n">שלב 01</span><span class="g">חמשת הרכיבים — בונים ידע ואמון, בלי למכור כלום</span></div>
+  <div class="posts">
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">30.08 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 05 · קיים</span></div>
+      <p class="hook"><span class="lab">הוק</span>שילמת על לוגו. אז למה זה עדיין לא מרגיש כמו מותג?</p>
+      <div class="cap">שילמת על לוגו. אז למה זה עדיין לא מרגיש כמו מותג?
+
+כי לוגו הוא רכיב אחד מתוך חמישה — ובכנות, הכי פחות קריטי מכולם.
+
+הלקוחה שלך לא זוכרת את הלוגו שלך.
+היא זוכרת איך היא הרגישה כשקראה את הפוסט שלך.
+
+מיתוג זה לא הלוגו. מיתוג זו התחושה שנשארת.
+
+בקרוסלה האחרונה פירקתי את חמשת הרכיבים — לכי לראות.
+
+מה מהחמישה הכי חסר לך היום? כתבי לי בתגובות 💬</div>
+      <p class="tags">#במוידייך #נשיםיוצרותלעסק #מיתוגעסקי #נשותעסקים #עסקיםקטנים #עצמאיות #נראותעסקית</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">31.08 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 2</span><span class="p-asset">לעצב בקנבה</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>12 צבעים בפיד. זו הסיבה שהעסק שלך נראה מאולתר.</p>
+      <div class="cap">בחרת ורוד כי הוא יפה. אחר כך תכלת כי הוא הרגיש רגוע. אחר כך זהב כי ראית אצל מישהי.
+
+כל בחירה בנפרד הייתה נכונה.
+ביחד הן אומרות ללקוחה שלך שאת עדיין מתלבטת.
+
+3 צבעים קבועים גורמים לפיד להיראות מתוכנן.
+12 צבעים מתחלפים גורמים לו להיראות מאולתר.
+
+בקרוסלה: איך בוחרים שלושה, ולמה דווקא שלושה.
+
+כמה צבעים יש בפיד שלך עכשיו? תספרי ותכתבי לי 💬</div>
+      <p class="tags">#פסיכולוגייתצבעים #מיתוגעסקי #קנבה #נשותעסקים #במוידייך #עצמאיות #נראותעסקית</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">01.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 02 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>את לא צריכה 12 צבעים. את צריכה שלושה — ואת אותם שלושה בכל פעם.</p>
+      <div class="cap">חוק 60/30/10, בגרסה שלא דורשת ממך תואר בעיצוב:
+
+60% — צבע הרקע. זה שנושם.
+30% — הצבע השני. זה שנותן אופי.
+10% — צבע ההדגשה. רק לכפתור, למספר, למילה אחת.
+
+הטעות הכי נפוצה היא להפוך את זה — המון צבע הדגשה וקצת רקע. זה מה שגורם לפוסט להרגיש רועש.
+
+שמרי לפעם הבאה שאת פותחת קנבה 📌</div>
+      <p class="tags">#קנבה #טיפיםלקנבה #צבעים #מיתוגעסקי #במוידייך #עסקיםקטנים</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">02.09 ד׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 3</span><span class="p-asset">לעצב בקנבה</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>פונט אחר בכל פוסט אומר מותג אחר בכל פוסט.</p>
+      <div class="cap">שניים. זה כל מה שאת צריכה.
+אחד לכותרות, אחד לטקסט הרץ.
+
+זהו, באמת.
+
+ואם את שואלת את עצמך עכשיו ״רגע, כמה יש לי?״ — זו כבר התשובה.
+
+בקרוסלה: איך בוחרים את השניים, ואיך יודעים שהם עובדים יחד.
+
+כמה פונטים יש בפוסט האחרון שלך? 💬</div>
+      <p class="tags">#פונטים #טיפוגרפיה #קנבה #מיתוגעסקי #במוידייך #נשותעסקים</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">03.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 02 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>מבחן מטר אחורה.</p>
+      <div class="cap">קומי, לכי מטר אחורה מהמסך, ותסתכלי על הפיד שלך.
+
+אם הכותרות לא נקראות — הפונט קטן מדי או דק מדי.
+אם הכל נראה כמו גוש אפור אחד — אין מספיק ניגוד בין הכותרת לטקסט.
+אם כל פוסט נראה כמו של מישהי אחרת — יש לך יותר משני פונטים.
+
+המבחן הזה לוקח 10 שניות והוא מדויק יותר מכל דעה שתקבלי בקבוצות.
+
+עשית? מה גילית? 💬</div>
+      <p class="tags">#פונטים #קנבה #נראותעסקית #טיפיםלעסקים #במוידייך #עצמאיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">06.09 א׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 4</span><span class="p-asset">לעצב בקנבה</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>אז מתי כן צריך לוגו?</p>
+      <div class="cap">אחרי שאמרתי לך שהלוגו הוא הכי פחות קריטי, מגיעה השאלה המתבקשת: אז מתי כן?
+
+התשובה קצרה — כשכל השאר כבר קיים.
+
+לוגו על מותג לא מוגדר הוא שלט יפה על חנות ריקה.
+לוגו על מותג מוגדר הוא חתימה.
+
+ובינתיים? השם שלך בפונט הכותרות שלך, על הרקע הראשי שלך. זה מספיק לחלוטין לרוב העסקים הקטנים.
+
+בקרוסלה: מה לוגו באמת עושה, ומה הוא לא יעשה בשבילך.
+
+יש לך לוגו? את מרגישה שהוא עובד? 💬</div>
+      <p class="tags">#לוגו #מיתוגעסקי #עסקיםקטנים #במוידייך #נשותעסקים #עצמאיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">07.09 ב׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>השם שלך בפונט הכותרות שלך. זה לוגו.</p>
+      <div class="cap">לא צריך לשלם על זה. לא צריך לחכות לזה.
+
+פתחי קנבה, כתבי את שם העסק בפונט הכותרות שלך, על הרקע הראשי שלך, ושמרי כתמונה מרובעת.
+
+זו תמונת הפרופיל שלך מהיום.
+
+וזה לא פתרון זמני — לזה קוראים לוגוטייפ, וחצי מהמותגים שאת מכירה עובדים בדיוק ככה.
+
+עשי את זה עכשיו, זה שתי דקות. ותכתבי לי כשעשית 💬</div>
+      <p class="tags">#לוגוטייפ #קנבה #מיתוגעסקי #במוידייך #עסקיםקטנים #יזמיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">08.09 ג׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 5</span><span class="p-asset">לעצב בקנבה</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>אפשר לזהות אותך בלי לוגו ובלי שם. רק לפי איך שאת כותבת.</p>
+      <div class="cap">זה החלק שהכי מזוהה איתך, וזה שאת הכי פחות שמה לב אליו.
+
+המילים שאת חוזרת עליהן.
+אורך המשפטים שלך.
+אם את פותחת ב״היי יקרה״ או ב״בואי נדבר תכלס״.
+
+שני עסקים יכולים למכור בדיוק את אותו דבר. מה שיגרום ללקוחה לבחור בך זה שהיא מרגישה שהיא כבר מכירה אותך.
+
+בקרוסלה: איך מזהים את הסגנון שכבר יש לך.
+
+״היי יקרה״ או ״בואי תכלס״? 💬</div>
+      <p class="tags">#סגנוןכתיבה #קופירייטינג #מיתוגעסקי #במוידייך #נשותעסקים #עצמאיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">09.09 ד׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>״היי יקרה״ או ״בואי נדבר תכלס״?</p>
+      <div class="cap">אין תשובה נכונה. יש תשובה שלך.
+
+הבעיה מתחילה כשאת מתחלפת ביניהן — כי אז הלקוחה לא יודעת למי היא כותבת.
+
+תרגיל של שלוש דקות:
+פתחי את שלושת הפוסטים האחרונים שלך, וקראי רק את המשפט הראשון של כל אחד.
+נשמעים כמו אותה בן אדם?
+
+אם לא — זה לא אסון. זה פשוט הדבר הבא לסדר.
+
+מה יצא לך? 💬</div>
+      <p class="tags">#סגנוןכתיבה #קופי #מיתוגעסקי #במוידייך #עצמאיות #יזמיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">10.09 ה׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 6</span><span class="p-asset">לעצב בקנבה · V2</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>אם אני לא יכולה לפרוע את הצ׳ק, זה לא עולה לפוסט.</p>
+      <div class="cap">״יוקרה״. ״אותנטיות״. ״מקצועיות״.
+
+כולן כותבות את זה. אף אחת לא מתכוונת לכלום.
+
+יש לי מבחן אחד: אם אני כותבת מילה בפוסט, אני צריכה להיות מסוגלת להצביע על מה בדיוק בעסק שלי פורע אותה. אחרת זה צ׳ק בלי כיסוי.
+
+״זמינות״ זה לא ערך.
+״עונה לכל הודעה תוך 24 שעות, גם בערב״ — זה ערך.
+
+בקרוסלה: איך הופכים תואר מנופח לעוגן קונקרטי.
+
+תכתבי לי ערך אחד שלך, ואני אגיד לך אם הצ׳ק מכוסה 💬</div>
+      <p class="tags">#ערכימותג #מיתוגעסקי #קופי #במוידייך #נשותעסקים #עסקיםקטנים</p>
+    </div>
+  </div>
+
+  <div class="phase"><span class="n">שלב 02</span><span class="g">אחרי ראש השנה — עומק, הוכחת יכולת, וטיזר להדרכה</span></div>
+  <div class="posts">
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">14.09 ב׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>אם ילד בן 8 לא מבין מה הבטחת — הלקוחה שלך גם לא.</p>
+      <div class="cap">מבחן ילד בן 8.
+
+״ליווי אישי ומקצועי״ — ילד בן שמונה לא מבין.
+״את שולחת לי את הפוסט לפני שאת מעלה, ואני עונה״ — הוא מבין מצוין.
+
+הראשון נשמע יותר טוב.
+השני מוכר.
+
+קחי משפט אחד מהאתר שלך ותעבירי אותו במבחן. תכתבי לי מה יצא 💬</div>
+      <p class="tags">#ערכימותג #קופי #מיתוגעסקי #במוידייך #עצמאיות #שיווקלעסקיםקטנים</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">15.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03/04 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>לקח לי שנתיים להבין את זה. לך זה ייקח 40 שניות.</p>
+      <div class="cap">החלק הראשון מתוך ההדרכה המלאה שאני מקליטה עכשיו.
+
+בקטע הזה: למה הסדר שבו את עובדת בקנבה חשוב יותר מהתבנית שבחרת.
+
+רוב הנשים פותחות קנבה ומחפשות תבנית יפה. זו הטעות.
+התבנית היא השלב הרביעי, לא הראשון.
+
+ההדרכה המלאה יוצאת בקרוב, והיא תהיה חינם.
+רוצה לדעת מתי? עקבי — אני מכריזה כאן 💬</div>
+      <p class="tags">#קנבה #הדרכה #מיתוגעסקי #במוידייך #נשותעסקים #AIלעסקים</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">16.09 ד׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 7</span><span class="p-asset">לעצב בקנבה</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>5 טעויות שאני רואה בכל פיד של עסק קטן.</p>
+      <div class="cap">עברתי על עשרות פידים של נשות עסקים בחודשים האחרונים. חמש הטעויות האלה חוזרות כמעט בכולם.
+
+הטוב שבזה: כולן ניתנות לתיקון בפחות משעה, בלי לעצב מחדש שום דבר.
+
+בקרוסלה: החמישה, ומה עושים עם כל אחת.
+
+תגידי לי בכנות — כמה מהחמישה יש לך? 💬</div>
+      <p class="tags">#טעויותנפוצות #מיתוגעסקי #קנבה #במוידייך #עסקיםקטנים #נשותעסקים</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">17.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>טעות מספר 1: פונט חדש בכל פוסט.</p>
+      <div class="cap">את פותחת פוסט חדש, רואה פונט יפה, ובוחרת אותו.
+פוסט הבא — פונט אחר.
+
+בפני עצמו כל אחד יפה. ביחד הם אומרים שאין כאן מותג, יש כאן אוסף.
+
+התיקון: תפתחי מסמך אחד, תכתבי בו שני שמות פונטים, ותסתכלי בו לפני כל עיצוב.
+זהו. זה כל התיקון.
+
+מחר: טעות מספר 2, וזו שהכי הפתיעה אותי.
+
+יש לך את המסמך הזה? 💬</div>
+      <p class="tags">#טעויותנפוצות #פונטים #קנבה #במוידייך #נראותעסקית #עצמאיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">22.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>טעות 2: לקחת צבע מפוסט שאהבת.</p>
+      <div class="cap">ראית פוסט יפה, לקחת ממנו את הצבע, השתמשת.
+
+הבעיה: הצבע הזה עבד שם כי הוא היה חלק ממערכת. אצלך הוא צבע בודד בלי הקשר, והוא נלחם בכל השאר.
+
+זה כמו לקחת נעל אחת מלוק שאהבת.
+
+התיקון: אם צבע לא נמצא בשלושת הצבעים שלך — הוא לא נכנס לפוסט. גם אם הוא יפה. במיוחד אם הוא יפה.
+
+עשית את זה פעם? אני כן 💬</div>
+      <p class="tags">#טעויותנפוצות #צבעים #קנבה #במוידייך #מיתוגעסקי #עסקיםקטנים</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">23.09 ד׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 03 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>שלוש הטעויות האחרונות — ואת עושה לפחות אחת מהן.</p>
+      <div class="cap">3. לוגו שנמתח לגודל אחר בכל פרסום
+4. טקסט שנוגע בקצוות בלי מרווח נשימה
+5. להתחיל כל פוסט מאפס במקום לשכפל את הקודם
+
+החמישית היא זו שגונבת לך הכי הרבה זמן, והיא גם הכי קלה לתיקון.
+
+צ׳ק-ליסט של 30 שניות לפני כל פרסום — שמרי את הפוסט הזה ותעברי עליו 📌
+
+איזו מהחמש תפסה אותך? 💬</div>
+      <p class="tags">#טעויותנפוצות #צקליסט #קנבה #במוידייך #נראותעסקית #עצמאיות</p>
+    </div>
+  </div>
+
+  <div class="phase"><span class="n">שלב 03</span><span class="g">אחרי סוכות — חזרה, מגנט, ופתיחת ממומן</span></div>
+  <div class="posts">
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">04.10 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">מיחזור הריל החזק</span></div>
+      <p class="hook"><span class="lab">הוק</span>ההוק של הריל שהכי עבד בספטמבר — נבחר מהנתונים, לא מהתחושה.</p>
+      <div class="cap">חזרנו.
+
+ולפני שאני עולה עם הדבר הבא — רוצה להשאיר אותך עם זה, כי זה הפוסט שהכי הדהד כאן בחודש האחרון.
+
+ומחר יש לי משהו בשבילך.
+משהו חינם, שבניתי בדיוק בשביל השלב שאת נמצאת בו עכשיו.
+
+נתראה מחר 💬</div>
+      <p class="tags">#במוידייך #מיתוגעסקי #נשותעסקים #עסקיםקטנים #עצמאיות</p>
+      <p class="note"><b>איך בוחרים:</b> אחרי 23.09 נסתכל על שימור צפייה וחשיפה של כל הריילס מספטמבר, וניקח את המנצח. אין צורך לצלם חדש.</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">05.10 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 8</span><span class="p-asset">חסר לגמרי</span></div>
+      <p class="hook"><span class="lab">הוק · שקף 1</span>בניתי לך את ערכת המותג. בחינם.</p>
+      <div class="cap">במשך חודש פירקתי כאן את חמשת רכיבי המיתוג: צבעים, פונטים, סגנון כתיבה, ערכי מותג ועקביות.
+
+עכשיו הגיע הזמן להרכיב אותם לערכה אחת — שלך.
+
+הכנתי הדרכה חינמית: איך בונים ערכת מותג שלמה עם Pomelli מבית Google, בלי לדעת לעצב ובלי לשלם על כלום.
+
+בקרוסלה: מה בדיוק יש בפנים.
+
+הקישור להורדה בביו ⬆️
+או פשוט כתבי לי ״ערכה״ בתגובות, ואשלח לך בפרטי 💬</div>
+      <p class="tags">#ערכתמותג #Pomelli #מיתוגעסקי #קנבה #במוידייך #נשותעסקים #מתנה</p>
+      <p class="note"><b>שימי לב:</b> ״עקביות״ הוא הרכיב החמישי בקרוסלה 1, אבל אין לו קרוסלה משלו בסדרה. כאן הוא נסגר. אם תרצי — אפשר להוסיף לו ריל ב-06.10.</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">06.10 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 04 · ריק</span></div>
+      <p class="hook"><span class="lab">הוק</span>זו ההדרכה המלאה. לא טיזר.</p>
+      <div class="cap">לא ״תשאירי פרטים ונדבר״. ההדרכה עצמה.
+
+בתוכה:
+· איך בוחרים שלושה צבעים שעובדים יחד
+· איך מוצאים את שני הפונטים שלך
+· איך מרכיבים את הכל לערכה אחת שנפתחת בלחיצה
+
+בניתי אותה בשביל האישה שיש לה עסק אמיתי ואין לה זמן להפוך לגרפיקאית.
+
+הקישור בביו.
+וכשתסיימי — תכתבי לי מה יצא לך. אני באמת קוראת 💬</div>
+      <p class="tags">#ערכתמותג #הדרכהחינם #Pomelli #קנבה #במוידייך #עצמאיות #יזמיות</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">07.10 ד׳</span><span class="p-time">כל היום</span><span class="kind a">סטוריז</span><span class="p-asset">אין צורך בהפקה</span></div>
+      <p class="hook"><span class="lab">יום נשימה</span>בלי פוסט בפיד. רק סטוריז שמחזיקות את המגנט חי.</p>
+      <div class="cap">3 סטוריז לאורך היום:
+
+בוקר — צילום מסך של תגובה או הודעה שקיבלת על ההדרכה, עם ״ככה זה נראה כשזה עובד״
+צהריים — סקר: ״הספקת להוריד את הערכה?״ / כן · עוד לא
+ערב — תזכורת אחרונה עם הקישור, ומשפט אחד: ״נשארת עוד היום״</div>
+      <p class="note"><b>למה יום בלי פוסט:</b> נותן למגנט של 05-06.10 יומיים לצבור איתות אורגני לפני שנכנס כסף. אם הוא לא עובד — עדיף לגלות עכשיו ולא אחרי שהתקציב רץ.</p>
+    </div>
+
+    <div class="post">
+      <div class="p-top"><span class="p-date">08.10 ה׳</span><span class="p-time">—</span><span class="kind a">ממומן</span><span class="p-asset">להגדיר במנהל המודעות</span></div>
+      <p class="hook"><span class="lab">פתיחת ממומן</span>קהל תחומי עניין — לא רימרקטינג.</p>
+      <p class="note"><b>הקריאייטיב:</b> הריל שהכי עבד אורגנית, לא משהו חדש. אחרי חודש של פרסום יהיו נתונים אמיתיים להחליט לפיו.<br><b>הקהל:</b> נשות עסקים, עצמאיות, קנבה, שיווק דיגיטלי, יזמות — לא קהל מותאם אישית מהדף. הסבר מלא במסמך הניתוח.<br><b>היעד:</b> דף הנחיתה של משפך 1, ומשם לשיחת ייעוץ.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">לאורך כל התקופה</div>
+    <h2>סטוריז — מה שמחזיק את הכל</h2>
+    <p>2-3 סטוריז ביום, כל יום פרסום. הן לא מתחרות בריילס — הן משטח אחר לגמרי, והן הדרך הזולה ביותר להעלות את הסיכוי שאינסטגרם יראה את הפוסט הבא שלך לעוקבות הקיימות.</p>
+  </div>
+  <ul class="clean">
+    <li><b>ביום שיש קרוסלה</b> — סקר שקשור לנושא שלה. ״כמה צבעים בפיד שלך?״, ״כמה פונטים?״. סקר הוא האינטראקציה הזולה ביותר שיש.</li>
+    <li><b>ביום שיש ריל</b> — צילום מסך של תגובה שקיבלת, או שאלה פתוחה על אותו נושא.</li>
+    <li><b>מאחורי הקלעים</b> — הקלטת מסך של קנבה בזמן שאת מעצבת קרוסלה. זה התוכן הכי קל להפקה ומקבל את הכי הרבה תשובות.</li>
+    <li><b>מה לא לעשות</b> — לא להעלות סטורי בלי שום קריאה לפעולה. גם ״תגידי לי מה דעתך״ נחשב.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">לפני כל תזמון</div>
+    <h2>צ׳ק-ליסט 30 שניות</h2>
+  </div>
+  <ul class="clean">
+    <li>שקף 1 סטטי, לא וידאו, וקריא בגריד</li>
+    <li>עבר את מבחן הצ׳ק — אני יכולה לפרוע את מה שכתבתי כאן?</li>
+    <li>פלטה: רק ‎#4A3463 / #C9A86A / #FBF8F2 ועוגן אחד</li>
+    <li><b>יש כיתוב.</b> 4 מתוך 5 הפרסומים הראשונים עלו בלי — זה מה שעלה בחשיפה</li>
+    <li>קריאה לפעולה אחת בלבד בסוף הכיתוב</li>
+    <li>סנכרון לפייסבוק דולק</li>
+    <li>קרוסלה 20:30 · ריל 20:45 · פריט אחד ביום</li>
+  </ul>
+</section>
+
+</div>
