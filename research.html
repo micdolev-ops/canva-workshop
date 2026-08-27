@@ -1,0 +1,319 @@
+<title>מה המחקר אומר על אורגני</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap">
+
+<style>
+  :root{
+    --ground:#FBF8F2; --surface:#FFFFFF; --surface-2:#F3EDE2;
+    --ink:#2A1E38; --ink-soft:#5F5170; --ink-faint:#8B7F98; --rule:#E4DACB;
+    --accent:#4A3463; --accent-soft:#EEE9F3;
+    --gold:#A8843C; --gold-soft:#F7EFDD;
+    --alert:#A8442F; --alert-soft:#F7E6E0;
+    --good:#5F7238; --good-soft:#EBEFDD;
+    --shadow:0 1px 2px rgba(42,30,56,.05), 0 8px 24px rgba(42,30,56,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+      --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+      --accent:#B79BD6; --accent-soft:#291F38;
+      --gold:#D9BC85; --gold-soft:#2E2617;
+      --alert:#E28E76; --alert-soft:#331F1A;
+      --good:#A8BC72; --good-soft:#232B18;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+    --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+    --accent:#B79BD6; --accent-soft:#291F38;
+    --gold:#D9BC85; --gold-soft:#2E2617;
+    --alert:#E28E76; --alert-soft:#331F1A;
+    --good:#A8BC72; --good-soft:#232B18;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box}
+  body{direction:rtl;background:var(--ground);color:var(--ink);
+    font-family:"Assistant",-apple-system,"Segoe UI",sans-serif;
+    font-size:17px;line-height:1.65;margin:0;padding:0 20px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto}
+
+  h1,h2,h3{font-family:"Frank Ruhl Libre",Georgia,serif;text-wrap:balance;margin:0;line-height:1.25}
+  h1{font-size:clamp(2.05rem,5.4vw,3rem);font-weight:900;letter-spacing:-.01em}
+  h2{font-size:clamp(1.45rem,3.3vw,1.95rem);font-weight:700}
+  h3{font-size:1.1rem;font-weight:700}
+  p{margin:0}
+
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+  header.top{padding:70px 0 38px;display:flex;flex-direction:column;gap:16px}
+  header.top .verdict{font-size:1.16rem;color:var(--ink-soft);max-width:62ch}
+  header.top .meta{font-size:.84rem;color:var(--ink-faint);border-top:1px solid var(--rule);padding-top:14px}
+
+  section{padding:42px 0;border-top:1px solid var(--rule)}
+  .sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+  .sec-head p{color:var(--ink-soft);max-width:64ch}
+
+  .fix{background:var(--surface);border:1px solid var(--rule);border-inline-start:3px solid var(--alert);
+       border-radius:4px;padding:22px;display:flex;flex-direction:column;gap:13px;box-shadow:var(--shadow)}
+  .fixes{display:flex;flex-direction:column;gap:16px}
+  .fix .lbl{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+            color:var(--alert);align-self:flex-start;background:var(--alert-soft);padding:2px 9px;border-radius:3px}
+  .fix .rows{display:flex;flex-direction:column;gap:9px}
+  .fix .r{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:baseline}
+  .fix .r .k{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  .fix .r .v{font-size:.95rem;color:var(--ink-soft)}
+  .fix .r.now .k{color:var(--good)}
+  .fix .r.now .v{color:var(--ink);font-weight:600}
+
+  .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:600px;font-size:.9rem}
+  th,td{padding:11px 14px;text-align:right;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{font-size:.69rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);
+     font-weight:700;background:var(--surface-2);white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.you td{background:var(--accent-soft);font-weight:600}
+  .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.73rem;font-weight:700}
+  .tag.g{background:var(--good-soft);color:var(--good)}
+  .tag.b{background:var(--alert-soft);color:var(--alert)}
+  .tag.m{background:var(--gold-soft);color:var(--gold)}
+
+  .callout{background:var(--accent-soft);border-right:3px solid var(--accent);border-radius:3px;
+           padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+  .callout.gold{background:var(--gold-soft);border-right-color:var(--gold)}
+  .callout p{max-width:66ch}
+
+  ul.clean{margin:0;padding-inline-start:1.2em;display:flex;flex-direction:column;gap:8px}
+  ul.clean li{color:var(--ink-soft)}
+  ul.clean li b{color:var(--ink)}
+
+  .changes{display:flex;flex-direction:column;gap:2px}
+  .chg{background:var(--surface);border:1px solid var(--rule);padding:17px 20px;
+       display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+  .chg + .chg{border-top:none}
+  .chg:first-child{border-radius:4px 4px 0 0}
+  .chg:last-child{border-radius:0 0 4px 4px}
+  .chg .m{color:var(--accent);font-weight:700;font-size:1rem;line-height:1.5}
+  .chg .b{display:flex;flex-direction:column;gap:4px}
+  .chg .b .t{font-weight:700}
+  .chg .b .d{font-size:.89rem;color:var(--ink-soft)}
+
+  .srcs{display:flex;flex-direction:column;gap:7px;font-size:.87rem}
+  .srcs a{color:var(--accent)}
+  a:focus-visible,*:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  a{color:var(--accent)}
+
+  @media (max-width:600px){
+    body{font-size:16px;padding:0 16px 64px}
+    .fix .r{grid-template-columns:1fr;gap:3px}
+    .chg{grid-template-columns:1fr;gap:6px}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">מחקר · אוגוסט 2026</div>
+  <h1>מה המחקר באמת אומר על שיווק אורגני</h1>
+  <p class="verdict">צדקת שפעלנו מהבטן. המחקר תיקן שלושה דברים שאמרתי לך, אישר ארבעה, וחשף כלי אחד שנבנה בדיוק לבעיה שזיהית — שאי אפשר לנתח כלום כשחברות נכנסות לפרגן.</p>
+  <p class="meta">מבוסס על דוחות בנצ׳מרק ומדריכי תעשייה מ-2026, כולל אמירות מתועדות של אדם מוסרי, ראש אינסטגרם · המקורות בסוף</p>
+</header>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">קודם כל</div>
+    <h2>שלושה דברים שאמרתי לך והם לא מדויקים</h2>
+  </div>
+  <div class="fixes">
+
+    <div class="fix">
+      <span class="lbl">טעות שלי · משנה את הפרשנות</span>
+      <h3>זמן הצפייה שלך טוב. קראתי אותו לא נכון</h3>
+      <div class="rows">
+        <div class="r"><span class="k">מה אמרתי</span><span class="v">רשמתי בטבלה ״שימור צפייה 14.1%״ והסקתי שהפתיח לא מחזיק.</span></div>
+        <div class="r"><span class="k">מה באמת</span><span class="v">השדה שמשכתי מ-Metricool הוא <b>זמן צפייה ממוצע בשניות</b>, לא אחוז. הריל שלך החזיק <b>14.1 שניות</b>, ושניים אחרים <b>26.7 ו-27.2 שניות</b>.</span></div>
+        <div class="r"><span class="k">הבנצ׳מרק</span><span class="v">אזור 8-16 שניות זמן צפייה ממוצע הוא הטווח של תוכן עם מעורבות גבוהה. 26-27 שניות זה מעל לזה.</span></div>
+        <div class="r now"><span class="k">המשמעות</span><span class="v">שני הריילס שנחנקו הם דווקא <b>התוכן הכי חזק שהפקת</b>. הם לא קיבלו חשיפה, אבל מי שכן ראה — נשאר. רק הריל של 15:45, עם 6 שניות, באמת חלש.</span></div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="lbl">טעות שלי · לתקן ב-20 כיתובים</span>
+      <h3>ההאשטגים שכתבתי לך לא עושים כלום</h3>
+      <div class="rows">
+        <div class="r"><span class="k">מה עשיתי</span><span class="v">שמתי 6-7 האשטגים בכל כיתוב, מתוך הנחה שהם עוזרים לחשיפה.</span></div>
+        <div class="r"><span class="k">מה באמת</span><span class="v">מוסרי אמר במפורש שהאשטגים מעולם לא הגדילו חשיפה בצורה משמעותית. היכולת לעקוב אחרי האשטג בוטלה בדצמבר 2024, ואינסטגרם הורידה את המקסימום מ-30 ל-5.</span></div>
+        <div class="r now"><span class="k">מה כן</span><span class="v">3-5 האשטגים, כתווית שמסבירה לאלגוריתם על מה הפוסט — לא כמנוע חשיפה. לחתוך את כל השאר.</span></div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="lbl">אי-דיוק · לא קריטי</span>
+      <h3>סוג ההוק שכתבתי הוא לא החזק ביותר</h3>
+      <div class="rows">
+        <div class="r"><span class="k">מה עשיתי</span><span class="v">כמעט כל ההוקים שכתבתי הם ״הוק כאב״ — ״שעות על עיצוב אחד״, ״שילמת על לוגו״.</span></div>
+        <div class="r"><span class="k">מה באמת</span><span class="v">בדירוג שימור 3 שניות לפי סוג הוק, הוק כאב הוא במקום החמישי מתוך שישה — 50-65%. שבירת דפוס מגיעה ל-72-84%, ופער סקרנות ל-65-78%.</span></div>
+        <div class="r now"><span class="k">מה כן</span><span class="v">לא לזרוק — הוק כאב עובד ומדבר בדיוק לקהל שלך. אבל שווה להמיר חלק לפער סקרנות: במקום ״שילמת על לוגו״, ״יש דבר אחד במיתוג שלך שהלקוחה זוכרת. זה לא הלוגו״.</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">הממצא הגדול</div>
+    <h2>Trial Reels — נבנה בדיוק לבעיה שלך</h2>
+    <p>את אמרתי שאי אפשר לנתח כלום כי חברות נכנסו לפרגן. יש פיצ׳ר שפותר את זה מהשורש.</p>
+  </div>
+  <div class="callout">
+    <p><strong>ריל ניסיוני מוצג רק למי שלא עוקב אחרייך.</strong> הוא לא מופיע בפיד שלך, לא נשלח לעוקבות, ויושב באזור פרטי בפרופיל שרק את רואה. החברות שלך פשוט לא יכולות לראות אותו — ולכן <b>לא יכולות לזהם את הנתונים</b>.</p>
+    <p>אחרי 24 שעות את מקבלת מדדים. אחרי 72 שעות אינסטגרם מחליטה: אם הריל עבר סף ביצועים מול זרים, הוא יכול לעלות אוטומטית גם לעוקבות ולפיד. לצופה זה נראה כמו ריל רגיל לחלוטין.</p>
+  </div>
+  <div style="height:18px"></div>
+  <ul class="clean">
+    <li><b>למה זה מתאים לך במיוחד:</b> יש לך 10 עוקבות שרובן מכרות. כמעט כל החשיפה שלך ממילא מגיעה מזרים — אז את מפסידה מעט מאוד, ומרוויחה נתונים נקיים.</li>
+    <li><b>מתי להעביר ריל ניסיוני לפיד:</b> כשהוא עובר את הממוצע האחרון שלך בשניים משלושה — אחוז השלמה, שמירות לצפייה, שיתופים לצפייה. או פי 3 באחד מהם.</li>
+    <li><b>המחיר:</b> ריל ניסיוני מקבל בדרך כלל פחות חשיפה מריל רגיל, כי אין לו את איתות החימום של קהל קיים. בשלב שלך זה כמעט לא רלוונטי.</li>
+    <li><b>איך:</b> טוגל אחד במסך הפרסום לפני שמעלים. גם Metricool תומך בזה כסוג פרסום.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">בנצ׳מרקים</div>
+    <h2>המספרים שכדאי למדוד מולם</h2>
+    <p>שורות מסומנות הן המצב שלך היום.</p>
+  </div>
+  <h3>זמן צפייה ואחוז השלמה</h3>
+  <div style="height:12px"></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>אורך הריל</th><th>סביר</th><th>חזק</th><th>יוצא דופן</th></tr></thead>
+      <tbody>
+        <tr><td>עד 15 שניות</td><td class="n">65%</td><td class="n">75%</td><td class="n">80%+</td></tr>
+        <tr><td>15–30 שניות</td><td class="n">50%</td><td class="n">60%</td><td class="n">70%+</td></tr>
+        <tr><td>30–60 שניות</td><td class="n">40%</td><td class="n">50%</td><td class="n">60%+</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="height:14px"></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>מדד</th><th>חלש</th><th>ממוצע</th><th>חזק</th></tr></thead>
+      <tbody>
+        <tr><td>נשירה ב-3 השניות הראשונות</td><td class="n">מעל 40%</td><td class="n">20–35%</td><td class="n">מתחת ל-20%</td></tr>
+        <tr><td>זמן צפייה ממוצע</td><td class="n">מתחת ל-8 שנ׳</td><td class="n">8–16 שנ׳</td><td class="n">16 שנ׳+</td></tr>
+        <tr class="you"><td>הריילס שלך</td><td class="n">6.0 שנ׳ <span class="tag b">אחד</span></td><td class="n">14.1 שנ׳ <span class="tag m">אחד</span></td><td class="n">26.7 · 27.2 <span class="tag g">שניים</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="height:26px"></div>
+  <h3>סוגי הוק, לפי שימור ב-3 שניות</h3>
+  <div style="height:12px"></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>סוג ההוק</th><th>שימור</th><th>דוגמה בשפה שלך</th></tr></thead>
+      <tbody>
+        <tr><td>שבירת דפוס</td><td class="n">72–84%</td><td>״מחקי את הלוגו שלך. עכשיו.״</td></tr>
+        <tr><td>פער סקרנות</td><td class="n">65–78%</td><td>״יש דבר אחד שהלקוחה זוכרת ממך. זה לא הלוגו.״</td></tr>
+        <tr><td>שאלה ישירה</td><td class="n">58–72%</td><td>״כמה צבעים יש בפיד שלך עכשיו?״</td></tr>
+        <tr><td>טענה נועזת</td><td class="n">55–70%</td><td>״לוגו לא יביא לך אף לקוחה.״</td></tr>
+        <tr class="you"><td>הוק כאב <span class="tag m">מה שיש לך</span></td><td class="n">50–65%</td><td>״שעות על עיצוב אחד, וזה עדיין לא נראה כמוך.״</td></tr>
+        <tr><td>הוכחה חברתית</td><td class="n">45–60%</td><td>״עברתי על 40 פידים של עסקים קטנים.״</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="height:26px"></div>
+  <h3>קצב וצמיחה</h3>
+  <div style="height:12px"></div>
+  <ul class="clean">
+    <li><b>3-5 פרסומים בשבוע</b> הוא הטווח המומלץ. חשבונות שמפרסמים 3-5 בשבוע צומחים פי שניים מחשבונות שמפרסמים 1-2. <b>מעל זה — התשואה יורדת.</b> התוכנית שלך עומדת בדיוק בטווח.</li>
+    <li><b>עקביות גוברת על נפח.</b> שלושה בשבוע כל שבוע מנצחים עשרים בשבוע אחד והיעלמות לשבועיים.</li>
+    <li><b>1,000 עוקבות לוקח 2-4 חודשים</b> של פרסום עקבי. חודש 1-2: 50-200 עוקבות. חודש 3-4: 200-500 בחודש.</li>
+    <li><b>המשמעות לתאריך שלך:</b> אם תתחילי ב-30.8 ותשמרי על הקצב, ב-8.10 את צפויה להיות באזור <b>100-250 עוקבות</b> — לא אלף. זה בסדר גמור לפתיחת ממומן, כל עוד הציפייה מכוילת.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">אישורים</div>
+    <h2>ארבעה דברים שהמחקר דווקא אישר</h2>
+  </div>
+  <ul class="clean">
+    <li><b>ריילס לחשיפה, קרוסלות לשמירות — והוויכוח בינינו נגמר בתיקו.</b> ריילס מובילים בחשיפה לחשבונות מתחת ל-50 אלף עוקבים, וזה הפורמט היחיד שמגיע ללא-עוקבים. אבל קרוסלות מובילות במעורבות הכוללת — 0.52% מול 0.50% ברבעון הראשון של 2026 — ובתוכן לימודי שנשמר. <b>ההצעה שלך, קרוסלה אחת בשבוע plus ריילס, היא בדיוק מה שהמחקר ממליץ לחשבונות מתחת ל-10 אלף.</b></li>
+    <li><b>שעות הערב.</b> 18:00-23:00 מובילות באופן עקבי, ורביעי וחמישי הם הימים החזקים. מוסרי מנסח את זה אחרת: ״אין שעה אופטימלית אחת, אבל כדאי לפרסם לפני שיא הפעילות של העוקבים שלך.״ <b>20:45 עומד בזה. 12:00 שמטא המליצה — לא.</b> אבל שימי לב: תזמון הוא מנוף על השעה הראשונה, לא דירוג. הוא לא יציל פוסט חלש.</li>
+    <li><b>ריילס בלי פנים עובדים.</b> זה פורמט הברירת-מחדל בנישות עסקים, פיננסים, פרודוקטיביות וחינוך. הסבר עם טקסט על המסך, 15-30 שניות, מגיע ל-100 אלף צפיות כשההוק חזק. הקלטות מסך עם הדגשות שולטות בתחום ההדרכות. <b>המגבלה שלך היא לא מגבלה.</b></li>
+    <li><b>מילת מפתח בתגובות ← פרטי.</b> ממיר פי 3-5 טוב יותר מקישור בביו לאותה הצעה. פתיחת הודעות אוטומטיות 80-90%, הקלקה 25-45%. <b>ManyChat נותנת את זה בחינם עד 1,000 אנשי קשר</b> — מספיק לך בהרבה לשלב הזה.</li>
+  </ul>
+  <div style="height:20px"></div>
+  <div class="callout gold">
+    <p><strong>ממצא אחד שלא ציפיתי לו, ושווה לשים לב אליו.</strong> מקוריות הפכה לגורם הפצה: חשבונות שמפרסמים תוכן מקורי ראו עלייה של 40-60% בחשיפה, בעוד חשבונות מסוג אגרגטור — שמפרסמים תוכן של אחרים — ראו ירידה של 60-80%.</p>
+    <p>את בצד הנכון: התוכן שלך מקורי לגמרי. אבל זה כן אומר שכדאי לשים לב לא להישען יותר מדי על נכסים גנריים, ולתת משקל להקלטות המסך שלך — הן הדבר שאף אחד אחר לא יכול להפיק.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">מה משתנה בפועל</div>
+    <h2>שבעה שינויים ללוח</h2>
+  </div>
+  <div class="changes">
+    <div class="chg"><span class="m">01</span><div class="b"><span class="t">לחתוך האשטגים ל-3-5</span><span class="d">בכל 20 הכיתובים. הם תווית, לא מנוע. אני מעדכן.</span></div></div>
+    <div class="chg"><span class="m">02</span><div class="b"><span class="t">להעלות את הריילס הבאים כ-Trial Reels</span><span class="d">לפחות ארבעה. זו הדרך היחידה לקבל נתונים נקיים מזיהום החברות.</span></div></div>
+    <div class="chg"><span class="m">03</span><div class="b"><span class="t">להמיר חלק מההוקים לפער סקרנות</span><span class="d">לא את כולם. שלושה-ארבעה, כדי להשוות מול הוקי הכאב בנתונים שלך.</span></div></div>
+    <div class="chg"><span class="m">04</span><div class="b"><span class="t">להוסיף אודיו טרנדי בשלוש השניות הראשונות</span><span class="d">ריילס שמתחילים עם אודיו טרנדי מיד מראים כ-41% שימור גבוה יותר. זה חינם ולוקח שנייה.</span></div></div>
+    <div class="chg"><span class="m">05</span><div class="b"><span class="t">להתחיל ManyChat בחינם</span><span class="d">לפני אוקטובר. מילת מפתח בתגובות ← פרטי, ממיר פי 3-5 מקישור בביו.</span></div></div>
+    <div class="chg"><span class="m">06</span><div class="b"><span class="t">לענות לכל תגובה בשעה הראשונה</span><span class="d">מעלה מעורבות ב-21% ומזין את ההערכה הראשונית של האלגוריתם.</span></div></div>
+    <div class="chg"><span class="m">07</span><div class="b"><span class="t">לכייל ציפיות ל-8.10</span><span class="d">100-250 עוקבות, לא אלף. הממומן ירוץ על קהל תחומי עניין ממילא, אז זה לא חוסם — אבל עדיף לדעת מראש.</span></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">הסתייגות</div>
+    <h2>עד כמה לסמוך על זה</h2>
+  </div>
+  <div class="callout">
+    <p>רוב המקורות כאן הם דוחות בנצ׳מרק ומדריכים של חברות בתעשיית השיווק — לא מחקר אקדמי. יש להם אינטרס למכור כלים, והמתודולוגיה לרוב לא מפורסמת במלואה. <b>המספרים המדויקים כדאי לקחת כסדר גודל, לא כאמת.</b></p>
+    <p>מה שכן חזק: האמירות של מוסרי מתועדות וישירות, והמגמות הגדולות — ריילס לחשיפה, ערב על צהריים, האשטגים לא מניעים הפצה — חוזרות באופן עקבי בין מקורות בלתי תלויים.</p>
+    <p><strong>ובסוף, המקור הכי אמין יהיה החשבון שלך.</strong> אחרי ארבעה-חמישה ריילס ניסיוניים יהיו לך נתונים נקיים משלך, והם גוברים על כל בנצ׳מרק כאן.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">מקורות</div>
+    <h2>מאיפה זה מגיע</h2>
+  </div>
+  <div class="srcs">
+    <a href="https://sproutsocial.com/insights/instagram-algorithm/">Sprout Social — How the Instagram Algorithm Works, 2026</a>
+    <a href="https://later.com/blog/how-instagram-algorithm-works/">Later — Instagram algorithm in 2026: rank signals for growth</a>
+    <a href="https://buffer.com/resources/instagram-algorithms/">Buffer — How the Instagram Algorithm Works: Your 2026 Guide</a>
+    <a href="https://contentdrips.com/blog/2026/06/instagram-reels-vs-carousels-2026-guide/">Contentdrips — Reels vs. Carousels: The Complete 2026 Guide</a>
+    <a href="https://www.dashsocial.com/social-media-benchmarks/instagram">Dash Social — 2026 Instagram Benchmarks</a>
+    <a href="https://creatorflow.so/blog/instagram-engagement-rate-benchmarks-2026/">CreatorFlow — Instagram Engagement Rate Benchmarks 2026</a>
+    <a href="https://retensis.com/blog/good-instagram-reels-retention-rate">Retensis — What Is a Good Retention Rate for Instagram Reels</a>
+    <a href="https://retensis.com/blog/instagram-reels-skip-rate-benchmarks-2026">Retensis — Instagram Reels Skip Rate Benchmarks 2026</a>
+    <a href="https://www.thatrandomagency.com/blog/video-watch-time-2026">That Random Agency — What Is a Good Video Watch Time in 2026</a>
+    <a href="https://fobetmedia.com/instagram-reel-hooks/">Fobet Media — Instagram Reel Hooks That Retain 80% of Viewers</a>
+    <a href="https://www.opus.pro/blog/instagram-reels-hook-formulas">OpusClip — Instagram Reels Hook Formulas That Drive 3-Second Holds</a>
+    <a href="https://www.kontentino.com/q-and-a/instagram-hashtags-reach/">Kontentino — Do hashtags still work on Instagram in 2026? Mosseri settled it</a>
+    <a href="https://www.colloco.marketing/post/hashtags-don-t-boost-reach-anymore-here-s-what-does-in-2026">Colloco — Instagram Hashtags in 2026: Why They No Longer Boost Reach</a>
+    <a href="https://buffer.com/resources/when-is-the-best-time-to-post-on-instagram/">Buffer — Best Time to Post on Instagram: 2026 Data from 9.6M Posts</a>
+    <a href="https://www.socialchamp.com/blog/instagram-trial-reels/">Social Champ — Instagram Trial Reels 2026 Guide</a>
+    <a href="https://fliki.ai/blog/trial-reels-instagram">Fliki — Trial Reels Instagram: How They Work + 12 Tests</a>
+    <a href="https://www.inro.social/blog/what-is-a-reel-trial-and-how-does-it-work">Inrō — Instagram Reel Trials: Test Content and Generate Leads</a>
+    <a href="https://aigrow.me/how-fast-can-you-grow-an-instagram-account/">AiGrow — How Fast to Grow an Instagram Account: Real 2026 Timelines</a>
+    <a href="https://sendshort.ai/guides/faceless-reels/">SendShort — How To Make Faceless Reels, 2026</a>
+    <a href="https://monolit.sh/blog/how-to-create-instagram-reels-for-business-without-showing-face">Monolit — Instagram Reels for Business Without Showing Your Face</a>
+    <a href="https://communipass.com/blog/auto-dm-statistics-2026-open-rates-conversion-benchmarks/">Communipass — Auto DM Statistics 2026: Open Rate &amp; Conversion Benchmarks</a>
+    <a href="https://get.manychat.com/use-case/comment-to-dm">ManyChat — Comment-to-DM Automation</a>
+  </div>
+</section>
+
+</div>
