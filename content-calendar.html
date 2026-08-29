@@ -120,6 +120,16 @@
        background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:3px;
        direction:ltr;display:inline-block}
 
+  .post{scroll-margin-top:16px}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  a.jump{color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);font-weight:700}
+  a.jump:hover{border-bottom-style:solid}
+  a.back{order:99;margin-inline-start:auto;color:var(--ink-faint);text-decoration:none;
+         font-size:1rem;line-height:1;padding:2px 7px;border:1px solid var(--rule);border-radius:4px}
+  a.back:hover{color:var(--accent);border-color:var(--accent)}
+  .p-asset{margin-inline-start:0}
+
   .hk{display:inline-block;padding:2px 9px;border-radius:3px;font-size:.71rem;font-weight:700;
       background:var(--surface-2);color:var(--ink-soft);white-space:nowrap}
   .hk.b{background:var(--accent);color:var(--ground)}
@@ -184,7 +194,7 @@
 </section>
 
 <section>
-  <div class="sec-head">
+  <div class="sec-head" id="loach">
     <div class="eyebrow">מבט על</div>
     <h2>כל הלוח בטבלה אחת</h2>
   </div>
@@ -193,29 +203,29 @@
       <thead><tr><th>תאריך</th><th>שעה</th><th>סוג</th><th>נושא</th><th>נכס</th><th>מוכן?</th></tr></thead>
       <tbody>
         <tr class="done"><td class="d">27.08 ה׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה</span></td><td>1 · מיתוג זה לא לוגו</td><td>01</td><td><span class="st ok">פורסם</span></td></tr>
-        <tr><td class="d">30.08 א׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>זה לא הלוגו · קמע</td><td>03</td><td><span class="st ok">מדיה קיימת</span></td></tr>
-        <tr><td class="d">31.08 ב׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה 2</span></td><td>פסיכולוגיית צבעים</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
-        <tr><td class="d">01.09 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>חוק 60/30/10</td><td>02</td><td><span class="st mid">הקלטת מסך</span></td></tr>
-        <tr><td class="d">03.09 ה׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מבחן מטר אחורה</td><td>02</td><td><span class="st mid">דוגמנית AI</span></td></tr>
-        <tr><td class="d">06.09 א׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>פונט אחר בכל פוסט</td><td>02</td><td><span class="st mid">הקלטת מסך</span></td></tr>
-        <tr><td class="d">07.09 ב׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה 3</span></td><td>פונטים</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
-        <tr><td class="d">08.09 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>השם שלך הוא לוגו <b>← במקום קרוסלה 4</b></td><td>03</td><td><span class="st mid">הקלטת מסך</span></td></tr>
-        <tr><td class="d">10.09 ה׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>היי יקרה או בואי תכלס <b>← במקום קרוסלה 5</b></td><td>03</td><td><span class="st mid">קמע</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p3008">30.08 א׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>זה לא הלוגו · קמע</td><td>03</td><td><span class="st ok">מדיה קיימת</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p3108">31.08 ב׳</a></td><td class="t">20:30</td><td><span class="kind c">קרוסלה 2</span></td><td>פסיכולוגיית צבעים</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0109">01.09 ג׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>חוק 60/30/10</td><td>02</td><td><span class="st mid">הקלטת מסך</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0309">03.09 ה׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מבחן מטר אחורה</td><td>02</td><td><span class="st mid">דוגמנית AI</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0609">06.09 א׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>פונט אחר בכל פוסט</td><td>02</td><td><span class="st mid">הקלטת מסך</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0709">07.09 ב׳</a></td><td class="t">20:30</td><td><span class="kind c">קרוסלה 3</span></td><td>פונטים</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0809">08.09 ג׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>השם שלך הוא לוגו <b>← במקום קרוסלה 4</b></td><td>03</td><td><span class="st mid">הקלטת מסך</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p1009">10.09 ה׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>היי יקרה או בואי תכלס <b>← במקום קרוסלה 5</b></td><td>03</td><td><span class="st mid">קמע</span></td></tr>
         <tr class="black"><td colspan="6">⛔ 11–13.09 · ראש השנה</td></tr>
-        <tr><td class="d">14.09 ב׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מבחן ילד בן 8</td><td>03</td><td><span class="st mid">קמע</span></td></tr>
-        <tr><td class="d">15.09 ג׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה 6</span></td><td>ערכי המותג · הוק הצ׳ק</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
-        <tr><td class="d">16.09 ד׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>ההדרכה — חלק 1</td><td>03/04</td><td><span class="st mid">מסך + קמע</span></td></tr>
-        <tr><td class="d">17.09 ה׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>עקביות — הרכיב החמישי</td><td>03</td><td><span class="st mid">הקלטת מסך</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p1409">14.09 ב׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>מבחן ילד בן 8</td><td>03</td><td><span class="st mid">קמע</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p1509">15.09 ג׳</a></td><td class="t">20:30</td><td><span class="kind c">קרוסלה 6</span></td><td>ערכי המותג · הוק הצ׳ק</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p1609">16.09 ד׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>ההדרכה — חלק 1</td><td>03/04</td><td><span class="st mid">מסך + קמע</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p1709">17.09 ה׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>עקביות — הרכיב החמישי</td><td>03</td><td><span class="st mid">הקלטת מסך</span></td></tr>
         <tr class="black"><td colspan="6">⛔ 20–21.09 · יום כיפור</td></tr>
-        <tr><td class="d">22.09 ג׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה 7</span></td><td>5 טעויות נפוצות</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
-        <tr><td class="d">23.09 ד׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעויות 1 ו-2</td><td>03</td><td><span class="st mid">קמע</span></td></tr>
-        <tr><td class="d">24.09 ה׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעויות 3-5 · עקבי לפני החג</td><td>03</td><td><span class="st mid">קמע</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p2209">22.09 ג׳</a></td><td class="t">20:30</td><td><span class="kind c">קרוסלה 7</span></td><td>5 טעויות נפוצות</td><td>01</td><td><span class="st no">לעצב</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p2309">23.09 ד׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעויות 1 ו-2</td><td>03</td><td><span class="st mid">קמע</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p2409">24.09 ה׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>טעויות 3-5 · עקבי לפני החג</td><td>03</td><td><span class="st mid">קמע</span></td></tr>
         <tr class="black"><td colspan="6">⛔ 25.09–03.10 · סוכות ושמחת תורה</td></tr>
-        <tr><td class="d">04.10 א׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>חזרה לאוויר · מיחזור המנצח</td><td>—</td><td><span class="st mid">ייבחר מנתונים</span></td></tr>
-        <tr><td class="d">05.10 ב׳</td><td class="t">20:30</td><td><span class="kind c">קרוסלה 8</span></td><td>המגנט</td><td>01</td><td><span class="st ok">מעוצבת</span></td></tr>
-        <tr><td class="d">06.10 ג׳</td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>ההדרכה המלאה</td><td>04</td><td><span class="st mid">להפיק</span></td></tr>
-        <tr><td class="d">07.10 ד׳</td><td class="t">—</td><td></td><td>יום נשימה · סטוריז בלבד</td><td>—</td><td><span class="st ok">אין צורך</span></td></tr>
-        <tr class="ads"><td class="d">08.10 ה׳</td><td class="t">—</td><td><span class="kind a">ממומן</span></td><td>פתיחה · קהל תחומי עניין</td><td>—</td><td><span class="st mid">להגדיר</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0410">04.10 א׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>חזרה לאוויר · מיחזור המנצח</td><td>—</td><td><span class="st mid">ייבחר מנתונים</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0510">05.10 ב׳</a></td><td class="t">20:30</td><td><span class="kind c">קרוסלה 8</span></td><td>המגנט</td><td>01</td><td><span class="st ok">מעוצבת</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0610">06.10 ג׳</a></td><td class="t">20:45</td><td><span class="kind r">ריל</span></td><td>ההדרכה המלאה</td><td>04</td><td><span class="st mid">להפיק</span></td></tr>
+        <tr><td class="d"><a class="jump" href="#p0710">07.10 ד׳</a></td><td class="t">—</td><td></td><td>יום נשימה · סטוריז בלבד</td><td>—</td><td><span class="st ok">אין צורך</span></td></tr>
+        <tr class="ads"><td class="d"><a class="jump" href="#p0810">08.10 ה׳</a></td><td class="t">—</td><td><span class="kind a">ממומן</span></td><td>פתיחה · קהל תחומי עניין</td><td>—</td><td><span class="st mid">להגדיר</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -230,8 +240,8 @@
 
   <div class="phase"><span class="n">שלב 01</span><span class="g">חמשת הרכיבים — בונים ידע ואמון, בלי למכור כלום</span></div>
   <div class="posts">
-    <div class="post">
-      <div class="p-top"><span class="p-date">30.08 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">פער סקרנות</span><span class="p-asset">קמע מצוירת · 10 שנ׳</span></div>
+    <div class="post" id="p3008">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">30.08 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">פער סקרנות</span><span class="p-asset">קמע מצוירת · 10 שנ׳</span></div>
       <p class="hook"><span class="lab">טקסט על המסך · בקנבה</span>יש דבר אחד שהלקוחה שלך זוכרת ממך — וזה לא הלוגו.</p>
       <div class="tablewrap" style="margin:2px 0">
         <table style="min-width:420px">
@@ -269,8 +279,8 @@
       <p class="note"><b>שורה חדשה:</b> ״אפשר לשלם על לוגו מושלם ועדיין להרגיש שהעסק לא נראה כמוך״ — נותנת את מה שהריל לא אומר, למה זה עולה בכסף. וכך הכיתוב מרחיב במקום לחזור על הטקסט שעל המסך.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">31.08 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 2</span><span class="hk b">פער סקרנות</span><span class="p-asset">מוכנה לפרסום ✓</span></div>
+    <div class="post" id="p3108">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">31.08 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 2</span><span class="hk b">פער סקרנות</span><span class="p-asset">מוכנה לפרסום ✓</span></div>
       <p class="hook"><span class="lab">הוק · שקף 1</span>אם את מרגישה שהפיד שלך פשוט ״לא מסתדר״ — זו כנראה הסיבה.</p>
       <div class="cap">אף אחד לא יגיד לך את זה בפנים.
 
@@ -291,8 +301,8 @@
       <p class="note"><b>שורות ריקות = חובה.</b> להדביק כמו שזה. בלעדיהן זה גוש טקסט שמדלגים עליו.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">01.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">הוק כאב</span><span class="p-asset">הקלטת מסך</span></div>
+    <div class="post" id="p0109">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">01.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">הוק כאב</span><span class="p-asset">הקלטת מסך</span></div>
       <p class="hook"><span class="lab">טקסט על המסך · בקנבה</span>בחרת צבעים יפים. אז למה זה נראה כמו סלט?</p>
       <div class="cap">בחרת צבעים יפים. אז למה זה נראה כמו סלט?
 
@@ -312,8 +322,8 @@
       <p class="note"><b>למה דווקא כאן ולא בקרוסלה:</b> הקאבר של קרוסלה 2 כבר פותח בכאב. שני הוקי כאב ברצף זה עודף — כאן זה יושב נכון.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">03.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">שבירת דפוס</span><span class="p-asset">דוגמנית AI</span></div>
+    <div class="post" id="p0309">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">03.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">שבירת דפוס</span><span class="p-asset">דוגמנית AI</span></div>
       <p class="hook"><span class="lab">הוק</span>מבחן מטר אחורה.</p>
       <div class="cap">קומי, לכי מטר אחורה מהמסך, ותסתכלי על הפיד שלך.
 
@@ -327,8 +337,8 @@
       <p class="tags">#פונטים #קנבה #נראותעסקית #טיפיםלעסקים</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">06.09 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">פער סקרנות</span><span class="p-asset">הקלטת מסך</span></div>
+    <div class="post" id="p0609">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">06.09 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">פער סקרנות</span><span class="p-asset">הקלטת מסך</span></div>
       <p class="hook"><span class="lab">הוק</span>יש מספר אחד שקובע אם הפיד שלך נראה מקצועי. הוא לא כמה עוקבות יש לך.</p>
       <div class="cap">יש מספר אחד שקובע אם הפיד שלך נראה מקצועי.
 הוא לא כמה עוקבות יש לך.
@@ -348,8 +358,8 @@
       <p class="note"><b>הומר מטענה נועזת.</b> הגרסה הקודמת: ״שני פונטים. זהו. באמת.״</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">07.09 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 3</span><span class="p-asset">לעצב בקנבה</span></div>
+    <div class="post" id="p0709">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">07.09 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 3</span><span class="p-asset">לעצב בקנבה</span></div>
       <p class="hook"><span class="lab">הוק · שקף 1</span>פונט אחר בכל פוסט אומר מותג אחר בכל פוסט.</p>
       <div class="cap">שניים. זה כל מה שאת צריכה.
 אחד לכותרות, אחד לטקסט הרץ.
@@ -364,8 +374,8 @@
       <p class="tags">#פונטים #טיפוגרפיה #קנבה #מיתוגעסקי</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">08.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">טענה נועזת</span><span class="p-asset">במקום קרוסלה 4</span></div>
+    <div class="post" id="p0809">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">08.09 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">טענה נועזת</span><span class="p-asset">במקום קרוסלה 4</span></div>
       <p class="hook"><span class="lab">הוק</span>השם שלך בפונט הכותרות שלך. זה לוגו.</p>
       <div class="cap">לא צריך לשלם על זה. לא צריך לחכות לזה.
 
@@ -380,8 +390,8 @@
       <p class="tags">#לוגוטייפ #קנבה #מיתוגעסקי #במוידייך</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">10.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">שאלה ישירה</span><span class="p-asset">במקום קרוסלה 5</span></div>
+    <div class="post" id="p1009">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">10.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">שאלה ישירה</span><span class="p-asset">במקום קרוסלה 5</span></div>
       <p class="hook"><span class="lab">הוק</span>״היי יקרה״ או ״בואי נדבר תכלס״?</p>
       <div class="cap">אין תשובה נכונה. יש תשובה שלך.
 
@@ -401,8 +411,8 @@
 
   <div class="phase"><span class="n">שלב 02</span><span class="g">אחרי ראש השנה — עומק, מבחן הצ׳ק, וטיזר להדרכה</span></div>
   <div class="posts">
-    <div class="post">
-      <div class="p-top"><span class="p-date">14.09 ב׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">הוק כאב</span><span class="p-asset">קמע מצוירת</span></div>
+    <div class="post" id="p1409">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">14.09 ב׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">הוק כאב</span><span class="p-asset">קמע מצוירת</span></div>
       <p class="hook"><span class="lab">הוק</span>אם ילד בן 8 לא מבין מה הבטחת — הלקוחה שלך גם לא.</p>
       <div class="cap">מבחן ילד בן 8.
 
@@ -416,8 +426,8 @@
       <p class="tags">#ערכימותג #קופי #מיתוגעסקי #במוידייך</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">15.09 ג׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 6</span><span class="p-asset">לעצב בקנבה · V2</span></div>
+    <div class="post" id="p1509">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">15.09 ג׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 6</span><span class="p-asset">לעצב בקנבה · V2</span></div>
       <p class="hook"><span class="lab">הוק · שקף 1</span>אם אני לא יכולה לפרוע את הצ׳ק, זה לא עולה לפוסט.</p>
       <div class="cap">״יוקרה״. ״אותנטיות״. ״מקצועיות״.
 
@@ -438,8 +448,8 @@
   <div class="phase"><span class="n">שלב 02</span><span class="g">אחרי ראש השנה — עומק, הוכחת יכולת, וטיזר להדרכה</span></div>
   <div class="posts">
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">16.09 ד׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">פער סקרנות</span><span class="p-asset">מסך + קמע</span></div>
+    <div class="post" id="p1609">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">16.09 ד׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">פער סקרנות</span><span class="p-asset">מסך + קמע</span></div>
       <p class="hook"><span class="lab">הוק</span>לקח לי שנתיים להבין את זה. לך זה ייקח 40 שניות.</p>
       <div class="cap">החלק הראשון מתוך ההדרכה המלאה שאני מקליטה עכשיו.
 
@@ -453,8 +463,8 @@
       <p class="tags">#קנבה #הדרכה #מיתוגעסקי #במוידייך</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">17.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">שבירת דפוס</span><span class="p-asset">הקלטת מסך</span></div>
+    <div class="post" id="p1709">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">17.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">שבירת דפוס</span><span class="p-asset">הקלטת מסך</span></div>
       <p class="hook"><span class="lab">הוק</span>תפסיקי לעצב. זו העצה הכי טובה שאתן לך היום.</p>
       <div class="cap">תפסיקי לעצב. זו העצה הכי טובה שאתן לך היום.
 
@@ -471,8 +481,8 @@
       <p class="note"><b>סוגר את הסדרה</b> — ״עקביות״ הוא הרכיב החמישי בקרוסלה 1 ולא קיבל פרסום משלו. <b>הומר להוק שבירת דפוס</b>, סוג ההוק עם השימור הגבוה ביותר.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">22.09 ג׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 7</span><span class="p-asset">לעצב בקנבה</span></div>
+    <div class="post" id="p2209">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">22.09 ג׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 7</span><span class="p-asset">לעצב בקנבה</span></div>
       <p class="hook"><span class="lab">הוק · שקף 1</span>5 טעויות שאני רואה בכל פיד של עסק קטן.</p>
       <div class="cap">עברתי על עשרות פידים של נשות עסקים בחודשים האחרונים. חמש הטעויות האלה חוזרות כמעט בכולם.
 
@@ -484,8 +494,8 @@
       <p class="tags">#טעויותנפוצות #מיתוגעסקי #קנבה #במוידייך</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">23.09 ד׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">פער סקרנות</span><span class="p-asset">קמע מצוירת</span></div>
+    <div class="post" id="p2309">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">23.09 ד׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk b">פער סקרנות</span><span class="p-asset">קמע מצוירת</span></div>
       <p class="hook"><span class="lab">הוק</span>הטעות הזאת נראית הכי תמימה, והיא זו שהכי עולה לך.</p>
       <div class="cap">הטעות הזאת נראית הכי תמימה, והיא זו שהכי עולה לך.
 
@@ -504,8 +514,8 @@
       <p class="note"><b>שתי טעויות בריל אחד</b> — מאחד את 23.09 ו-22.09 המקוריים. <b>הומר מהוק כאב.</b></p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">24.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">פער סקרנות</span><span class="p-asset">קמע מצוירת</span></div>
+    <div class="post" id="p2409">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">24.09 ה׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="hk">פער סקרנות</span><span class="p-asset">קמע מצוירת</span></div>
       <p class="hook"><span class="lab">הוק</span>שלוש הטעויות האחרונות — ואת עושה לפחות אחת מהן.</p>
       <div class="cap">3. לוגו שנמתח לגודל אחר בכל פרסום
 4. טקסט שנוגע בקצוות בלי מרווח נשימה
@@ -529,8 +539,8 @@
 
   <div class="phase"><span class="n">שלב 03</span><span class="g">אחרי סוכות — חזרה, מגנט, ופתיחת ממומן</span></div>
   <div class="posts">
-    <div class="post">
-      <div class="p-top"><span class="p-date">04.10 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">מיחזור הריל החזק</span></div>
+    <div class="post" id="p0410">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">04.10 א׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">מיחזור הריל החזק</span></div>
       <p class="hook"><span class="lab">הוק</span>ההוק של הריל שהכי עבד בספטמבר — נבחר מהנתונים, לא מהתחושה.</p>
       <div class="cap">חזרנו.
 
@@ -544,8 +554,8 @@
       <p class="note"><b>איך בוחרים:</b> אחרי 23.09 נסתכל על שימור צפייה וחשיפה של כל הריילס מספטמבר, וניקח את המנצח. אין צורך לצלם חדש.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">05.10 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 8</span><span class="p-asset">מעוצבת · נכנסת לדרייב</span></div>
+    <div class="post" id="p0510">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">05.10 ב׳</span><span class="p-time">20:30</span><span class="kind c">קרוסלה 8</span><span class="p-asset">מעוצבת · נכנסת לדרייב</span></div>
       <p class="hook"><span class="lab">הוק · שקף 1</span>בניתי לך את ערכת המותג. בחינם.</p>
       <div class="cap">במשך חודש פירקתי כאן את חמשת רכיבי המיתוג: צבעים, פונטים, סגנון כתיבה, ערכי מותג ועקביות.
 
@@ -561,8 +571,8 @@
       <p class="note"><b>הקישור לביו:</b> <code>michalcreates.ravpage.co.il/brand-kit</code> — דף המגנט כבר חי ומפורסם ברב מסר, מחובר לרשימה ״מגנט לידים · סרטון ערכת מותג״.<br><b>שימי לב:</b> ״עקביות״ הוא הרכיב החמישי בקרוסלה 1 ואין לו קרוסלה משלו בסדרה. כאן הוא נסגר. אם תרצי — אפשר להוסיף לו ריל ב-06.10.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">06.10 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 04 · ריק</span></div>
+    <div class="post" id="p0610">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">06.10 ג׳</span><span class="p-time">20:45</span><span class="kind r">ריל</span><span class="p-asset">נכס 04 · ריק</span></div>
       <p class="hook"><span class="lab">הוק</span>זו ההדרכה המלאה. לא טיזר.</p>
       <div class="cap">לא ״תשאירי פרטים ונדבר״. ההדרכה עצמה.
 
@@ -579,8 +589,8 @@
       <p class="note"><b>אותו קישור:</b> <code>michalcreates.ravpage.co.il/brand-kit</code></p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">07.10 ד׳</span><span class="p-time">כל היום</span><span class="kind a">סטוריז</span><span class="p-asset">אין צורך בהפקה</span></div>
+    <div class="post" id="p0710">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">07.10 ד׳</span><span class="p-time">כל היום</span><span class="kind a">סטוריז</span><span class="p-asset">אין צורך בהפקה</span></div>
       <p class="hook"><span class="lab">יום נשימה</span>בלי פוסט בפיד. רק סטוריז שמחזיקות את המגנט חי.</p>
       <div class="cap">3 סטוריז לאורך היום:
 
@@ -590,8 +600,8 @@
       <p class="note"><b>למה יום בלי פוסט:</b> נותן למגנט של 05-06.10 יומיים לצבור איתות אורגני לפני שנכנס כסף. אם הוא לא עובד — עדיף לגלות עכשיו ולא אחרי שהתקציב רץ.</p>
     </div>
 
-    <div class="post">
-      <div class="p-top"><span class="p-date">08.10 ה׳</span><span class="p-time">—</span><span class="kind a">ממומן</span><span class="p-asset">להגדיר במנהל המודעות</span></div>
+    <div class="post" id="p0810">
+      <div class="p-top"><a class="back" href="#loach" title="חזרה ללוח">↑</a><span class="p-date">08.10 ה׳</span><span class="p-time">—</span><span class="kind a">ממומן</span><span class="p-asset">להגדיר במנהל המודעות</span></div>
       <p class="hook"><span class="lab">פתיחת ממומן</span>קהל תחומי עניין — לא רימרקטינג.</p>
       <p class="note"><b>הקריאייטיב:</b> הריל שהכי עבד אורגנית, לא משהו חדש. אחרי חודש של פרסום יהיו נתונים אמיתיים להחליט לפיו.<br><b>הקהל:</b> נשות עסקים, עצמאיות, קנבה, שיווק דיגיטלי, יזמות — לא קהל מותאם אישית מהדף. הסבר מלא במסמך הניתוח.<br><b>היעד:</b> דף הנחיתה של משפך 1, ומשם לשיחת ייעוץ.</p>
     </div>
