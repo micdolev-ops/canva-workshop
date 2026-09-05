@@ -35,10 +35,21 @@ h1,h2,h3,.font-title{font-family:'Varela Round','Assistant',sans-serif;font-weig
 .wrap{max-width:820px;margin:0 auto;padding:24px 16px 80px}
 
 /* header */
-header.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:18px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:18px}
 header.top h1{font-size:26px;margin:0;color:var(--purple)}
 header.top .sub{color:var(--muted);font-size:14px}
-.io{margin-inline-start:auto;display:flex;gap:8px}
+.io{margin-inline-start:auto;display:flex;gap:8px;align-items:center}
+
+/* sync state */
+.sync{display:none;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 13px;white-space:nowrap}
+.sync.on{display:inline-flex}
+.sync i{width:8px;height:8px;border-radius:50%;background:#DAD3CB;flex:none}
+.sync.ok i{background:var(--sage)}
+.sync.busy i{background:var(--gold);animation:pulse 1.1s ease-in-out infinite}
+.sync.err i{background:var(--pink)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.sync.busy i{animation:none}}
 
 /* buttons */
 button{font-family:inherit;font-size:14px;cursor:pointer;border:none;background:none;color:inherit}
@@ -49,6 +60,7 @@ button{font-family:inherit;font-size:14px;cursor:pointer;border:none;background:
 .btn:hover{border-color:var(--purple);color:var(--purple)}
 .btn.solid{background:var(--purple);color:#fff;border-color:var(--purple)}
 .btn.solid:hover{opacity:.9;color:#fff}
+:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 
 /* progress */
 .progress-box{background:var(--card);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:18px}
@@ -136,6 +148,12 @@ button{font-family:inherit;font-size:14px;cursor:pointer;border:none;background:
 .drop-placeholder{height:52px;border:2px dashed var(--gold);border-radius:var(--radius);margin-bottom:10px;background:rgba(201,168,106,.06)}
 .empty{text-align:center;color:var(--muted);font-size:14px;padding:30px 10px}
 
+/* first sync: data is on screen but not touchable yet */
+body.syncing .task-card,
+body.syncing .focus-item,
+body.syncing .add-row,
+body.syncing .io .btn{opacity:.5;pointer-events:none}
+
 /* toast */
 #toast{
   position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(24px);
@@ -165,6 +183,7 @@ button{font-family:inherit;font-size:14px;cursor:pointer;border:none;background:
     <h1>הדשבורד שלי</h1>
     <span class="sub">משימות העסק, במקום אחד</span>
     <div class="io">
+      <span class="sync" id="sync"><i></i><span id="syncText"></span></span>
       <button class="btn" id="exportBtn">ייצוא</button>
       <button class="btn" id="importBtn">ייבוא</button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
@@ -212,6 +231,7 @@ var CATEGORIES = {
 
 var STATUSES = ['todo','doing','done'];
 var STATUS_LABEL = { todo:'לא התחלתי', doing:'בתהליך', done:'בוצע' };
+var STEP = 1000;
 
 var SEED = [
   {id:'t1',  title:'לחפש רואה חשבון ולקבוע פגישה', category:'הקמה ורגולציה'},
@@ -232,35 +252,42 @@ var SEED = [
   {id:'t16', title:'לעבור על תוכנית הליווי ולבדוק אם נדרשים שינויים', category:'מוצר והדרכות'}
 ];
 
-var state = load();
+var state = loadCache();
 var ui = { filter:'all', category:'all', hideDone:false };
 
-/* ---------- storage ---------- */
+/* The page runs in two modes. Opened as a file it keeps everything in
+   localStorage. Opened through the hosted link it mirrors the same data
+   into the shared store, so the phone and the laptop see one list. */
+var cloud = { db:null, live:false, clientId:'c' + Math.random().toString(36).slice(2,10) };
+var pendingRemote = null;
+var dirty = {};   /* tasks with an edit typed but not written yet */
+
+/* ---------- local cache ---------- */
 
 function seedTasks(){
-  return SEED.map(function(s){
+  return SEED.map(function(s, i){
     return {
       id:s.id, title:s.title, category:s.category,
       due:'', status:'todo', notes:'', focus:false,
-      notesOpen:false, dependsOn:s.dependsOn || null
+      notesOpen:false, dependsOn:s.dependsOn || null, order:(i+1)*STEP
     };
   });
 }
 
-function load(){
+function loadCache(){
   try{
     var raw = localStorage.getItem(STORAGE_KEY);
     if(raw){
       var data = JSON.parse(raw);
       if(data && Array.isArray(data.tasks)) return { tasks:data.tasks.map(normalize) };
     }
-  }catch(e){ console.warn('טעינה נכשלה, מתחילים מהרשימה ההתחלתית', e); }
+  }catch(e){ console.warn('טעינה מהדפדפן נכשלה, מתחילים מהרשימה ההתחלתית', e); }
   var fresh = { tasks:seedTasks() };
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh)); }catch(e){}
+  writeCache(fresh);
   return fresh;
 }
 
-function normalize(t){
+function normalize(t, i){
   return {
     id: t.id || uid(),
     title: typeof t.title === 'string' ? t.title : '',
@@ -270,17 +297,143 @@ function normalize(t){
     notes: t.notes || '',
     focus: !!t.focus,
     notesOpen: !!t.notesOpen,
-    dependsOn: t.dependsOn || null
+    dependsOn: t.dependsOn || null,
+    order: typeof t.order === 'number' ? t.order : (i + 1) * STEP
   };
 }
 
-function save(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  catch(e){ toast('לא הצלחתי לשמור בדפדפן. שווה לייצא גיבוי.'); }
+function writeCache(s){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s || state)); }
+  catch(e){ /* private mode or a full quota: the cloud copy still holds */ }
 }
 
 function uid(){ return 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 function byId(id){ for(var i=0;i<state.tasks.length;i++){ if(state.tasks[i].id===id) return state.tasks[i]; } return null; }
+
+/* ---------- persistence ---------- */
+
+function body(t){
+  return {
+    title:t.title, category:t.category, due:t.due, status:t.status,
+    notes:t.notes, focus:!!t.focus, notesOpen:!!t.notesOpen,
+    dependsOn:t.dependsOn || null, order:t.order
+  };
+}
+
+function fromDoc(d){
+  var b = d.data() || {};
+  return normalize({
+    id:d.id, title:b.title, category:b.category, due:b.due, status:b.status,
+    notes:b.notes, focus:b.focus, notesOpen:b.notesOpen,
+    dependsOn:b.dependsOn, order:b.order
+  });
+}
+
+function cloudTrouble(){
+  setSync('err', 'הסנכרון נתקע');
+  document.body.classList.remove('syncing');
+}
+
+/* Every mutation goes through one of these three. */
+function saveTasks(tasks){
+  writeCache();
+  if(!cloud.live) return;
+  tasks.forEach(function(t){
+    cloud.db.collection('tasks').doc(t.id).set(body(t)).catch(cloudTrouble);
+  });
+}
+
+function removeTask(id){
+  writeCache();
+  if(!cloud.live) return;
+  cloud.db.collection('tasks').doc(id).delete().catch(cloudTrouble);
+}
+
+function saveEverything(removedIds){
+  writeCache();
+  if(!cloud.live) return;
+  (removedIds || []).forEach(function(id){
+    cloud.db.collection('tasks').doc(id).delete().catch(cloudTrouble);
+  });
+  saveTasks(state.tasks);
+}
+
+/* ---------- cloud ---------- */
+
+function setSync(kind, text){
+  var el = document.getElementById('sync');
+  el.className = 'sync on ' + kind;
+  document.getElementById('syncText').textContent = text;
+}
+
+function startCloud(){
+  if(!(window.claude && typeof window.claude.use === 'function')) return;
+  setSync('busy', 'מסתנכרן...');
+  document.body.classList.add('syncing');
+  window.claude.use('db').then(function(db){
+    if(!db){ localOnly(); return; }
+    cloud.db = db;
+    bootstrap();
+  }, localOnly);
+}
+
+function localOnly(){
+  document.body.classList.remove('syncing');
+  setSync('off', 'שמור בדפדפן הזה');
+}
+
+function bootstrap(){
+  cloud.db.doc('meta/state').get().then(function(d){
+    if(d.exists && d.data() && d.data().seeded) return listen();
+    return cloud.db.doc('meta/seed').acquire({holder:cloud.clientId, ttlMs:15000}).then(function(res){
+      if(!res.acquired) return listen();   /* another device is filling the store */
+      var tasks = state.tasks.slice();
+      tasks.forEach(function(t, i){ t.order = (i+1)*STEP; });
+      return Promise.all(tasks.map(function(t){
+        return cloud.db.collection('tasks').doc(t.id).set(body(t));
+      })).then(function(){
+        return cloud.db.doc('meta/state').set({seeded:true});
+      }).then(listen);
+    });
+  }).catch(cloudTrouble);
+}
+
+function listen(){
+  cloud.db.collection('tasks').orderBy('order').onSnapshot(function(snap){
+    cloud.live = true;
+    document.body.classList.remove('syncing');
+    applyRemote(snap.docs.map(fromDoc));
+    setSync('ok', 'מסונכרן');
+  }, cloudTrouble);
+}
+
+function signature(tasks){
+  return JSON.stringify(tasks.map(function(t){
+    return [t.id,t.title,t.category,t.due,t.status,t.notes,t.focus,t.dependsOn,t.order];
+  }));
+}
+
+function editing(){
+  var a = document.activeElement;
+  return !!a && (a.classList.contains('title') || a.tagName === 'TEXTAREA');
+}
+
+function applyRemote(tasks){
+  /* an edit still sitting in the debounce beats the incoming copy of it */
+  tasks = tasks.map(function(t){ return dirty[t.id] ? (byId(t.id) || t) : t; });
+  if(signature(tasks) === signature(state.tasks)) return;
+  if(editing()){ pendingRemote = tasks; return; }   /* don't yank the cursor mid-sentence */
+  pendingRemote = null;
+  state.tasks = tasks;
+  writeCache();
+  render();
+}
+
+document.addEventListener('focusout', function(){
+  setTimeout(function(){
+    if(pendingRemote && !editing()) applyRemote(pendingRemote);
+  }, 0);
+});
 
 /* ---------- helpers ---------- */
 
@@ -350,7 +503,7 @@ function renderFocus(){
     off.className = 'icon-btn star on';
     off.title = 'הסרה מהמיקוד';
     off.textContent = '★';
-    off.addEventListener('click', function(){ t.focus = false; save(); render(); });
+    off.addEventListener('click', function(){ t.focus = false; saveTasks([t]); render(); });
     row.appendChild(dot); row.appendChild(title); row.appendChild(off);
     box.appendChild(row);
   });
@@ -392,17 +545,17 @@ function renderFilters(){
 }
 
 function renderList(){
-  var list = document.getElementById('list');
-  list.innerHTML = '';
+  var listEl = document.getElementById('list');
+  listEl.innerHTML = '';
   var items = visibleTasks();
   if(!items.length){
     var e = document.createElement('div');
     e.className = 'empty';
     e.textContent = 'אין כאן משימות שמתאימות לסינון הנוכחי.';
-    list.appendChild(e);
+    listEl.appendChild(e);
     return;
   }
-  items.forEach(function(t){ list.appendChild(taskCard(t)); });
+  items.forEach(function(t){ listEl.appendChild(taskCard(t)); });
 }
 
 function taskCard(t){
@@ -432,7 +585,7 @@ function taskCard(t){
   title.addEventListener('blur', function(){
     var v = title.textContent.trim();
     if(!v){ title.textContent = t.title; return; }
-    if(v !== t.title){ t.title = v; save(); render(); }
+    if(v !== t.title){ t.title = v; saveTasks([t]); render(); }
   });
 
   var star = document.createElement('button');
@@ -451,11 +604,13 @@ function taskCard(t){
   del.title = 'מחיקה';
   del.textContent = '✕';
   del.addEventListener('click', function(){
-    if(confirm('למחוק את "' + t.title + '"?')){
-      state.tasks = state.tasks.filter(function(x){ return x.id !== t.id; });
-      state.tasks.forEach(function(x){ if(x.dependsOn === t.id) x.dependsOn = null; });
-      save(); render();
-    }
+    if(!confirm('למחוק את "' + t.title + '"?')) return;
+    state.tasks = state.tasks.filter(function(x){ return x.id !== t.id; });
+    var freed = state.tasks.filter(function(x){ return x.dependsOn === t.id; });
+    freed.forEach(function(x){ x.dependsOn = null; });
+    removeTask(t.id);
+    if(freed.length) saveTasks(freed);
+    render();
   });
 
   main.appendChild(handle);
@@ -473,7 +628,7 @@ function taskCard(t){
   st.textContent = STATUS_LABEL[t.status];
   st.addEventListener('click', function(){
     t.status = STATUSES[(STATUSES.indexOf(t.status) + 1) % 3];
-    save(); render();
+    saveTasks([t]); render();
   });
   meta.appendChild(st);
 
@@ -490,7 +645,7 @@ function taskCard(t){
   due.className = 'due';
   due.value = t.due || '';
   due.title = 'תאריך יעד';
-  due.addEventListener('change', function(){ t.due = due.value; save(); });
+  due.addEventListener('change', function(){ t.due = due.value; saveTasks([t]); });
   meta.appendChild(due);
 
   var blocker = blockerOf(t);
@@ -509,22 +664,31 @@ function taskCard(t){
   var ta = document.createElement('textarea');
   ta.placeholder = 'הערות למשימה...';
   ta.value = t.notes;
+  var notesTimer;
+  function flushNotes(){
+    clearTimeout(notesTimer);
+    if(!dirty[t.id]) return;
+    delete dirty[t.id];
+    saveTasks([t]);
+  }
   ta.addEventListener('input', function(){
     t.notes = ta.value;
     noteBtn.classList.toggle('has-notes', !!ta.value);
-    save();
+    dirty[t.id] = true;
+    clearTimeout(notesTimer);
+    notesTimer = setTimeout(flushNotes, 500);
   });
+  ta.addEventListener('blur', flushNotes);
   notesWrap.appendChild(ta);
   card.appendChild(notesWrap);
 
   noteBtn.addEventListener('click', function(){
     t.notesOpen = !t.notesOpen;
     notesWrap.hidden = !t.notesOpen;
-    save();
+    saveTasks([t]);
     if(t.notesOpen) ta.focus();
   });
 
-  /* desktop drag */
   card.addEventListener('dragstart', function(e){
     dragId = t.id;
     card.classList.add('dragging');
@@ -547,10 +711,10 @@ function toggleFocus(t){
     if(count >= 3){ toast('שלוש משימות זה המקסימום. מה יורד?'); return; }
     t.focus = true;
   }
-  save(); render();
+  saveTasks([t]); render();
 }
 
-/* ---------- reorder (shared) ---------- */
+/* ---------- reorder ---------- */
 
 var dragId = null;
 var placeholder = null;
@@ -562,17 +726,33 @@ function makePlaceholder(){
 }
 
 function positionPlaceholder(clientY, draggedCard){
-  var list = document.getElementById('list');
+  var listEl = document.getElementById('list');
   if(!placeholder) placeholder = makePlaceholder();
-  var cards = Array.prototype.slice.call(list.querySelectorAll('.task-card')).filter(function(c){ return c !== draggedCard; });
+  var cards = Array.prototype.slice.call(listEl.querySelectorAll('.task-card')).filter(function(c){ return c !== draggedCard; });
   var target = null, before = false;
   for(var i=0;i<cards.length;i++){
     var r = cards[i].getBoundingClientRect();
     if(clientY < r.top + r.height/2){ target = cards[i]; before = true; break; }
     target = cards[i]; before = false;
   }
-  if(!target){ list.appendChild(placeholder); return; }
-  list.insertBefore(placeholder, before ? target : target.nextSibling);
+  if(!target){ listEl.appendChild(placeholder); return; }
+  listEl.insertBefore(placeholder, before ? target : target.nextSibling);
+}
+
+/* Order lives in a number field so a drag writes one task, not the list.
+   When two neighbours get too close to split, renumber everything. */
+function reindex(moved, idx){
+  var prev = state.tasks[idx-1], next = state.tasks[idx+1];
+  var lo = prev ? prev.order : (next ? next.order - 2*STEP : 0);
+  var hi = next ? next.order : (prev ? prev.order + 2*STEP : STEP);
+  var mid = (lo + hi) / 2;
+  if(!isFinite(mid) || hi - lo < 0.001){
+    state.tasks.forEach(function(t, i){ t.order = (i+1)*STEP; });
+    saveEverything();
+    return;
+  }
+  moved.order = mid;
+  saveTasks([moved]);
 }
 
 function finishDrop(){
@@ -594,7 +774,7 @@ function finishDrop(){
     else idx = arr.length;
     if(idx < 0) idx = arr.length;
     arr.splice(idx, 0, moved);
-    save();
+    reindex(moved, idx);
   }
   cleanupDrag();
   render();
@@ -606,14 +786,14 @@ function cleanupDrag(){
   dragId = null;
 }
 
-var list = document.getElementById('list');
-list.addEventListener('dragover', function(e){
+var listEl = document.getElementById('list');
+listEl.addEventListener('dragover', function(e){
   if(!dragId) return;
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
-  positionPlaceholder(e.clientY, list.querySelector('.task-card.dragging'));
+  positionPlaceholder(e.clientY, listEl.querySelector('.task-card.dragging'));
 });
-list.addEventListener('drop', function(e){
+listEl.addEventListener('drop', function(e){
   if(!dragId) return;
   e.preventDefault();
   finishDrop();
@@ -674,12 +854,16 @@ function addTask(){
   var input = document.getElementById('newTask');
   var v = input.value.trim();
   if(!v) return;
-  state.tasks.unshift({
+  var first = state.tasks[0];
+  var t = {
     id:uid(), title:v, category:'', due:'', status:'todo',
-    notes:'', focus:false, notesOpen:false, dependsOn:null
-  });
+    notes:'', focus:false, notesOpen:false, dependsOn:null,
+    order: first ? first.order - STEP : STEP
+  };
+  state.tasks.unshift(t);
   input.value = '';
-  save(); render();
+  saveTasks([t]);
+  render();
 }
 document.getElementById('addBtn').addEventListener('click', addTask);
 document.getElementById('newTask').addEventListener('keydown', function(e){
@@ -688,8 +872,8 @@ document.getElementById('newTask').addEventListener('keydown', function(e){
 
 /* ---------- export / import ---------- */
 
-/* When the page runs inside the Claude artifact viewer, downloads go through
-   the host. Opened as a plain file, the anchor below does the job. */
+/* In the hosted viewer a plain download link is inert, so the file goes
+   through the host. Opened from disk, the anchor does the job. */
 var hostSave = (window.claude && typeof window.claude.use === 'function')
   ? window.claude.use('downloads').catch(function(){ return null; })
   : null;
@@ -740,10 +924,19 @@ document.getElementById('importFile').addEventListener('change', function(e){
     try{
       var data = JSON.parse(reader.result);
       if(!data || !Array.isArray(data.tasks)) throw new Error('מבנה לא מוכר');
-      if(!confirm('הייבוא יחליף את כל המשימות הקיימות (' + state.tasks.length + ' משימות). להמשיך?')) return;
-      state = { tasks: data.tasks.map(normalize) };
-      save(); render();
-      toast('יובאו ' + state.tasks.length + ' משימות.');
+      var msg = cloud.live
+        ? 'הייבוא יחליף את הרשימה בכל המכשירים (' + state.tasks.length + ' משימות כרגע). להמשיך?'
+        : 'הייבוא יחליף את כל המשימות הקיימות (' + state.tasks.length + ' משימות). להמשיך?';
+      if(!confirm(msg)) return;
+      var oldIds = state.tasks.map(function(t){ return t.id; });
+      var tasks = data.tasks.map(normalize);
+      tasks.forEach(function(t, i){ t.order = (i+1)*STEP; });
+      state.tasks = tasks;
+      var keep = {};
+      tasks.forEach(function(t){ keep[t.id] = true; });
+      saveEverything(oldIds.filter(function(id){ return !keep[id]; }));
+      render();
+      toast('יובאו ' + tasks.length + ' משימות.');
     }catch(err){
       toast('הקובץ לא תקין. צריך קובץ JSON שיצא מכאן.');
     }
@@ -753,6 +946,7 @@ document.getElementById('importFile').addEventListener('change', function(e){
 });
 
 render();
+startCloud();
 })();
 </script>
 </body>
