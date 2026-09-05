@@ -688,19 +688,44 @@ document.getElementById('newTask').addEventListener('keydown', function(e){
 
 /* ---------- export / import ---------- */
 
-document.getElementById('exportBtn').addEventListener('click', function(){
-  var blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
+/* When the page runs inside the Claude artifact viewer, downloads go through
+   the host. Opened as a plain file, the anchor below does the job. */
+var hostSave = (window.claude && typeof window.claude.use === 'function')
+  ? window.claude.use('downloads').catch(function(){ return null; })
+  : null;
+
+function backupName(){
   var d = new Date();
-  var stamp = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  return 'tasks-backup-' + d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0') + '.json';
+}
+
+function saveWithAnchor(json, name){
+  var url = URL.createObjectURL(new Blob([json], {type:'application/json'}));
+  var a = document.createElement('a');
   a.href = url;
-  a.download = 'tasks-backup-' + stamp + '.json';
+  a.download = name;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   toast('הקובץ ירד. שמרי אותו איפשהו בטוח.');
+}
+
+document.getElementById('exportBtn').addEventListener('click', function(){
+  var json = JSON.stringify(state, null, 2);
+  var name = backupName();
+  if(!hostSave){ saveWithAnchor(json, name); return; }
+  hostSave.then(function(dl){
+    if(!dl){ saveWithAnchor(json, name); return; }
+    dl.save({filename:name, data:json}).then(function(){
+      toast('הגיבוי נשמר.');
+    }, function(err){
+      if(err && err.code === 'declined') return;
+      toast('השמירה לא יצאה לדרך. אפשר לנסות שוב.');
+    });
+  });
 });
 
 document.getElementById('importBtn').addEventListener('click', function(){
