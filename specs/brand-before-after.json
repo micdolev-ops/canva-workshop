@@ -1,14 +1,41 @@
-{"clips": [
-  {"src": "/root/.claude/uploads/edaae061-3175-5a03-baf5-7e21a5d8f800/08dcbeda-Create_a_cinematic_vertical_.mp4",
-   "trim": [0, 7.0],
-   "captions": [
-     {"lines": ["יש דברים במותג שלך", "שלא צריכים לעבור איתך", "לשנה הבאה."],
-      "start": 0.4, "end": 6.7, "y": 0.205}
-   ]},
-  {"src": "/root/.claude/uploads/edaae061-3175-5a03-baf5-7e21a5d8f800/c886404b-Create_a_cinematic_vertical__3.mp4",
-   "trim": [0, 8.0],
-   "captions": [
-     {"lines": ["אותו תוכן.", "שפה אחת ברורה."],
-      "start": 0.5, "end": 7.7, "y": 0.34}
-   ]}
-]}
+{
+  "clips": [
+    {
+      "src": "/root/.claude/uploads/edaae061-3175-5a03-baf5-7e21a5d8f800/08dcbeda-Create_a_cinematic_vertical_.mp4",
+      "trim": [
+        0,
+        7.0
+      ],
+      "captions": [
+        {
+          "lines": [
+            "יש דברים במותג שלך",
+            "שלא צריכים לעבור איתך",
+            "לשנה הבאה."
+          ],
+          "start": 0.4,
+          "end": 6.7,
+          "y": 0.205
+        }
+      ]
+    },
+    {
+      "src": "/root/.claude/uploads/edaae061-3175-5a03-baf5-7e21a5d8f800/c886404b-Create_a_cinematic_vertical__3.mp4",
+      "trim": [
+        0,
+        8.0
+      ],
+      "captions": [
+        {
+          "lines": [
+            "אותו תוכן.",
+            "עכשיו אפשר לקרוא אותו."
+          ],
+          "start": 0.5,
+          "end": 6.2,
+          "y": 0.34
+        }
+      ]
+    }
+  ]
+}
