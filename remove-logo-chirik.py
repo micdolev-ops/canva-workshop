@@ -1,39 +1,64 @@
-"""Remove only the stray chirik under the dalet of the logo animation.
+#!/usr/bin/env python3
+"""Remove the stray chirik under the dalet of the logo animation.
 
-Threshold-based detection lost the dot while the wordmark was still fading in,
-so instead the dot is located geometrically: its position is fixed relative to
-the wordmark's bounding box, and the wordmark is easy to find because it is the
-only deep-purple thing on screen. That holds through the fly-in, while the text
-is still moving and scaling, and it can never reach the dagesh inside the bet or
-the holam over the vav, which are part of the logo and sit elsewhere.
+Canva's animation engine vocalises the wordmark and drops a chirik under the
+dalet. Finding it by colour does not survive the clip: it is faint while the
+text flies in, and a gold light sweep crosses the letters around the five
+second mark that both lights the dot up and scatters sparkles beside it.
+
+Instead it is placed geometrically. Measured across the frames where the dot is
+unambiguous, it sits at a fixed offset from the top-left of the wordmark's
+bounding box, scaled by the box's *width* — width rather than height, because
+the final kaf's descender drops out of the purple mask whenever the sweep lights
+it, which collapses the box's bottom edge and nothing else. The fit holds to
+about three pixels over the whole clip.
+
+Each spot is then covered with a feathered copy of the wall beside it, which
+carries whatever light the sweep is casting at that moment rather than inventing
+a colour, and purple pixels are masked out so the letters are never touched.
+The dagesh inside the bet and the holam over the vav belong to the logo and sit
+in the other word, well outside anything this reaches.
+
+    python remove-logo-chirik.py in.mp4 out.mp4
 """
-import subprocess, sys
-import numpy as np
+import subprocess
+import sys
+
 import imageio_ffmpeg
+import numpy as np
 
 SRC, DST = sys.argv[1], sys.argv[2]
 W, H = 1280, 720
-U, V = 0.388, 0.874        # the chirik, as a fraction of the wordmark box
+KY, KX = 0.204, 0.389      # dot offset from the box's top-left, in box widths
 exe = imageio_ffmpeg.get_ffmpeg_exe()
 
 
-def fill_disc(a, cy, cx, r, keep):
-    """Inpaint a disc from the ring around it, leaving `keep` pixels alone."""
-    Y0, Y1 = max(0, cy - r - 8), min(H, cy + r + 9)
-    X0, X1 = max(0, cx - r - 8), min(W, cx + r + 9)
-    yy, xx = np.mgrid[Y0:Y1, X0:X1]
-    d = np.hypot(yy - cy, xx - cx)
-    hole = (d <= r) & ~keep[Y0:Y1, X0:X1]
-    ring = (d > r) & (d <= r + 8) & ~keep[Y0:Y1, X0:X1]
-    if hole.sum() == 0 or ring.sum() < 20:
-        return
-    ry, rx = np.nonzero(ring)
-    rgb = a[Y0:Y1, X0:X1][ring].astype(float)
-    hy, hx = np.nonzero(hole)
-    d2 = (hy[:, None] - ry[None, :]) ** 2 + (hx[:, None] - rx[None, :]) ** 2
-    w = 1.0 / (d2 + 1.0) ** 1.5
-    w /= w.sum(1, keepdims=True)
-    a[Y0 + hy, X0 + hx] = np.clip(w @ rgb, 0, 255).astype(np.uint8)
+def cover(a, cy, cx, r, purple):
+    """Paste a feathered patch of the wall from beside the dot over it."""
+    R = r + 7
+    if not (R <= cy < H - R):
+        return False
+    best = None
+    for dx in (60, -60, 82, -82, 104, -104, 126, -126):
+        sx = cx + dx
+        if not (R <= sx < W - R):
+            continue
+        if purple[cy - R:cy + R + 1, sx - R:sx + R + 1].any():
+            continue
+        src = a[cy - R:cy + R + 1, sx - R:sx + R + 1].astype(float)
+        if best is None or src.std() < best[0]:      # plain wall beats sparkle
+            best = (src.std(), src)
+    if best is None:
+        return False
+
+    yy, xx = np.mgrid[-R:R + 1, -R:R + 1]
+    alpha = np.clip((r + 3 - np.hypot(yy, xx)) / 6.0, 0, 1)
+    alpha[purple[cy - R:cy + R + 1, cx - R:cx + R + 1]] = 0
+    alpha = alpha[..., None]
+    dst = a[cy - R:cy + R + 1, cx - R:cx + R + 1].astype(float)
+    a[cy - R:cy + R + 1, cx - R:cx + R + 1] = np.clip(
+        dst * (1 - alpha) + best[1] * alpha, 0, 255).astype(np.uint8)
+    return True
 
 
 rd = subprocess.Popen([exe, '-v', 'error', '-i', SRC, '-f', 'rawvideo',
@@ -46,7 +71,7 @@ wr = subprocess.Popen([exe, '-y', '-v', 'error',
                        '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-shortest',
                        '-movflags', '+faststart', DST], stdin=subprocess.PIPE)
 
-n = hit = 0
+n = done = 0
 while True:
     buf = rd.stdout.read(W * H * 3)
     if len(buf) < W * H * 3:
@@ -56,14 +81,13 @@ while True:
     purple = (R < 140) & (B > R) & (B < 175) & (G < 100)
     py, px = np.nonzero(purple)
     if len(py) > 600:
-        y0, y1, x0, x1 = py.min(), py.max(), px.min(), px.max()
-        cy = int(y0 + V * (y1 - y0))
-        cx = int(x0 + U * (x1 - x0))
-        r = max(9, int(0.17 * (y1 - y0)))
-        fill_disc(a, cy, cx, r, purple)
-        hit += 1
+        y0, x0, x1 = py.min(), px.min(), px.max()
+        w = x1 - x0
+        if cover(a, int(y0 + KY * w), int(x0 + KX * w),
+                 max(14, int(0.052 * w)), purple):
+            done += 1
     wr.stdin.write(a.tobytes())
     n += 1
 
 wr.stdin.close(); wr.wait()
-print(f'frames {n}, cleaned {hit}')
+print(f'frames {n}, covered {done}')
