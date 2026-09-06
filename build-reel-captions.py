@@ -1,21 +1,32 @@
 #!/usr/bin/env python3
-"""Burn Hebrew captions into the middle of a vertical reel.
+"""Burn Hebrew captions into a vertical reel, and stitch reels together.
 
-Instagram covers the bottom third of a reel with the caption, the username and
-the action buttons, and the top with its own header, so anything that has to be
-read sits in the middle band. The captions are drawn here rather than by
-ffmpeg's drawtext: drawtext has no bidi pass, so Hebrew comes out reversed.
-Pillow draws them instead, through libraqm, which runs the bidi algorithm
-itself — so the strings stay in logical order and only need direction='rtl'.
+Instagram covers the bottom third of a reel with its own caption, username and
+buttons, and the top strip with its header, so anything that has to be read
+sits between them. Where exactly inside that band is per-shot: the caption has
+to stay off whatever the shot is actually about, so every caption carries its
+own vertical position.
+
+The text is drawn with Pillow rather than ffmpeg's drawtext, which has no bidi
+pass and renders Hebrew reversed. Pillow goes through libraqm, which runs the
+bidi algorithm itself, so the strings stay in logical order in the source.
 
     pip install imageio-ffmpeg "pillow[raqm]"
-    python build-reel-captions.py in.mp4 out.mp4
+    python build-reel-captions.py spec.json out.mp4
 
-Brand palette is the calendar's: purple #4A3463 on the cream #FBF8F2, never
-white. The font is Assistant Bold, fetched from Google Fonts if it isn't
-already beside this script.
+The spec is one clip, or several to be cut together back to back:
+
+    {"clips": [
+      {"src": "before.mp4", "trim": [0, 7.0], "captions": [
+        {"lines": ["...", "..."], "start": 0.4, "end": 6.6, "y": 0.20}]},
+      {"src": "after.mp4",  "captions": [...]}
+    ]}
+
+`y` is the box's centre as a fraction of frame height; it defaults to 0.5.
 """
+import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -34,15 +45,7 @@ PAD_X, PAD_Y = 34, 26
 MAX_SIZE = 68
 LINE_GAP = 1.22
 RADIUS = 26
-CENTRE_Y = 0.50      # box centre, as a fraction of frame height
 FADE = 0.3
-
-# (lines, start, end) — ends at 8.9 because the last shot is a cut to her face,
-# and that close is stronger without a box over it.
-CAPTIONS = [
-    (['שניים.', 'זה כל מה שאת צריכה.'], 0.3, 4.6),
-    (['אחד לכותרות.', 'אחד לטקסט הרץ.'], 4.9, 8.9),
-]
 
 
 def check_raqm():
@@ -68,7 +71,7 @@ def probe(path):
                 if 'x' in part and part.replace('x', '').isdigit():
                     w, h = part.split('x')
                     return int(w), int(h)
-    sys.exit('could not read the video dimensions')
+    sys.exit(f'could not read the dimensions of {path}')
 
 
 def width(f, line):
@@ -85,15 +88,14 @@ def fit(lines, path, box_w):
     return ImageFont.truetype(path, 18), 18
 
 
-def plate(lines, W, H, path):
+def plate(lines, W, H, path, centre_y):
     f, size = fit(lines, path, W - 2 * MARGIN - 2 * PAD_X)
     step = round(size * LINE_GAP)
 
-    text_w = max(width(f, l) for l in lines)
-    box_w = text_w + 2 * PAD_X
+    box_w = max(width(f, l) for l in lines) + 2 * PAD_X
     box_h = step * len(lines) + 2 * PAD_Y
     x0 = (W - box_w) // 2
-    y0 = round(H * CENTRE_Y) - box_h // 2
+    y0 = round(H * centre_y) - box_h // 2
 
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
@@ -105,36 +107,69 @@ def plate(lines, W, H, path):
     return im
 
 
-def main():
-    check_raqm()
-    src, out = sys.argv[1], sys.argv[2]
+def caption_clip(clip, out, work, tag):
     exe = imageio_ffmpeg.get_ffmpeg_exe()
+    src = clip['src']
     W, H = probe(src)
     fp = font_path()
 
+    cmd = [exe, '-y', '-v', 'error']
+    if 'trim' in clip:
+        start, end = clip['trim']
+        cmd += ['-ss', str(start), '-t', str(round(end - start, 3))]
+    cmd += ['-i', src]
+
+    chain, label = [], '[0:v]'
+    for n, cap in enumerate(clip.get('captions', []), start=1):
+        png = f'{work}/{tag}-{n}.png'
+        plate(cap['lines'], W, H, fp, cap.get('y', 0.5)).save(png)
+        cmd += ['-loop', '1', '-i', png]
+        chain.append(
+            f"[{n}:v]format=rgba,"
+            f"fade=t=in:st={cap['start']}:d={FADE}:alpha=1,"
+            f"fade=t=out:st={cap['end'] - FADE}:d={FADE}:alpha=1[c{n}]")
+        chain.append(f'{label}[c{n}]overlay=0:0:format=auto:shortest=0[v{n}]')
+        label = f'[v{n}]'
+
+    if chain:
+        cmd += ['-filter_complex', ';'.join(chain)]
+    cmd += ['-map', label if chain else '0:v', '-map', '0:a?',
+            '-c:v', 'libx264', '-crf', '18', '-preset', 'slow',
+            '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
+            '-movflags', '+faststart', '-shortest', out]
+    subprocess.run(cmd, check=True)
+
+
+def join(parts, out):
+    """Hard cuts between the parts — a before/after wants the flip to land."""
+    exe = imageio_ffmpeg.get_ffmpeg_exe()
+    cmd = [exe, '-y', '-v', 'error']
+    for p in parts:
+        cmd += ['-i', p]
+    streams = ''.join(f'[{i}:v][{i}:a]' for i in range(len(parts)))
+    cmd += ['-filter_complex', f'{streams}concat=n={len(parts)}:v=1:a=1[v][a]',
+            '-map', '[v]', '-map', '[a]',
+            '-c:v', 'libx264', '-crf', '18', '-preset', 'slow',
+            '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
+            '-movflags', '+faststart', out]
+    subprocess.run(cmd, check=True)
+
+
+def main():
+    check_raqm()
+    spec = json.load(open(sys.argv[1], encoding='utf-8'))
+    out = sys.argv[2]
+
     work = tempfile.mkdtemp()
     try:
-        cmd = [exe, '-y', '-v', 'error', '-i', src]
-        chain, label = [], '[0:v]'
-        for n, (lines, start, end) in enumerate(CAPTIONS, start=1):
-            png = f'{work}/cap{n}.png'
-            plate(lines, W, H, fp).save(png)
-            cmd += ['-loop', '1', '-i', png]
-            chain.append(
-                f'[{n}:v]format=rgba,'
-                f'fade=t=in:st={start}:d={FADE}:alpha=1,'
-                f'fade=t=out:st={end - FADE}:d={FADE}:alpha=1[c{n}]')
-            chain.append(f'{label}[c{n}]overlay=0:0:format=auto:shortest=0[v{n}]')
-            label = f'[v{n}]'
-
-        cmd += ['-filter_complex', ';'.join(chain),
-                '-map', label, '-map', '0:a?',
-                '-c:v', 'libx264', '-crf', '18', '-preset', 'slow',
-                '-pix_fmt', 'yuv420p', '-c:a', 'copy',
-                '-movflags', '+faststart', '-shortest', out]
-        subprocess.run(cmd, check=True)
+        parts = []
+        for i, clip in enumerate(spec['clips']):
+            part = out if len(spec['clips']) == 1 else f'{work}/part{i}.mp4'
+            caption_clip(clip, part, work, f'c{i}')
+            parts.append(part)
+        if len(parts) > 1:
+            join(parts, out)
     finally:
-        import shutil
         shutil.rmtree(work, ignore_errors=True)
 
     print(f'{out}  {os.path.getsize(out) // 1024} KB')
