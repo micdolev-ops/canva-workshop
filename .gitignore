@@ -3,3 +3,4 @@
 *.gif
 logo-profile.png
 Assistant-Bold.ttf
+__pycache__/
