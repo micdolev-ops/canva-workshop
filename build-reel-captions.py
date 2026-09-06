@@ -23,6 +23,8 @@ The spec is one clip, or several to be cut together back to back:
     ]}
 
 `y` is the box's centre as a fraction of frame height; it defaults to 0.5.
+`size` pins the type size instead of letting it auto-fit, which is how two
+captions in one reel are kept at the same size when their line lengths differ.
 """
 import json
 import os
@@ -79,8 +81,10 @@ def width(f, line):
     return box[2] - box[0]
 
 
-def fit(lines, path, box_w):
+def fit(lines, path, box_w, pinned=None):
     """Largest size at which the longest line still fits the box."""
+    if pinned:
+        return ImageFont.truetype(path, pinned), pinned
     for size in range(MAX_SIZE, 17, -1):
         f = ImageFont.truetype(path, size)
         if max(width(f, l) for l in lines) <= box_w:
@@ -88,8 +92,8 @@ def fit(lines, path, box_w):
     return ImageFont.truetype(path, 18), 18
 
 
-def plate(lines, W, H, path, centre_y):
-    f, size = fit(lines, path, W - 2 * MARGIN - 2 * PAD_X)
+def plate(lines, W, H, path, centre_y, pinned=None):
+    f, size = fit(lines, path, W - 2 * MARGIN - 2 * PAD_X, pinned)
     step = round(size * LINE_GAP)
 
     box_w = max(width(f, l) for l in lines) + 2 * PAD_X
@@ -122,7 +126,8 @@ def caption_clip(clip, out, work, tag):
     chain, label = [], '[0:v]'
     for n, cap in enumerate(clip.get('captions', []), start=1):
         png = f'{work}/{tag}-{n}.png'
-        plate(cap['lines'], W, H, fp, cap.get('y', 0.5)).save(png)
+        plate(cap['lines'], W, H, fp,
+              cap.get('y', 0.5), cap.get('size')).save(png)
         cmd += ['-loop', '1', '-i', png]
         chain.append(
             f"[{n}:v]format=rgba,"
