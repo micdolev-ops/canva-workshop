@@ -25,6 +25,12 @@ The spec is one clip, or several to be cut together back to back:
 `y` is the box's centre as a fraction of frame height; it defaults to 0.5.
 `size` pins the type size instead of letting it auto-fit, which is how two
 captions in one reel are kept at the same size when their line lengths differ.
+`style` is "plate" (purple on the brand cream, the default) or "glow" (white
+type over a soft dark halo and no panel, for footage too busy or too varied to
+put a rectangle on). A clip may also carry `speed`: 0.77 stretches it to 1/0.77
+of its length, which is how a short clip is made to hold more caption than it
+otherwise could. Slowing footage costs pace, so keep it near 1 and cut the
+script instead when it drifts far below.
 """
 import json
 import os
@@ -35,12 +41,15 @@ import tempfile
 import urllib.request
 
 import imageio_ffmpeg
-from PIL import Image, ImageDraw, ImageFont, features
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, features
 
 PURPLE = (0x4A, 0x34, 0x63, 255)
 CREAM = (0xFB, 0xF8, 0xF2, 205)          # ~80%, so the shot still reads through
 FONT_URL = ('https://fonts.gstatic.com/s/assistant/v24/'
             '2sDPZGJYnIjSi6H75xkZZE1I0yCmYzzQtgFgEGE.ttf')
+
+GLOW = (0, 0, 0)     # the halo under white type
+GLOW_BLUR, GLOW_GAIN, GLOW_ALPHA = 15, 2.4, 0.82
 
 MARGIN = 56          # from the frame edge to the box
 PAD_X, PAD_Y = 34, 26
@@ -92,6 +101,30 @@ def fit(lines, path, box_w, pinned=None):
     return ImageFont.truetype(path, 18), 18
 
 
+def glow(lines, W, H, path, centre_y, pinned=None):
+    """White type on a blurred dark halo — legible over anything, and it reads
+    as light rather than as a panel laid on the shot."""
+    f, size = fit(lines, path, W - 2 * MARGIN, pinned)
+    step = round(size * LINE_GAP)
+    top = round(H * centre_y) - step * len(lines) // 2
+
+    def stamp(img, fill):
+        d = ImageDraw.Draw(img)
+        for i, line in enumerate(lines):
+            d.text((W // 2, top + i * step + step // 2), line,
+                   font=f, fill=fill, anchor='mm', direction='rtl', language='he')
+
+    halo = Image.new('L', (W, H), 0)
+    stamp(halo, 255)
+    halo = halo.filter(ImageFilter.GaussianBlur(GLOW_BLUR))
+    halo = halo.point(lambda v: min(255, int(v * GLOW_GAIN * GLOW_ALPHA)))
+
+    im = Image.new('RGBA', (W, H), GLOW + (0,))
+    im.putalpha(halo)
+    stamp(im, (255, 255, 255, 255))
+    return im
+
+
 def plate(lines, W, H, path, centre_y, pinned=None):
     f, size = fit(lines, path, W - 2 * MARGIN - 2 * PAD_X, pinned)
     step = round(size * LINE_GAP)
@@ -124,21 +157,27 @@ def caption_clip(clip, out, work, tag):
     cmd += ['-i', src]
 
     chain, label = [], '[0:v]'
+    speed = clip.get('speed')
+    if speed:
+        chain.append(f'[0:v]setpts=PTS/{speed}[sp]')
+        label = '[sp]'
     for n, cap in enumerate(clip.get('captions', []), start=1):
         png = f'{work}/{tag}-{n}.png'
-        plate(cap['lines'], W, H, fp,
-              cap.get('y', 0.5), cap.get('size')).save(png)
+        render = glow if cap.get('style') == 'glow' else plate
+        render(cap['lines'], W, H, fp,
+               cap.get('y', 0.5), cap.get('size')).save(png)
         cmd += ['-loop', '1', '-i', png]
         chain.append(
             f"[{n}:v]format=rgba,"
             f"fade=t=in:st={cap['start']}:d={FADE}:alpha=1,"
             f"fade=t=out:st={cap['end'] - FADE}:d={FADE}:alpha=1[c{n}]")
-        chain.append(f'{label}[c{n}]overlay=0:0:format=auto:shortest=0[v{n}]')
+        chain.append(f'{label}[c{n}]overlay=0:0:format=auto:shortest=1[v{n}]')
         label = f'[v{n}]'
 
     if chain:
         cmd += ['-filter_complex', ';'.join(chain)]
-    cmd += ['-map', label if chain else '0:v', '-map', '0:a?',
+    audio = [] if clip.get('drop_audio') or clip.get('speed') else ['-map', '0:a?']
+    cmd += ['-map', label if chain else '0:v'] + audio + [
             '-c:v', 'libx264', '-crf', '18', '-preset', 'slow',
             '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
             '-movflags', '+faststart', '-shortest', out]
@@ -156,7 +195,7 @@ def join(parts, out):
             '-map', '[v]', '-map', '[a]',
             '-c:v', 'libx264', '-crf', '18', '-preset', 'slow',
             '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
-            '-movflags', '+faststart', out]
+            '-movflags', '+faststart', '-shortest', out]
     subprocess.run(cmd, check=True)
 
 
