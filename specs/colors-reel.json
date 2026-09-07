@@ -59,6 +59,32 @@
           "style": "glow"
         }
       ]
+    },
+    {
+      "src": "/tmp/claude-0/-home-user-canva-workshop/edaae061-3175-5a03-baf5-7e21a5d8f800/scratchpad/closing.mp4",
+      "captions": [
+        {
+          "lines": [
+            "ואותה פלטה, בעסק"
+          ],
+          "start": 0.25,
+          "end": 2.0,
+          "y": 0.1,
+          "size": 54,
+          "style": "ink"
+        },
+        {
+          "lines": [
+            "איזה צבע חוזר אצלך",
+            "בלי שהתכוונת?"
+          ],
+          "start": 2.2,
+          "end": 3.75,
+          "y": 0.1,
+          "size": 50,
+          "style": "ink"
+        }
+      ]
     }
   ]
 }

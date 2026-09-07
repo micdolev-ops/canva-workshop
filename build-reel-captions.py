@@ -25,9 +25,10 @@ The spec is one clip, or several to be cut together back to back:
 `y` is the box's centre as a fraction of frame height; it defaults to 0.5.
 `size` pins the type size instead of letting it auto-fit, which is how two
 captions in one reel are kept at the same size when their line lengths differ.
-`style` is "plate" (purple on the brand cream, the default) or "glow" (white
+`style` is "plate" (purple on the brand cream, the default), "glow" (white
 type over a soft dark halo and no panel, for footage too busy or too varied to
-put a rectangle on). A clip may also carry `speed`: 0.77 stretches it to 1/0.77
+put a rectangle on), or "ink" (bare brand purple, for a clean pale card that
+needs nothing behind the type). A clip may also carry `speed`: 0.77 stretches it to 1/0.77
 of its length, which is how a short clip is made to hold more caption than it
 otherwise could. Slowing footage costs pace, so keep it near 1 and cut the
 script instead when it drifts far below.
@@ -125,6 +126,21 @@ def glow(lines, W, H, path, centre_y, pinned=None):
     return im
 
 
+def ink(lines, W, H, path, centre_y, pinned=None):
+    """Brand purple, nothing behind it. For a clean cream card, where a halo
+    would only muddy the ground the design already gives us."""
+    f, size = fit(lines, path, W - 2 * MARGIN, pinned)
+    step = round(size * LINE_GAP)
+    top = round(H * centre_y) - step * len(lines) // 2
+
+    im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for i, line in enumerate(lines):
+        d.text((W // 2, top + i * step + step // 2), line,
+               font=f, fill=PURPLE, anchor='mm', direction='rtl', language='he')
+    return im
+
+
 def plate(lines, W, H, path, centre_y, pinned=None):
     f, size = fit(lines, path, W - 2 * MARGIN - 2 * PAD_X, pinned)
     step = round(size * LINE_GAP)
@@ -163,7 +179,7 @@ def caption_clip(clip, out, work, tag):
         label = '[sp]'
     for n, cap in enumerate(clip.get('captions', []), start=1):
         png = f'{work}/{tag}-{n}.png'
-        render = glow if cap.get('style') == 'glow' else plate
+        render = {'glow': glow, 'ink': ink}.get(cap.get('style'), plate)
         render(cap['lines'], W, H, fp,
                cap.get('y', 0.5), cap.get('size')).save(png)
         cmd += ['-loop', '1', '-i', png]
@@ -184,15 +200,28 @@ def caption_clip(clip, out, work, tag):
     subprocess.run(cmd, check=True)
 
 
+def has_audio(path):
+    out = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-i', path],
+                         capture_output=True, text=True).stderr
+    return any('Audio:' in l for l in out.splitlines())
+
+
 def join(parts, out):
     """Hard cuts between the parts — a before/after wants the flip to land."""
     exe = imageio_ffmpeg.get_ffmpeg_exe()
+    sound = all(has_audio(p) for p in parts)
     cmd = [exe, '-y', '-v', 'error']
     for p in parts:
         cmd += ['-i', p]
-    streams = ''.join(f'[{i}:v][{i}:a]' for i in range(len(parts)))
-    cmd += ['-filter_complex', f'{streams}concat=n={len(parts)}:v=1:a=1[v][a]',
-            '-map', '[v]', '-map', '[a]',
+    if sound:
+        streams = ''.join(f'[{i}:v][{i}:a]' for i in range(len(parts)))
+        graph = f'{streams}concat=n={len(parts)}:v=1:a=1[v][a]'
+        maps = ['-map', '[v]', '-map', '[a]']
+    else:
+        streams = ''.join(f'[{i}:v]' for i in range(len(parts)))
+        graph = f'{streams}concat=n={len(parts)}:v=1:a=0[v]'
+        maps = ['-map', '[v]']
+    cmd += ['-filter_complex', graph] + maps + [
             '-c:v', 'libx264', '-crf', '18', '-preset', 'slow',
             '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
             '-movflags', '+faststart', '-shortest', out]
