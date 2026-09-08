@@ -1,0 +1,11 @@
+{"clips": [
+  {"src": "/root/.claude/uploads/edaae061-3175-5a03-baf5-7e21a5d8f800/51b9b7e1-gemini_generated_video_354aa821.mp4",
+   "speed": 0.72,
+   "captions": [
+     {"lines":["השם שלך בפונט הכותרות שלך.","זה לוגו."],"start":0.2,"end":2.6,"y":0.30,"size":54,"style":"glow"},
+     {"lines":["לא צריך לשלם על זה.","לא צריך לחכות לזה."],"start":3.0,"end":5.6,"y":0.30,"size":54,"style":"glow"},
+     {"lines":["שם העסק, בפונט הכותרות שלך,","על הרקע הראשי שלך."],"start":5.9,"end":8.6,"y":0.30,"size":54,"style":"glow"},
+     {"lines":["ושמרי כתמונה מרובעת."],"start":8.9,"end":10.2,"y":0.30,"size":54,"style":"glow"},
+     {"lines":["זו תמונת הפרופיל שלך מהיום.","לזה קוראים לוגוטייפ."],"start":10.6,"end":13.7,"y":0.30,"size":54,"style":"glow"}
+   ]}
+]}
