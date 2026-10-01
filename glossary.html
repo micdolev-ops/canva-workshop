@@ -1,0 +1,227 @@
+<title>מילון האינסטגרם של במו ידייך</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap">
+<style>
+  :root{
+    --ground:#FBF8F2; --surface:#FFFFFF; --surface-2:#F3EDE2;
+    --ink:#2A1E38; --ink-soft:#5F5170; --ink-faint:#8B7F98; --rule:#E4DACB;
+    --accent:#4A3463; --accent-soft:#EEE9F3;
+    --gold:#A8843C; --gold-soft:#F7EFDD;
+    --alert:#A8442F; --alert-soft:#F7E6E0;
+    --good:#5F7238; --good-soft:#EBEFDD;
+    --shadow:0 1px 2px rgba(42,30,56,.05), 0 8px 24px rgba(42,30,56,.05);
+  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+    --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+    --accent:#B79BD6; --accent-soft:#291F38; --gold:#D9BC85; --gold-soft:#2E2617;
+    --alert:#E28E76; --alert-soft:#331F1A; --good:#A8BC72; --good-soft:#232B18;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);}}
+  :root[data-theme="dark"]{
+    --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+    --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+    --accent:#B79BD6; --accent-soft:#291F38; --gold:#D9BC85; --gold-soft:#2E2617;
+    --alert:#E28E76; --alert-soft:#331F1A; --good:#A8BC72; --good-soft:#232B18;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);}
+
+  *{box-sizing:border-box}
+  body{direction:rtl;background:var(--ground);color:var(--ink);
+    font-family:"Assistant",-apple-system,"Segoe UI",sans-serif;
+    font-size:17px;line-height:1.65;margin:0;padding:0 20px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto}
+  h1,h2,h3{font-family:"Frank Ruhl Libre",Georgia,serif;text-wrap:balance;margin:0;line-height:1.25}
+  h1{font-size:clamp(2rem,5.2vw,2.9rem);font-weight:900;letter-spacing:-.01em}
+  h2{font-size:clamp(1.4rem,3.2vw,1.9rem);font-weight:700}
+  h3{font-size:1.08rem;font-weight:700}
+  p{margin:0}
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+  header.top{padding:70px 0 38px;display:flex;flex-direction:column;gap:16px}
+  header.top .verdict{font-size:1.15rem;color:var(--ink-soft);max-width:60ch}
+  section{padding:42px 0;border-top:1px solid var(--rule)}
+  .sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+  .sec-head p{color:var(--ink-soft);max-width:64ch}
+
+  .diagram{background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+           padding:26px;box-shadow:var(--shadow)}
+  .diagram svg{width:100%;height:auto;display:block;max-width:660px;margin:0 auto}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .box{background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+       padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+  .box.a{border-inline-start:3px solid var(--accent)}
+  .box.g{border-inline-start:3px solid var(--gold)}
+  .box .w{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .box .d{font-size:.94rem;color:var(--ink-soft)}
+  .box .ex{background:var(--surface-2);border-radius:3px;padding:11px 13px;font-size:.88rem;color:var(--ink-soft)}
+
+  .terms{display:flex;flex-direction:column;gap:2px}
+  .term{background:var(--surface);border:1px solid var(--rule);padding:19px 22px;
+        display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:start}
+  .term + .term{border-top:none}
+  .term:first-child{border-radius:4px 4px 0 0}
+  .term:last-child{border-radius:0 0 4px 4px}
+  .term .n{display:flex;flex-direction:column;gap:3px}
+  .term .n .he{font-weight:700}
+  .term .n .en{font-size:.76rem;color:var(--ink-faint);direction:ltr;text-align:right}
+  .term .x{display:flex;flex-direction:column;gap:7px}
+  .term .x .d{color:var(--ink-soft);font-size:.95rem}
+  .term .x .y{font-size:.87rem;color:var(--ink-faint)}
+  .term .x .y b{color:var(--accent)}
+
+  .callout{background:var(--accent-soft);border-right:3px solid var(--accent);border-radius:3px;
+           padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+  .callout.gold{background:var(--gold-soft);border-right-color:var(--gold)}
+  .callout p{max-width:66ch}
+  ul.clean{margin:0;padding-inline-start:1.2em;display:flex;flex-direction:column;gap:8px}
+  ul.clean li{color:var(--ink-soft)}
+  ul.clean li b{color:var(--ink)}
+  a{color:var(--accent)}
+  a:focus-visible,*:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (max-width:640px){
+    body{font-size:16px;padding:0 16px 64px}
+    .two{grid-template-columns:1fr}
+    .term{grid-template-columns:1fr;gap:8px}
+    .term .n .en{text-align:right}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">מילון · במו ידייך</div>
+  <h1>המונחים, בעברית פשוטה</h1>
+  <p class="verdict">בכל ריל יש שני טקסטים שונים לגמרי, ורוב הבלבול מתחיל שם. נתחיל מזה.</p>
+</header>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">הבלבול המרכזי</div>
+    <h2>שני טקסטים, שני מקומות</h2>
+  </div>
+  <div class="two">
+    <div class="box a">
+      <span class="w">טקסט על המסך</span>
+      <h3>נמצא בתוך הסרטון</h3>
+      <p class="d">חלק מהתמונה עצמה, כמו כתוביות בסרט. מי שרואה את הריל רואה אותו על הווידאו. הוא לא ניתן להעתקה ולא ניתן לעריכה אחרי הפרסום.</p>
+      <p class="ex"><b>איפה כותבים:</b> בקנבה, לפני הייצוא.<br><b>למה שם:</b> רק שם יש את הפונטים והצבעים של המותג שלך. הפונטים של אינסטגרם הם לא שלך.</p>
+    </div>
+    <div class="box g">
+      <span class="w">כיתוב · תיאור</span>
+      <h3>נמצא מתחת לסרטון</h3>
+      <p class="d">הטקסט הארוך שמופיע מתחת לריל, עם ההאשטגים והקריאה לפעולה. אפשר לערוך אותו גם אחרי הפרסום.</p>
+      <p class="ex"><b>איפה כותבים:</b> באינסטגרם, במסך הפרסום.<br><b>למה שם:</b> זה בכלל לא חלק מהווידאו — זה שדה נפרד לגמרי.</p>
+    </div>
+  </div>
+  <div style="height:20px"></div>
+  <div class="callout">
+    <p><strong>אז שניכם צודקים.</strong> את כותבת את הכיתוב באינסטגרם — נכון לגמרי. אבל <b>הטקסט שרואים על הווידאו עצמו</b> חייב להיכנס לפני כן, בקנבה. אלה שני דברים נפרדים, ושניהם צריכים להיות שם.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">מפה</div>
+    <h2>איפה כל דבר יושב</h2>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 660 400" role="img" aria-label="שני מסכים: הגריד בפרופיל עם הקאבר, והריל המתנגן עם טקסט על המסך וכיתוב מתחתיו">
+      <text x="120" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">הפרופיל שלך (גריד)</text>
+      <rect x="30" y="34" width="60" height="75" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+      <rect x="96" y="34" width="60" height="75" rx="3" fill="var(--accent)" opacity="0.16" stroke="var(--accent)" stroke-width="1.6"/>
+      <rect x="104" y="46" width="44" height="6" rx="2" fill="var(--accent)"/>
+      <rect x="104" y="57" width="30" height="6" rx="2" fill="var(--accent)"/>
+      <rect x="162" y="34" width="60" height="75" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+      <rect x="30" y="115" width="60" height="75" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+      <rect x="96" y="115" width="60" height="75" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+      <rect x="162" y="115" width="60" height="75" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+      <line x1="126" y1="115" x2="126" y2="150" stroke="var(--gold)" stroke-width="1.4" stroke-dasharray="3 3"/>
+      <text x="126" y="168" text-anchor="middle" font-size="12" font-weight="700" fill="var(--gold)">קאבר</text>
+      <text x="126" y="184" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">התמונה שמייצגת</text>
+      <text x="126" y="197" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">את הריל בפרופיל</text>
+
+      <text x="470" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">הריל כשהוא מתנגן</text>
+      <rect x="400" y="34" width="140" height="250" rx="10" fill="var(--surface-2)" stroke="var(--rule)" stroke-width="1.6"/>
+      <rect x="414" y="60" width="112" height="9" rx="3" fill="var(--accent)"/>
+      <rect x="414" y="75" width="84" height="9" rx="3" fill="var(--accent)"/>
+      <line x1="540" y1="70" x2="590" y2="70" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="3 3"/>
+      <text x="596" y="66" font-size="12" font-weight="700" fill="var(--accent)">טקסט</text>
+      <text x="596" y="80" font-size="12" font-weight="700" fill="var(--accent)">על המסך</text>
+      <text x="596" y="95" font-size="10.5" fill="var(--ink-faint)">נכתב בקנבה</text>
+
+      <rect x="414" y="228" width="96" height="6" rx="2" fill="var(--ink)" opacity="0.4"/>
+      <rect x="414" y="240" width="74" height="6" rx="2" fill="var(--ink)" opacity="0.4"/>
+      <rect x="414" y="252" width="86" height="6" rx="2" fill="var(--ink)" opacity="0.25"/>
+      <line x1="400" y1="245" x2="352" y2="245" stroke="var(--gold)" stroke-width="1.4" stroke-dasharray="3 3"/>
+      <text x="346" y="241" text-anchor="end" font-size="12" font-weight="700" fill="var(--gold)">כיתוב</text>
+      <text x="346" y="256" text-anchor="end" font-size="10.5" fill="var(--ink-faint)">נכתב באינסטגרם</text>
+
+      <rect x="400" y="264" width="140" height="20" rx="0" fill="var(--alert)" opacity="0.13"/>
+      <text x="470" y="278" text-anchor="middle" font-size="10" fill="var(--alert)">אזור מסוכן — כפתורים</text>
+      <text x="470" y="302" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">אל תשימי טקסט בתחתית —</text>
+      <text x="470" y="316" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">אינסטגרם מכסה אותו</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">מונחים</div>
+    <h2>מה שכדאי להכיר</h2>
+  </div>
+  <div class="terms">
+    <div class="term"><div class="n"><span class="he">קאבר</span><span class="en">Cover</span></div><div class="x">
+      <p class="d">התמונה הסטטית שמייצגת את הריל בפרופיל שלך. כמו כריכה של ספר — זה מה שאישה רואה כשהיא נכנסת לפרופיל, לפני שהיא לוחצת.</p>
+      <p class="y"><b>מה לעשות:</b> בהעלאה אינסטגרם מבקשת לבחור קאבר. בחרי פריים מהסרטון שבו ההוק כבר כתוב — כך הכותרת נראית בפרופיל גם בלי ללחוץ.</p></div></div>
+    <div class="term"><div class="n"><span class="he">גריד · פיד</span><span class="en">Grid · Feed</span></div><div class="x">
+      <p class="d">הגריד הוא רשת התמונות בפרופיל שלך. הפיד הוא הזרם שאנשים גוללים בו בעמוד הבית.</p>
+      <p class="y"><b>למה זה חשוב:</b> הריל מביא אנשים, הגריד מחליט אם יעקבו.</p></div></div>
+    <div class="term"><div class="n"><span class="he">הוק</span><span class="en">Hook</span></div><div class="x">
+      <p class="d">המשפט הראשון — מה שנאמר או נכתב בשנייה הראשונה. תפקידו לעצור את האגודל.</p>
+      <p class="y"><b>הכלל:</b> על הפריים הראשון ממש. לא אחרי אנימציה, לא בשנייה השלישית.</p></div></div>
+    <div class="term"><div class="n"><span class="he">קריאה לפעולה</span><span class="en">CTA</span></div><div class="x">
+      <p class="d">המשפט שמבקש מהקוראת לעשות משהו — להגיב, לשמור, לעקוב.</p>
+      <p class="y"><b>הכלל:</b> אחת בלבד לפוסט. שתיים מבטלות זו את זו.</p></div></div>
+    <div class="term"><div class="n"><span class="he">חשיפה</span><span class="en">Reach</span></div><div class="x">
+      <p class="d">כמה <b>אנשים שונים</b> ראו את הפוסט. אדם שראה שלוש פעמים נספר פעם אחת.</p>
+      <p class="y"><b>זה המדד</b> לשאלה ״לכמה אנשים הגעתי״.</p></div></div>
+    <div class="term"><div class="n"><span class="he">צפיות</span><span class="en">Views</span></div><div class="x">
+      <p class="d">כמה <b>פעמים</b> הסרטון נצפה. אותו אדם שראה שלוש פעמים נספר שלוש.</p>
+      <p class="y"><b>לכן:</b> צפיות גבוהות מחשיפה זה סימן טוב — סימן שאנשים צפו שוב.</p></div></div>
+    <div class="term"><div class="n"><span class="he">זמן צפייה</span><span class="en">Watch time</span></div><div class="x">
+      <p class="d">כמה שניות בממוצע אנשים נשארו בסרטון.</p>
+      <p class="y"><b>המדד הכי חשוב שלך כרגע</b> — הוא היחיד שחברות שנכנסות לפרגן לא מנפחות. לייק לוקח שנייה; להישאר 14 שניות לא.</p></div></div>
+    <div class="term"><div class="n"><span class="he">שמירות</span><span class="en">Saves</span></div><div class="x">
+      <p class="d">כמה אנשים שמרו את הפוסט לעצמם כדי לחזור אליו.</p>
+      <p class="y"><b>למה זה חזק:</b> שמירה אומרת לאלגוריתם שהתוכן שימושי, לא רק נחמד. תוכן לימודי וקרוסלות מקבלים הכי הרבה.</p></div></div>
+    <div class="term"><div class="n"><span class="he">עוקבים ולא-עוקבים</span><span class="en">Followers / Non-followers</span></div><div class="x">
+      <p class="d">אינסטגרם מפלחת לך בתובנות של כל ריל כמה מהצפיות הגיעו ממי שכבר עוקב, וכמה מאנשים חדשים.</p>
+      <p class="y"><b>זה הנתון הנקי שלך:</b> החלק של הלא-עוקבים הוא התוצאה האמיתית, בלי החברות.</p></div></div>
+    <div class="term"><div class="n"><span class="he">אודיו טרנדי</span><span class="en">Trending audio</span></div><div class="x">
+      <p class="d">שיר או צליל שהרבה אנשים משתמשים בו כרגע. מסומן בחץ קטן עולה בספריית המוזיקה.</p>
+      <p class="y"><b>חייב להיבחר באינסטגרם</b> ולא בקנבה — רק שם יש את הספרייה הזו.</p></div></div>
+    <div class="term"><div class="n"><span class="he">קרוסלה</span><span class="en">Carousel</span></div><div class="x">
+      <p class="d">פוסט עם כמה תמונות שגוללים ביניהן לצדדים.</p>
+      <p class="y"><b>תפקידה:</b> להעמיק ולהישמר אצל מי שכבר הגיעה. לא להביא אנשים חדשים — לזה יש ריילס.</p></div></div>
+    <div class="term"><div class="n"><span class="he">ריל ניסיוני</span><span class="en">Trial Reel</span></div><div class="x">
+      <p class="d">ריל שמוצג רק למי שלא עוקב אחרייך. לא מופיע בפרופיל ולא נשלח לעוקבות.</p>
+      <p class="y"><b>לא בשבילך עכשיו</b> — העוקבות שלך הן נשות עסקים שהמשוב שלהן חשוב. נחזור לזה סביב 200 עוקבות.</p></div></div>
+    <div class="term"><div class="n"><span class="he">אזור בטוח</span><span class="en">Safe zone</span></div><div class="x">
+      <p class="d">החלק במסך שאינסטגרם לא מכסה בכפתורים ובכיתוב.</p>
+      <p class="y"><b>הכלל:</b> טקסט בשליש העליון או במרכז. התחתית מכוסה בכ-250 פיקסלים של ממשק.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">בקצרה</div>
+    <h2>סדר הפעולות לריל של יום ראשון</h2>
+  </div>
+  <ul class="clean">
+    <li><b>בקנבה</b> — הקליפ שלוש פעמים, וחמשת המשפטים כטקסט על המסך. ייצוא MP4 בלי מוזיקה.</li>
+    <li><b>באינסטגרם</b> — להעלות את הקובץ, להוסיף אודיו טרנדי, לבחור קאבר שבו ההוק נראה, ולהדביק את הכיתוב מהלוח.</li>
+    <li><b>אחרי הפרסום</b> — לפתוח את התובנות של הריל ולרשום כמה מהצפיות הגיעו מלא-עוקבים.</li>
+  </ul>
+</section>
+
+</div>

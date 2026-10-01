@@ -1,0 +1,555 @@
+<title>תדריך במו ידייך</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap">
+
+<style>
+  :root{
+    --ground:#FBF8F2; --surface:#FFFFFF; --surface-2:#F3EDE2;
+    --ink:#2A1E38; --ink-soft:#5F5170; --ink-faint:#8B7F98; --rule:#E4DACB;
+    --accent:#4A3463; --accent-soft:#EEE9F3;
+    --gold:#A8843C; --gold-soft:#F7EFDD;
+    --alert:#A8442F; --alert-soft:#F7E6E0;
+    --good:#5F7238; --good-soft:#EBEFDD;
+    --shadow:0 1px 2px rgba(42,30,56,.05), 0 8px 24px rgba(42,30,56,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+      --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+      --accent:#B79BD6; --accent-soft:#291F38;
+      --gold:#D9BC85; --gold-soft:#2E2617;
+      --alert:#E28E76; --alert-soft:#331F1A;
+      --good:#A8BC72; --good-soft:#232B18;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#17111E; --surface:#1F1829; --surface-2:#2A2136;
+    --ink:#EDE7F0; --ink-soft:#B4A8BF; --ink-faint:#897D95; --rule:#362C44;
+    --accent:#B79BD6; --accent-soft:#291F38;
+    --gold:#D9BC85; --gold-soft:#2E2617;
+    --alert:#E28E76; --alert-soft:#331F1A;
+    --good:#A8BC72; --good-soft:#232B18;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box}
+  body{direction:rtl;background:var(--ground);color:var(--ink);
+    font-family:"Assistant",-apple-system,"Segoe UI",sans-serif;
+    font-size:17px;line-height:1.65;margin:0;padding:0 20px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto}
+
+  h1,h2,h3{font-family:"Frank Ruhl Libre",Georgia,serif;text-wrap:balance;margin:0;line-height:1.25}
+  h1{font-size:clamp(2rem,5.2vw,2.9rem);font-weight:900;letter-spacing:-.01em}
+  h2{font-size:clamp(1.35rem,3.1vw,1.8rem);font-weight:700}
+  h3{font-size:1.05rem;font-weight:700;color:var(--ink)}
+  p{margin:0}
+
+  .eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+  header.top{padding:64px 0 34px;display:flex;flex-direction:column;gap:14px}
+  header.top .lede{font-size:1.12rem;color:var(--ink-soft);max-width:62ch}
+
+  section{padding:38px 0;border-top:1px solid var(--rule)}
+  .sec-head{display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+  .sec-head p{color:var(--ink-soft);max-width:64ch}
+
+  .action{background:var(--accent);color:var(--ground);border-radius:5px;
+          padding:26px 28px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+  .action h2{color:var(--ground);font-size:1.35rem}
+  .action p{color:var(--ground);opacity:.86;font-size:.95rem;max-width:60ch}
+  button.copy{align-self:flex-start;font-family:inherit;font-size:.95rem;font-weight:700;
+              color:var(--accent);background:var(--ground);border:none;border-radius:4px;
+              padding:11px 24px;cursor:pointer;transition:transform .1s, opacity .12s}
+  button.copy:hover{opacity:.9}
+  button.copy:active{transform:translateY(1px)}
+  button.copy.done{background:var(--good-soft);color:var(--good)}
+  button.copy.fail{background:var(--alert-soft);color:var(--alert)}
+
+  ul.clean{margin:0;padding-inline-start:1.2em;display:flex;flex-direction:column;gap:9px}
+  ul.clean li{color:var(--ink-soft)}
+  ul.clean li b{color:var(--ink)}
+
+  .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:.88rem}
+  th,td{padding:10px 13px;text-align:right;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);
+     font-weight:700;background:var(--surface-2);white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.d{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .st{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.72rem;font-weight:700;white-space:nowrap}
+  .st.ok{background:var(--good-soft);color:var(--good)}
+  .st.no{background:var(--alert-soft);color:var(--alert)}
+  .st.mid{background:var(--gold-soft);color:var(--gold)}
+
+  .cards{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+        padding:18px 20px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow)}
+  .card h3{font-family:"Assistant",sans-serif;font-size:.98rem}
+  .card p{font-size:.92rem;color:var(--ink-soft)}
+  .card.new{border-inline-start:3px solid var(--gold)}
+
+  .docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .doc{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:16px 18px;
+       display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow)}
+  .doc .n{font-weight:700;font-size:.95rem}
+  .doc .d{font-size:.85rem;color:var(--ink-soft)}
+  .doc a{font-size:.8rem;word-break:break-all}
+
+  .callout{background:var(--gold-soft);border-inline-start:3px solid var(--gold);border-radius:3px;
+           padding:18px 20px;display:flex;flex-direction:column;gap:9px}
+  .callout p{color:var(--ink-soft);max-width:66ch;font-size:.95rem}
+  .callout p b{color:var(--ink)}
+
+  a{color:var(--accent)}
+  a:focus-visible,*:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (max-width:600px){
+    body{font-size:16px;padding:0 16px 64px}
+    .action{padding:22px}
+  }
+  pre.prompt{margin:0;white-space:pre-wrap;word-break:break-word;background:var(--surface);border:1px solid var(--rule);
+             border-radius:4px;padding:14px 16px;font:inherit;font-size:.9rem;line-height:1.7;color:var(--ink)}
+  .plabel{font-weight:700;font-size:.92rem;margin-top:8px}
+  .stack{display:flex;flex-direction:column;gap:10px}
+  .tablewrap table.fit{min-width:0}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">תדריך מסירה · עודכן 01.10.2026</div>
+  <h1>מאיפה ממשיכים</h1>
+  <p class="lede">כל מה שצ׳אט חדש צריך כדי להמשיך מהנקודה הזו בלי לשאול אותך הכל מחדש, ובלי לפתוח שוב החלטות שכבר סגרנו.</p>
+</header>
+
+<div class="action">
+  <h2>העתיקי את התדריך, הדביקי בצ׳אט חדש</h2>
+  <p>הכפתור מעתיק את כל מה שכתוב בעמוד הזה כטקסט רגיל. פותחים סשן חדש על אותו ריפו ואותו ענף, מדביקים, וממשיכים. סקיל עריכת הרילים נטען בסשן החדש לבד.</p>
+  <button class="copy" type="button" id="copyAll">העתק את כל התדריך</button>
+</div>
+
+<section id="who">
+  <div class="sec-head">
+    <div class="eyebrow">רקע</div>
+    <h2>העסק והמטרה</h2>
+  </div>
+  <ul class="clean">
+    <li><b>מיכל דולב, ״במו ידייך״.</b> מלמדת נשות עסקים לבנות זהות ויזואלית מקצועית עם קנבה וכלי AI.</li>
+    <li><b>אינסטגרם:</b> ‎@michalcreates.il, חשבון מקצועי וקטן (12 עוקבות ב-8.9, מספר עדכני לבדוק במטריקול). דף פייסבוק עסקי ״במו ידייך״ מקושר אליו.</li>
+    <li><b>המטרה:</b> לידים לשיחות ייעוץ, ומשם לקורס ולסדנה. אורגני מחמם, ממומן מביא.</li>
+    <li><b>הקהל:</b> נשות עסקים עצמאיות.</li>
+    <li><b>ההשקה זזה מ-5.10 ל-2.11.</b> החופש הגדול, החגים ושבועיים של מחלה. האסטרטגיה עם לירז לא השתנתה: אותו סדר, אותו משפך, אותם ימי שבוע, חודש אחד קדימה.</li>
+    <li><b>שני מגנטים.</b> מגנט 1 (ערכת מותג) מוביל לשיחת ייעוץ, ועולה ב-2.11. מגנט 2 מוביל לקבוצת וואטסאפ, למי שצריכה עוד חימום ולבניית קהילה. התאריך שלו פתוח.</li>
+  </ul>
+</section>
+
+<section id="launch">
+  <div class="sec-head">
+    <div class="eyebrow">הלוח החדש</div>
+    <h2>ההשקה וההכנות</h2>
+    <p>הפירוט המלא, כולל טקסטים לכל יום, נמצא בלוח התוכן בחלק העליון.</p>
+  </div>
+  <div class="stack">
+    <div class="tablewrap">
+      <table class="fit">
+        <thead><tr><th>תאריך</th><th>מה קורה</th></tr></thead>
+        <tbody>
+          <tr><td class="d">01.11 א׳</td><td>ריל טיזר, מיחזור הריל החזק, בלי בקשה</td></tr>
+          <tr><td class="d">02.11 ב׳</td><td>המגנט עולה: קרוסלה 8, סטורי עם קישור, היילייט ״מתנה״, פוסטים בקבוצות</td></tr>
+          <tr><td class="d">03.11 ג׳</td><td>ריל ההדרכה המלאה</td></tr>
+          <tr><td class="d">04.11 ד׳</td><td>יום נשימה, סטוריז בלבד</td></tr>
+          <tr><td class="d">05.11 ה׳</td><td>הממומן נפתח, קהל לפי תחומי עניין</td></tr>
+          <tr><td class="d">~26.11 ה׳</td><td>רימרקטינג (מודעות למי שכבר נחשפה), אם הקהל החם גדול מספיק</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tablewrap">
+      <table class="fit">
+        <thead><tr><th>שבוע</th><th>הכנות</th></tr></thead>
+        <tbody>
+          <tr><td class="d">4-8.10</td><td>רואה חשבון ופתיחת עוסק פטור (מיכל). סדרת המיילים של מגנט 1 ברב מסר (אני כותב, היא מאשרת). הדרכת האווטאר במועדון (מיכל).</td></tr>
+          <tr><td class="d">11-15.10</td><td>הקלטת ההדרכה של מגנט 1, הקלטת מסך עם קול (מיכל). תסריטים לסרטון המכירה ולממומן (אני). טיוטת מדיניות פרטיות, תקנון ותיבת הסכמה לדיוור (אני מנסח, בדיקה מקצועית).</td></tr>
+          <tr><td class="d">18-22.10</td><td>הקלטת סרטון המכירה והממומן (מיכל). דף התודה ברב מסר עם סרטון וכפתור לשיחה (אני בונה). חיבור דף המגנט, הרשימה, דף התודה והמיילים.</td></tr>
+          <tr><td class="d">25-29.10</td><td>בדיקה מלאה כמו לקוחה (מיכל). חשבון מודעות במטא ואמצעי תשלום. רזרבה.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <p><b>לא חוסם את ההשקה:</b> חברת סליקה (צריך רק כשמישהי משלמת), מנוי זום (לשיחה אחת על אחת Google Meet חינמי), מגנט 2.</p>
+      <p><b>אורגני באוקטובר, על אש נמוכה:</b> 12 פרסומים בחודש במקום כ-22. ימי א׳ ו-ג׳ ריל ב-20:45. יום ה׳ לסירוגין ריל (20:45) וקרוסלה (20:30). כל פרסום מקבל סטורי שמפנה אליו. <b>הנושאים עוד לא נבחרו.</b> הכיוון שלה: מעשי ולא עיוני, כי זה מה ששומרים ומשתפים. ערכת מותג וטעויות כבר מוצו.</p>
+    </div>
+  </div>
+</section>
+
+<section id="status">
+  <div class="sec-head">
+    <div class="eyebrow">נקודת ההתחלה</div>
+    <h2>איפה הדברים עומדים</h2>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>מה</th><th>מצב</th><th>הערה</th></tr></thead>
+      <tbody>
+        <tr><td class="d">לוח התוכן, גרסה 3</td><td><span class="st ok">מעודכן</span></td><td>ההשקה ב-2.11, שני המגנטים, שבועות ההכנה, אוקטובר באש נמוכה. שורת ״כתבי ערכה בתגובות״ הוסרה מקרוסלה 8: המגנט רק דרך הקישור.</td></tr>
+        <tr><td class="d">מפת התוכן שלי</td><td><span class="st ok">מלאה</span></td><td><code>מפת-התוכן-שלי-מלא.xlsx</code> בריפו, מנתוני מטריקול. ארבע לשוניות.</td></tr>
+        <tr><td class="d">כיסויים לרילים</td><td><span class="st ok">מוכנים</span></td><td>נווה שלום (17.09), 5 טעויות (29.09), אפשר לזהות אותך, הצ׳ק. שני כיסויים מיותרים שאפשר למחוק בקנבה: DAHWDFksSRk, DAHWDFIDh2E.</td></tr>
+        <tr><td class="d">היילייטס</td><td><span class="st ok">הוגדרו</span></td><td>היכרות, מתנה, טיפים, מהשטח. וסטורי היכרות מקנבה. היא הוסיפה אותם בעצמה.</td></tr>
+        <tr><td class="d">ניקוי הגריד</td><td><span class="st mid">בתהליך</span></td><td>רקעים הוסרו מהכיסויים. פוסטי החגים: הומלץ להעביר לארכיון ולא למחוק.</td></tr>
+        <tr><td class="d">מתנה 1: פרומפט פלטה</td><td><span class="st mid">בבדיקה</span></td><td>החברות שלה בודקות על עסקים אמיתיים. ממתינים לתוצאות ולרשות להראות אותן בריל.</td></tr>
+        <tr><td class="d">זרינו (Zernio)</td><td><span class="st mid">חצי דרך</span></td><td>חשבון פתוח, אינסטגרם ופייסבוק העסקיים מחוברים. החיבור לקלוד וההגדרה של הכלל עוד לא נעשו.</td></tr>
+        <tr><td class="d">עריכת וידאו</td><td><span class="st ok">עובד</span></td><td>ריל בדיקה בסגנון דנה ישראלי נערך ואושר (״עריכה יפה והמסר עובר״). הסקיל <code>reel-editor</code> שמור בריפו.</td></tr>
+        <tr><td class="d">סדרת מיילים ברב מסר</td><td><span class="st no">לא קיימת</span></td><td>שבוע 4-8.10. המשימה הראשונה שלי בלוח.</td></tr>
+        <tr><td class="d">תסריטים, משפטי, דף תודה</td><td><span class="st no">לא התחלנו</span></td><td>לפי שבועות ההכנה.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="data">
+  <div class="sec-head">
+    <div class="eyebrow">מה הנתונים אמרו</div>
+    <h2>ממצאים שעדיין תקפים</h2>
+    <p>כל אחד מהם נמדד. כמה מהם ביטלו הנחות קודמות.</p>
+  </div>
+  <div class="cards">
+    <div class="card new">
+      <h3>ריילס מגיעים רחוק יותר מקרוסלות</h3>
+      <p>בספטמבר קרוסלות הגיעו ל-4 עד 22 אנשים, ריילס ל-7 עד 131. בגלל זה אוקטובר עבר לקרוסלה כל שבועיים.</p>
+    </div>
+    <div class="card new">
+      <h3>החשיפה יורדת</h3>
+      <p>ב-25.08 ארבעה פריטים הגיעו ל-282, ועשרה פריטים בספטמבר ל-189. קצב השמירות טוב, 5.8%.</p>
+    </div>
+    <div class="card new">
+      <h3>השיתופים היחידים הגיעו מריל ״מאחורי הקלעים״</h3>
+      <p>הריל של 17.09 (נווה שלום), 236 צפיות בהמשך. תוכן אישי ואמיתי הוא מה ששיתפו.</p>
+    </div>
+    <div class="card">
+      <h3>סטוריז הם מקור צפיות מרכזי</h3>
+      <p>23.3% מהצפיות בתחילת הדרך. הכלל: כל פרסום מקבל סטורי שמפנה אליו.</p>
+    </div>
+    <div class="card">
+      <h3>תווית AI לא פוגעת בהפצה</h3>
+      <p>היא חוסמת רק תזמון מראש באינסטגרם. לא מורידים תווית כדי לתזמן.</p>
+    </div>
+    <div class="card">
+      <h3>המספרים של דף הפייסבוק מטעים</h3>
+      <p>פייסבוק סופר צפייה בכל הפעלה אוטומטית בגלילה. הערך של פייסבוק אצלה הוא בקבוצות, לא בדף.</p>
+    </div>
+    <div class="card new">
+      <h3>מה עובד אצל דנה ישראלי</h3>
+      <p>ריל אחד שנבדק: 1,504 לייקים מול 9,582 תגובות, כי הסוף ביקש ״כתבו לינק״. מבנה: שאלת כאב, תסכול, שבירה (״די״), פתרון, הוכחה, הצעה, מילה לתגובה.</p>
+    </div>
+  </div>
+</section>
+
+<section id="gifts">
+  <div class="sec-head">
+    <div class="eyebrow">ערוץ חדש</div>
+    <h2>מתנות למגיבות, בלי מאני צ׳אט</h2>
+    <p>מי שמגיבה במילה מסוימת מקבלת מתנה בהודעה פרטית. לאורגני בלבד. המגנט עצמו הולך רק דרך קישור.</p>
+  </div>
+  <ul class="clean">
+    <li><b>הכלל למתנה:</b> חייבת לתת תוצאה בעסק של העוקבת תוך 10 דקות. מיכל פסלה תבנית של המותג שלה: ״למה שמישהי תרצה תבנית שלי? זה לא קשור בכלל לעסק שלה״.</li>
+    <li><b>מתנה 1: פרומפט פלטה בשני שלבים.</b> מילת התגובה: <b>פלטה</b>, התאמה מדויקת. נבדק: ברואת חשבון צבע ההדגשה יצא בניגודיות 2.7, ולכן נוסף לכלל 6 גם צבע ההדגשה (תוקן ל-#B07A1F, ניגודיות 3.4).</li>
+    <li><b>שני פרומפטים כי</b> בג׳מיני ובג׳יפיטי צריך ללחוץ קודם על ״צור תמונה״. ההערה הזו של מיכל.</li>
+    <li><b>הכלי: זרינו.</b> מנוע תגובה להודעה דרך API או MCP. התוכנית החינמית: עד 2 חשבונות. המחיר בתשלום לא אומת. MCP: <code>https://mcp.zernio.com/mcp</code>. API: <code>https://zernio.com/api/v1</code>. הומלץ להגדיר מהמחשב שלה (Claude Code שם מחובר לזרינו), או להוסיף את הקונקטור כאן.</li>
+    <li><b>אזהרות מהמדריך:</b> תשובה פרטית אחת בלבד לכל תגובה, לתמיד. מילה בעברית עם קידומת (״הפלטה״) עלולה לא להיתפס, לכן התאמה מדויקת. כלל אחד לכל פוסט. הודעות למי שלא עוקבת נוחתות בבקשות הודעה. לבדוק מחשבון אחר.</li>
+    <li><b>ההודעות:</b> הודעה 1 נותנת (עם כפתור). הודעה 2: הפרומפט, בקשה לעקוב עם רשות לבטל, ו״נתקעת? תכתבי לי כאן״.</li>
+    <li><b>שאלה פתוחה:</b> האם הודעות אוטומטיות שיוצאות בשבת מקובלות עליה. לא נשאלה עדיין.</li>
+  </ul>
+  <div class="stack" style="margin-top:18px">
+    <div class="plabel">פרומפט 1, בצ׳אט רגיל</div>
+    <pre class="prompt" data-label="פרומפט פלטה 1">אתה מעצב מותגים לעסקים קטנים. בנה לי פלטת צבעים של 3 צבעים לעסק שלי.
+העסק שלי: [מה את עושה ולמי, במשפט אחד]
+שלוש מילים שאני רוצה שלקוחה תרגיש כשהיא רואה פוסט שלי: [מילה, מילה, מילה]
+צבע שאני כבר אוהבת או משתמשת בו: [צבע, או "אין"]
+מה הלקוחה שלי מרגישה לפני שהיא פונה אליי, ומה אחרי: [לפני] ← [אחרי]
+הכללים:
+1. בדיוק 3 צבעים, לפי חוק 60/30/10: רקע (60%): בהיר ורגוע, לא לבן נקי. משני (30%): כהה מספיק כדי לשמש גם לכל הטקסט. הדגשה (10%): לכפתור, למספר או למילה אחת בכותרת.
+2. אם כתבתי צבע שאני אוהבת, תבנה סביבו ואל תוותר עליו.
+3. אם העסק שלי הוא שירות בלי מוצר שרואים, תבסס את הצבעים על המעבר מ"לפני" ל"אחרי".
+4. אל תבחר את הצבע הצפוי ביותר לתחום שלי רק כי הוא צפוי.
+5. לכל צבע: שם בעברית, קוד HEX, ומשפט אחד פשוט למה הוא מתאים לעסק שלי, בלי מונחים מקצועיים.
+6. בדוק לפני שאתה עונה: טקסט בצבע המשני צריך להיקרא בקלות על הרקע, ומילה בצבע ההדגשה צריכה לבלוט על הרקע ולא להיבלע בו. אם אחד מהם חלש, תכהה אותו.
+7. בסוף: כתוב את שלושת הקודים בשורה אחת, בסדר רקע, משני, הדגשה.</pre>
+    <div class="plabel">פרומפט 2, באותו צ׳אט אחרי לחיצה על ״צור תמונה״</div>
+    <pre class="prompt" data-label="פרומפט פלטה 2">צור תמונה של פוסט לאינסטגרם לעסק שלי, לפי פלטת הצבעים שבחרת:
+רקע [קוד], צבע משני [קוד], צבע הדגשה [קוד].
+סגנון נקי ומקצועי, הרבה מרווח.
+רוב השטח בצבע הרקע, הצבע המשני בכמה אלמנטים, וצבע ההדגשה רק בפרט אחד קטן.
+בלי טקסט בכלל. השאר מקום ריק בחלק העליון לכותרת.</pre>
+  </div>
+</section>
+
+<section id="video">
+  <div class="sec-head">
+    <div class="eyebrow">ערוץ חדש</div>
+    <h2>וידאו: היא מייצרת, אני עורך</h2>
+    <p>עריכה לקחה לה שעות. המטרה: 10 עד 15 דקות שלה לריל. כל הפרטים הטכניים בסקיל <code>.claude/skills/reel-editor</code>.</p>
+  </div>
+  <ul class="clean">
+    <li><b>הסגנון: דנה ישראלי.</b> מינימליסטי ונקי. רקע חלק, כיסא, טקסט בשלוש רמות שנבנה מילה אחרי מילה בשליש העליון, ואפקט אחד שממחיש מילה ואז חוזר לשקט. עדן ביבס רועש מדי לטעמה, אבל העקרונות שלו שימושיים.</li>
+    <li><b>הקליפים:</b> ג׳מיני ו-Flow (מנוי Google AI Pro, כ-3 קליפים ביום בג׳מיני ועוד ב-Flow, 10 שניות עם סאונד). אני כותב פרומפטים לפי דף הדמות שלה, היא מייצרת. אין לי גישה לחשבון הגוגל שלה.</li>
+    <li><b>ניקוד לפני דיבור.</b> כל טקסט שהדמות אומרת עובר ניקוד. הכלל הזה שלה.</li>
+    <li><b>הקליפ הראשון ״לא מאה אחוז, לא בהגייה ולא בדיוק בדמות״.</b> הומלץ: צילום עצמי בטלפון לקטעי דיבור, ג׳מיני לקטעים בלי דיבור. היא עוד לא החליטה.</li>
+    <li><b>הפריים הראשון חייב להיות רגוע.</b> בגרסה הראשונה הוא נחתך באמצע תנועת פה, והיא ביקשה לתקן.</li>
+    <li><b>תהליך מוצע:</b> היא נותנת נושא, אני מחזיר ״ערכת ריל״ (תסריט מנוקד, פרומפטים, טקסט למסך, כיתוב, טקסט לכיסוי). היא מייצרת או מצלמת בסבב שבועי, שומרת בתיקייה בדרייב, ואני עורך ומכין כיסוי בקנבה.</li>
+  </ul>
+</section>
+
+<section id="closed">
+  <div class="sec-head">
+    <div class="eyebrow">אל תפתחו מחדש</div>
+    <h2>החלטות סגורות</h2>
+    <p>כל אחת מהן נבדקה, לרוב אחרי ויכוח.</p>
+  </div>
+  <div class="cards">
+    <div class="card new">
+      <h3>המגנט רק דרך קישור</h3>
+      <p>דף נחיתה, ובממומן יש קישורים. מילה בתגובות שמורה למתנות הקטנות של האורגני.</p>
+    </div>
+    <div class="card new">
+      <h3>קרוסלה כל שבועיים</h3>
+      <p>היא כלי המרה ולא חשיפה: משכנעת את מי שכבר הגיעה לפרופיל לעקוב. אבל ריילס מגיעים רחוק יותר, אז פחות קרוסלות.</p>
+    </div>
+    <div class="card new">
+      <h3>ארכיון ולא מחיקה</h3>
+      <p>פוסטים שלא מתאימים לגריד (כמו פוסטי החגים) עוברים לארכיון. אפשר להחזיר, והנתונים נשמרים.</p>
+    </div>
+    <div class="card">
+      <h3>Trial Reels לא זמין: צריך 1,000 עוקבים</h3>
+      <p>נכנס פעם ללוח בטעות ובוטל. 1,000 עוקבים הוא היעד שפותח את הכלי.</p>
+    </div>
+    <div class="card">
+      <h3>פייסבוק: ממשיכים לסנכרן, לא משקיעים</h3>
+      <p>בלי עבודה ידנית לכל פוסט, ובלי להסיק מהמספרים של הדף. הערך הוא בקבוצות.</p>
+    </div>
+    <div class="card">
+      <h3>מפרסמים ישירות באינסטגרם או ב-Business Suite</h3>
+      <p>מטריקול נשאר לניתוח נתונים.</p>
+    </div>
+    <div class="card">
+      <h3>לא לבקש מהחברות לייקים</h3>
+      <p>צפייה של שתי שניות ולב מנומס מורידים את זמן הצפייה הממוצע, שזה מה שאינסטגרם מודד לפני שמראה לזרים.</p>
+    </div>
+    <div class="card">
+      <h3>אודיו: קול מנצח טרנד</h3>
+      <p>כשיש קול שאומר משהו, הוא על 100 ומוזיקה על 15 עד 25.</p>
+    </div>
+    <div class="card">
+      <h3>עד 4 האשטגים</h3>
+      <p>הם תווית נושא, לא מנוע חשיפה.</p>
+    </div>
+    <div class="card">
+      <h3>IGRE24 של מטריקול הוא שניות, לא אחוזים</h3>
+      <p>זמן צפייה ממוצע. 8 עד 16 שניות זה גבוה.</p>
+    </div>
+  </div>
+</section>
+
+<section id="groups">
+  <div class="sec-head">
+    <div class="eyebrow">ערוץ פעיל</div>
+    <h2>קבוצות פייסבוק</h2>
+  </div>
+  <ul class="clean">
+    <li><b>19 קבוצות של נשות עסקים.</b> ברוב הקבוצות שלה מותר לפרסם. הבדיקה שלה בשטח גוברת על הנחה שלי.</li>
+    <li><b>תשובות בתגובות הן המנוע</b>, ופוסטים הם שכבה שנייה: אחד לקבוצה כל שבועיים, מפוזר.</li>
+    <li><b>לא אותו טקסט ל-19 קבוצות.</b> זה נראה כספאם והחסימה תהיה על החשבון האישי שלה. שתיים ביום לכל היותר, ולהחליף את שורות הפתיחה.</li>
+    <li><b>לתייג את הדף, לא להדביק כתובת.</b> פרסום בקבוצות הוא ידני בלבד, אין כלי שיכול לפרסם שם.</li>
+  </ul>
+</section>
+
+<section id="tech">
+  <div class="sec-head">
+    <div class="eyebrow">כבר נבדק, אל תחזרו על זה</div>
+    <h2>אילוצים ומסלולים טכניים</h2>
+  </div>
+  <ul class="clean">
+    <li><b>אבטחה:</b> לא מבקשים ממנה להדביק בצ׳אט מפתח API, טוקן או סיסמה. מפתחות נכנסים להגדרות הסביבה (״API credentials״) או לקונקטור. לא מבקשים סיסמת גוגל.</li>
+    <li><b>מטריקול:</b> brandId 6720624, userId 5170750. משתמשים ב-<code>getAnalyticsDataByMetrics</code>. פוסטים IGPO01-29, ריילס IGRE01-29. אין שם ״אחוז לא עוקבות״ ולא ״ביקורים בפרופיל לפוסט״. שיתופים רק לריילס.</li>
+    <li><b>קנבה דרך MCP:</b> <code>copy-design</code>, אחר כך <code>read-design</code> עם <code>open_transaction</code>, אחר כך <code>edit-design</code> ו-<code>commit</code>. <code>recolor_element</code> צובע את כל האלמנט בצבע אחד. <code>update_stroke_properties</code> נכשל: מוחקים ומכניסים צורה חדשה. העלאה לקנבה מכאן חסומה, היא מעלה בעצמה ואני מוצא בתיקיית uploads.</li>
+    <li><b>תבנית הכיסוי (בועה):</b> עיצוב DAHVLvQLo8I. הגריד חותך כ-1/8 למעלה ולמטה מכיסוי 9:16. לפני שמכינים כיסוי, לחפש אם כבר יש (פעם הכנתי שניים מיותרים כי חיפשתי רק לפי שם).</li>
+    <li><b>היילייטס:</b> נבנים רק מסטוריז, גם מהארכיון. הכפתור ״הוספה״ לא פעיל עד שכותבים שם. מחיקת סטורי מוחקת אותו מההיילייט.</li>
+    <li><b>גוגל דרייב:</b> קובץ של 5.6MB ירד, 7.7MB ו-10.1MB נכשלו, מעל 10MB נדחה. קליפ ג׳מיני (כ-3MB) עובר.</li>
+    <li><b>רשת חסומה מהסביבה:</b> instagram, facebook, zernio, huggingface (אין תמלול), nakdan.dicta.org.il, explain.co.il, cdn.jsdelivr.net. פתוח: npm, pypi, storage.googleapis.com.</li>
+    <li><b>המחשב בענן נמחק אחרי זמן בלי פעילות.</b> מה שבריפו נשמר. כלים מתקינים מחדש עם <code>setup.sh</code> של הסקיל, כמה דקות.</li>
+    <li><b>כיתוביות לריל:</b> יש גם <code>build-reel-captions.py</code> בריפו (JSON תחת <code>specs/</code>) לסגנון הישן של כיתוביות צרובות.</li>
+    <li><b>סנכרון לדף הפייסבוק</b> נשלט מהגדרות אינסטגרם ← ״שיתוף בין אפליקציות״, לא ממרכז החשבונות.</li>
+  </ul>
+</section>
+
+<section id="open">
+  <div class="sec-head">
+    <div class="eyebrow">לטיפול</div>
+    <h2>מה פתוח</h2>
+  </div>
+  <ul class="clean">
+    <li><b>סדרת המיילים של מגנט 1 ברב מסר.</b> שבוע 4-8.10, אני כותב והיא מאשרת. יש חיבור לרב מסר דרך MCP.</li>
+    <li><b>נושאי האורגני לאוקטובר.</b> היא חושבת. כשתבחר, כל נושא הופך ל״ערכת ריל״.</li>
+    <li><b>הריל הבא.</b> היא ממשיכה במוצאי שבת. לקבל ממנה קליפים או החלטה על צילום עצמי.</li>
+    <li><b>זרינו:</b> לחבר לקלוד ולהגדיר את הכלל של ״פלטה״. לשאול על הודעות אוטומטיות בשבת.</li>
+    <li><b>תוצאות החברות</b> מבדיקת פרומפט הפלטה, ורשות להראות אותן.</li>
+    <li>תסריטים לסרטון המכירה ולממומן, טיוטות משפטיות, דף התודה. לפי שבועות ההכנה.</li>
+    <li>מגנט 2: תאריך והצעה.</li>
+    <li>לוח התוכן עדיין כותב על המתנות ״רעיון פתוח... פירוט בצ׳אט״. לעדכן כשהמתנה עולה.</li>
+  </ul>
+</section>
+
+<section id="docs">
+  <div class="sec-head">
+    <div class="eyebrow">איפה הכל</div>
+    <h2>המסמכים</h2>
+  </div>
+  <div class="docs">
+    <div class="doc">
+      <span class="n">לוח התוכן</span>
+      <span class="d">המסמך הראשי. ההשקה ב-2.11, שבועות ההכנה, כרטיסי פוסט עם כפתורי העתקה.</span>
+      <a href="https://claude.ai/artifact/NyPNjsfpeQnFVh1wuaXLW3">NyPNjsfpeQnFVh1wuaXLW3</a>
+    </div>
+    <div class="doc">
+      <span class="n">הפיד של במו ידייך</span>
+      <span class="d">תצוגת הגריד.</span>
+      <a href="https://claude.ai/artifact/LR6HC3cqeafxE1XqMWtqHE">LR6HC3cqeafxE1XqMWtqHE</a>
+    </div>
+    <div class="doc">
+      <span class="n">משימות העסק של מיכל</span>
+      <span class="d">רשימת המשימות.</span>
+      <a href="https://claude.ai/artifact/KjYK5xwnnserZ4rtZVCZ8m">KjYK5xwnnserZ4rtZVCZ8m</a>
+    </div>
+    <div class="doc">
+      <span class="n">גיליון מעקב הריילס</span>
+      <span class="d">אילו מדדים לשלוף ומול אילו בנצ׳מרקים.</span>
+      <a href="https://claude.ai/artifact/9EhFphvfN2LGQdktJ18pQf">9EhFphvfN2LGQdktJ18pQf</a>
+    </div>
+    <div class="doc">
+      <span class="n">מה המחקר אומר על אורגני</span>
+      <span class="d">בנצ׳מרקים וסוגי הוקים.</span>
+      <a href="https://claude.ai/artifact/QaX9ZNHzSWPeyHEi935Hg4">QaX9ZNHzSWPeyHEi935Hg4</a>
+    </div>
+    <div class="doc">
+      <span class="n">מילון האינסטגרם</span>
+      <span class="d">המונחים בשפה פשוטה.</span>
+      <a href="https://claude.ai/artifact/UWzsZCQNzBtG5ZmqrG7iop">UWzsZCQNzBtG5ZmqrG7iop</a>
+    </div>
+  </div>
+  <div style="height:14px"></div>
+  <div class="callout">
+    <p><b>הריפו:</b> ‎micdolev-ops/canva-workshop‎, ענף ‎claude/instagram-facebook-campaign-analysis-q6fxwd‎. שם גם <code>מפת-התוכן-שלי-מלא.xlsx</code> והסקיל <code>.claude/skills/reel-editor</code> עם תבנית העריכה, סקריפט התקנה, סקריפט בדיקת קליפ והפרומפטים לג׳מיני.</p>
+    <p><b>כיסויים בקנבה:</b> נווה שלום DAHWDMuZ7F8, 5 טעויות DAHWqnj6tiA, אפשר לזהות אותך DAHWqqESzqk, הצ׳ק DAHWqnsB1Mc, סטורי היכרות DAHWtYwRjKk.</p>
+  </div>
+</section>
+
+<section id="how">
+  <div class="sec-head">
+    <div class="eyebrow">לתשומת לב</div>
+    <h2>איך לעבוד איתי</h2>
+  </div>
+  <ul class="clean">
+    <li><b>עברית בלבד.</b></li>
+    <li><b>אני שומרת שבת.</b> אין פרסומים ואין עבודה משישי בערב עד מוצאי שבת. ביום שישי אני עסוקה בהכנות. חלון ההפקה הוא מוצאי שבת.</li>
+    <li><b>אני עובדת בעיקר מטלפון אנדרואיד.</b></li>
+    <li><b>אין לי זמן לשבת שעות על כל סרטון.</b> כמה שיותר עובר אליך: פחות מעברים בין כלים, פחות תיקונים בכל כלי.</li>
+    <li><b>להסביר מונחים מקצועיים.</b></li>
+    <li><b>אני מתווכחת, ולרוב אני צודקת.</b> קחו התנגדות שלי ברצינות. דוגמאות: המתנה שלא קשורה לעסק של העוקבת, הפיצול לשני פרומפטים, הניקוד, הפריים הראשון.</li>
+    <li><b>לא לחזור על תזכורות</b> לגבי זמני פרסום.</li>
+    <li><b>בלי מקפים ארוכים</b> ובלי סימני כתיבה של AI. פסיק, נקודתיים או נקודה במקומם.</li>
+    <li><b>בלי עצות מהבטן.</b> מחקר עם מקורות. כשמשהו לא ידוע, לומר את זה.</li>
+    <li><b>לבדוק זכאות לפני שמתכננים</b> פיצ׳ר.</li>
+    <li><b>מעשי ולא עיוני.</b> זה מה ששומרים ומשתפים.</li>
+    <li><b>אני בודקת עם חברות על עסקים אמיתיים</b> לפני שמשהו יוצא לקהל.</li>
+    <li><b>יש לי משייף קופי</b> (ג׳ם). כשאני חוזרת עם גרסה מלוטשת, למזג ולא לבחור. הוא נוטה להשמיט קישורים ושאלות סיום.</li>
+  </ul>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyAll');
+  if (!btn) return;
+
+  function clean(t){ return t.replace(/ /g,' ').replace(/[ \t]+/g,' ').trim(); }
+
+  function build(){
+    var out = ['תדריך המשך · במו ידייך · עודכן 01.10.2026',
+               'הודבק מתוך מסמך המסירה. זו נקודת ההתחלה של השיחה.'];
+
+    document.querySelectorAll('section').forEach(function(sec){
+      var h2 = sec.querySelector('h2');
+      if (!h2) return;
+      out.push('', '## ' + clean(h2.textContent));
+
+      var intro = sec.querySelector('.sec-head p');
+      if (intro) out.push(clean(intro.textContent));
+
+      sec.querySelectorAll('ul.clean > li').forEach(function(li){
+        out.push('- ' + clean(li.textContent));
+      });
+
+      sec.querySelectorAll('.card').forEach(function(card){
+        var h = card.querySelector('h3'), p = card.querySelector('p');
+        out.push('- ' + clean(h ? h.textContent : '') + ': ' + clean(p ? p.textContent : ''));
+      });
+
+      sec.querySelectorAll('table tbody tr').forEach(function(tr){
+        var cells = [].map.call(tr.children, function(td){ return clean(td.textContent); });
+        out.push('- ' + cells.join(' · '));
+      });
+
+      sec.querySelectorAll('.doc').forEach(function(doc){
+        var n = doc.querySelector('.n'), d = doc.querySelector('.d'), a = doc.querySelector('a');
+        out.push('- ' + clean(n ? n.textContent : '') + ': ' + clean(d ? d.textContent : '') +
+                 ': ' + (a ? a.getAttribute('href') : ''));
+      });
+
+      sec.querySelectorAll('.callout p').forEach(function(p){
+        out.push(clean(p.textContent));
+      });
+
+      sec.querySelectorAll('pre.prompt').forEach(function(pre){
+        out.push('', '### ' + (pre.getAttribute('data-label') || ''), pre.textContent.trim());
+      });
+    });
+
+    return out.join('\n');
+  }
+
+  function fallback(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly','');
+    ta.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { ta.setSelectionRange(0, ta.value.length); } catch(e){}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){}
+    ta.remove();
+    return ok;
+  }
+
+  btn.addEventListener('click', function(){
+    var text = build();
+    var settle = function(ok){
+      btn.textContent = ok ? 'הועתק ✓ · עכשיו לפתוח צ׳אט חדש ולהדביק' : 'לא הצליח, סמני את העמוד והעתיקי ידנית';
+      btn.classList.add(ok ? 'done' : 'fail');
+      setTimeout(function(){
+        btn.textContent = 'העתק את כל התדריך';
+        btn.classList.remove('done','fail');
+      }, 3000);
+    };
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function(){ settle(true); },
+                                                 function(){ settle(fallback(text)); });
+        return;
+      }
+    } catch(e){}
+    settle(fallback(text));
+  });
+})();
+</script>
