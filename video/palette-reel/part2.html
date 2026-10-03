@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="he" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Karantina"; font-weight: 400; src: url("fonts/karantina-hebrew-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Karantina"; font-weight: 700; src: url("fonts/karantina-hebrew-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Karantina"; font-weight: 700; src: url("fonts/karantina-latin-700-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+      @font-face { font-family: "Heebo"; font-weight: 200; src: url("fonts/heebo-hebrew-200-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Heebo"; font-weight: 300; src: url("fonts/heebo-hebrew-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Heebo"; font-weight: 300; src: url("fonts/heebo-latin-300-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #C9BFBA; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+
+      .vid { position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover; }
+      #front { position: absolute; inset: 0; direction: rtl; }
+
+      .block { position: absolute; left: 60px; right: 60px; text-align: center; }
+      .row { display: flex; justify-content: center; align-items: baseline; gap: 22px; direction: rtl; }
+      .w { display: inline-block; opacity: 0; }
+      .thin { font-family: "Heebo"; font-weight: 200; font-size: 84px; color: #3F3846; letter-spacing: 0.5px; }
+      .heavy { font-family: "Karantina"; font-weight: 700; font-size: 170px; line-height: 0.86; color: #4A3463; }
+      .hl { position: relative; z-index: 0; isolation: isolate; }
+      .hl .bar { position: absolute; z-index: -1; left: -10px; right: -10px; bottom: 6%; height: 40%; background: #C9A86A; border-radius: 6px; transform-origin: right center; transform: scaleX(0); }
+
+      /* the 60/30/10 strip: one bar, three roles, widths true to the rule */
+      #strip { position: absolute; left: 70px; width: 940px; top: 168px; height: 170px; display: flex; direction: rtl;
+               border-radius: 22px; overflow: hidden; background: rgba(251, 248, 242, 0.3); box-shadow: 0 16px 36px rgba(40, 25, 45, 0.18); opacity: 0; }
+      .seg { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+             transform-origin: right center; transform: scaleX(0); }
+      .seg .name { font-family: "Karantina"; font-weight: 700; font-size: 104px; line-height: 0.85; }
+      .seg .pct { font-family: "Heebo"; font-weight: 300; font-size: 40px; line-height: 1; direction: ltr; }
+      #s60 { width: 564px; background: #FBF8F2; color: #4A3463; }
+      #s30 { width: 282px; background: #4A3463; color: #FBF8F2; }
+      #s10 { width: 94px; background: #C9A86A; color: #2A1E38; }
+      #lab10 { position: absolute; left: 70px; top: 352px; width: 220px; text-align: center; direction: rtl; opacity: 0;
+               font-family: "Karantina"; font-weight: 700; font-size: 92px; line-height: 0.85; color: #4A3463; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="9.42" data-width="1080" data-height="1920">
+
+      <video id="bg" class="vid" src="media/bg.mp4" muted playsinline data-start="0" data-duration="9.42" data-track-index="0"></video>
+
+      <div id="front">
+        <!-- A: "חסרים לך שלושה צבעים" -->
+        <div class="block" id="A" style="top:140px">
+          <div class="row">
+            <span class="w thin" id="a1">חסרים לך</span>
+          </div>
+          <div class="row" style="margin-top:4px">
+            <span class="w heavy hl" id="a2"><i class="bar" id="a2b"></i>שלושה</span>
+            <span class="w heavy" id="a3">צבעים</span>
+          </div>
+        </div>
+
+        <!-- B: "שכל אחד יודע מה התפקיד שלו" -->
+        <div class="block" id="B" style="top:140px">
+          <div class="row">
+            <span class="w thin" id="b1">שכל אחד</span>
+            <span class="w thin" id="b2">יודע</span>
+          </div>
+          <div class="row" style="margin-top:4px">
+            <span class="w heavy" id="b3">מה</span>
+            <span class="w heavy hl" id="b4"><i class="bar" id="b4b"></i>התפקיד</span>
+            <span class="w heavy" id="b5">שלו</span>
+          </div>
+        </div>
+
+        <!-- C: "צבע רקע, צבע משני וצבע הדגשה" as the strip itself -->
+        <div id="strip">
+          <div class="seg" id="s60"><span class="name">רקע</span><span class="pct">60%</span></div>
+          <div class="seg" id="s30"><span class="name">משני</span><span class="pct">30%</span></div>
+          <div class="seg" id="s10"><span class="pct">10%</span></div>
+        </div>
+        <div id="lab10">הדגשה</div>
+      </div>
+
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // beats are written in the raw clip's time (from the transcript); the edit starts 0.58s in
+      const s = gsap.timeline();
+      const O = -0.58; // raw clip time to edit time
+
+      const thinIn = (sel, t) => s.fromTo(sel, { opacity: 0, y: 18, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, t + O);
+      const heavyIn = (sel, t) => s.fromTo(sel, { opacity: 0, scale: 1.18 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power3.out" }, t + O);
+      const barIn = (sel, t) => s.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.inOut" }, t + O);
+      const out = (sel, t) => s.to(sel, { opacity: 0, y: -16, duration: 0.18, ease: "power1.in" }, t + O);
+      const segIn = (sel, t) => s.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: "power3.out" }, t + O);
+
+      // A
+      thinIn("#a1", 1.09);
+      heavyIn("#a2", 1.84);
+      barIn("#a2b", 1.96);
+      heavyIn("#a3", 2.31);
+      out("#A", 2.83);
+
+      // B
+      thinIn("#b1", 2.98);
+      thinIn("#b2", 3.5);
+      heavyIn("#b3", 3.84);
+      heavyIn("#b4", 4.29);
+      barIn("#b4b", 4.41);
+      heavyIn("#b5", 4.97);
+      out("#B", 5.63);
+
+      // C: the strip fills in role by role
+      s.fromTo("#strip", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 5.86 + O);
+      segIn("#s60", 6.08);
+      segIn("#s30", 7.18);
+      segIn("#s10", 8.82);
+      s.fromTo("#lab10", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" }, 8.86 + O);
+
+      tl.add(s, 0);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="he" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Karantina"; font-weight: 400; src: url("fonts/karantina-hebrew-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Karantina"; font-weight: 700; src: url("fonts/karantina-hebrew-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Karantina"; font-weight: 700; src: url("fonts/karantina-latin-700-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+      @font-face { font-family: "Heebo"; font-weight: 200; src: url("fonts/heebo-hebrew-200-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Heebo"; font-weight: 300; src: url("fonts/heebo-hebrew-300-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Heebo"; font-weight: 300; src: url("fonts/heebo-latin-300-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #C9BFBA; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+
+      #cam { position: absolute; inset: 0; transform-origin: 540px 600px; }
+      .vid { position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover; }
+      #behind { position: absolute; inset: 0; }
+      #front { position: absolute; inset: 0; direction: rtl; }
+
+      .block { position: absolute; left: 60px; right: 60px; text-align: center; }
+      .row { display: flex; justify-content: center; align-items: baseline; gap: 22px; direction: rtl; }
+      .w { display: inline-block; opacity: 0; }
+      .thin { font-family: "Heebo"; font-weight: 200; font-size: 84px; color: #3F3846; letter-spacing: 0.5px; }
+      .heavy { font-family: "Karantina"; font-weight: 700; font-size: 200px; line-height: 0.86; color: #4A3463; }
+      .hl { position: relative; z-index: 0; isolation: isolate; }
+      .hl .bar { position: absolute; z-index: -1; left: -10px; right: -10px; bottom: 6%; height: 40%; background: #C9A86A; border-radius: 6px; transform-origin: right center; transform: scaleX(0); }
+
+      #giant { position: absolute; left: 0; right: 0; top: 268px; text-align: center; direction: rtl;
+               font-family: "Karantina"; font-weight: 700; font-size: 430px; line-height: 0.86; color: #4A3463; opacity: 0; }
+
+      .post { position: absolute; width: 250px; height: 312px; border-radius: 22px; padding: 22px; opacity: 0;
+              box-shadow: 0 18px 40px rgba(40, 25, 45, 0.28); display: flex; flex-direction: column; gap: 16px; }
+      .post .top { height: 28px; width: 60%; border-radius: 14px; }
+      .post .img { flex: 1; border-radius: 14px; }
+      .post .ln { height: 16px; border-radius: 8px; opacity: 0.85; }
+      .post .ln.s { width: 55%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="7.2" data-width="1080" data-height="1920">
+
+      <div id="cam">
+        <video id="bg" class="vid" src="media/bg.mp4" muted playsinline data-start="0" data-duration="7.2" data-track-index="0"></video>
+
+        <div id="behind">
+          <!-- four posts that don't match each other -->
+          <div class="post" id="p1" style="left:62px; top:600px; background:#FF4FA3;">
+            <div class="top" style="background:#0E7C7B"></div><div class="img" style="background:#FFD23F"></div>
+            <div class="ln" style="background:#0E7C7B"></div><div class="ln s" style="background:#0E7C7B"></div>
+          </div>
+          <div class="post" id="p2" style="left:772px; top:660px; background:#1B2A6B;">
+            <div class="top" style="background:#FF7A1A"></div><div class="img" style="background:#7FD1E8"></div>
+            <div class="ln" style="background:#FF7A1A"></div><div class="ln s" style="background:#FF7A1A"></div>
+          </div>
+          <div class="post" id="p3" style="left:96px; top:1010px; background:#B7E04A;">
+            <div class="top" style="background:#6A1B9A"></div><div class="img" style="background:#E53935"></div>
+            <div class="ln" style="background:#6A1B9A"></div><div class="ln s" style="background:#6A1B9A"></div>
+          </div>
+          <div class="post" id="p4" style="left:742px; top:980px; background:#F5F0E1;">
+            <div class="top" style="background:#111111"></div><div class="img" style="background:#2EC4B6"></div>
+            <div class="ln" style="background:#E71D36"></div><div class="ln s" style="background:#E71D36"></div>
+          </div>
+
+          <div id="giant">אחרת?</div>
+        </div>
+
+        <video id="fg" class="vid" src="media/subject.webm" muted playsinline data-start="0" data-duration="7.2" data-track-index="1"></video>
+      </div>
+
+      <div id="front">
+        <!-- sentence A -->
+        <div class="block" id="A" style="top:150px">
+          <div class="row"><span class="w thin" id="a1">בחרת</span></div>
+          <div class="row" style="margin-top:4px">
+            <span class="w heavy" id="a2">צבעים</span>
+            <span class="w heavy hl" id="a3"><i class="bar" id="a3b"></i>יפים</span>
+          </div>
+        </div>
+
+        <!-- sentence B, first half (the giant word sits behind her) -->
+        <div class="block" id="B" style="top:150px">
+          <div class="row">
+            <span class="w thin" id="b1">ועדיין כל</span>
+            <span class="w heavy" id="b2" style="font-size:130px">פוסט</span>
+            <span class="w thin" id="b3">נראה</span>
+          </div>
+        </div>
+
+        <!-- sentence C -->
+        <div class="block" id="C" style="top:108px">
+          <div class="row">
+            <span class="w thin" id="c1">זה</span>
+            <span class="w heavy hl" id="c2" style="font-size:130px"><i class="bar" id="c2b"></i>לא</span>
+          </div>
+          <div class="row" style="margin-top:-6px">
+            <span class="w heavy" id="c3" style="font-size:160px">הטעם</span>
+            <span class="w heavy" id="c4" style="font-size:160px">שלך</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // the edit starts 0.3s before the original cut, on a calm frame; s holds the beats in speech time
+      const s = gsap.timeline();
+
+      const thinIn = (sel, t) => s.fromTo(sel, { opacity: 0, y: 18, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, t);
+      const heavyIn = (sel, t) => s.fromTo(sel, { opacity: 0, scale: 1.18 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power3.out" }, t);
+      const barIn = (sel, t) => s.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.inOut" }, t);
+      const out = (sel, t) => s.to(sel, { opacity: 0, y: -16, duration: 0.18, ease: "power1.in" }, t);
+
+      // A: "בחרת צבעים יפים,"
+      thinIn("#a1", 0.18);
+      heavyIn("#a2", 0.56);
+      heavyIn("#a3", 1.22);
+      barIn("#a3b", 1.34);
+      out("#A", 1.84);
+
+      // B: "ועדיין כל פוסט נראה אחרת?"
+      thinIn("#b1", 2.02);
+      heavyIn("#b2", 2.9);
+      ["#p1", "#p2", "#p3", "#p4"].forEach((id, i) => {
+        const r = [-9, 7, 6, -6][i];
+        s.fromTo(id, { opacity: 0, scale: 0.4, rotation: 0, y: 40 }, { opacity: 1, scale: 1, rotation: r, y: 0, duration: 0.34, ease: "back.out(1.7)" }, 2.92 + i * 0.09);
+      });
+      thinIn("#b3", 3.22);
+      s.fromTo("#giant", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, 3.52);
+      // the posts shuffle on "אחרת"
+      s.to("#p1", { rotation: 5, x: 14, duration: 0.22, ease: "power2.inOut" }, 3.56);
+      s.to("#p2", { rotation: -8, x: -12, duration: 0.22, ease: "power2.inOut" }, 3.6);
+      s.to("#p3", { rotation: -7, y: -10, duration: 0.22, ease: "power2.inOut" }, 3.64);
+      s.to("#p4", { rotation: 9, y: 12, duration: 0.22, ease: "power2.inOut" }, 3.68);
+      s.to(["#p1", "#p3"], { x: -380, opacity: 0, duration: 0.3, ease: "power2.in", stagger: 0.05 }, 4.42);
+      s.to(["#p2", "#p4"], { x: 380, opacity: 0, duration: 0.3, ease: "power2.in", stagger: 0.05 }, 4.42);
+      s.to("#giant", { opacity: 0, scale: 1.06, duration: 0.25, ease: "power1.in" }, 4.5);
+      out("#B", 4.5);
+
+      // C: punch-in cut, "זה לא הטעם שלך."
+      s.set("#cam", { scale: 1.22 }, 4.96);
+      s.to("#cam", { scale: 1.26, duration: 1.5, ease: "none" }, 4.96);
+      thinIn("#c1", 4.98);
+      heavyIn("#c2", 5.12);
+      barIn("#c2b", 5.22);
+      heavyIn("#c3", 5.4);
+      heavyIn("#c4", 5.7);
+      // back to the wide shot so the reel loops into its first frame
+      out("#C", 6.5);
+      s.set("#cam", { scale: 1 }, 6.62);
+
+      tl.add(s, 0.3);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
