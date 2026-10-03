@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=1080, height=1920" />
     <script src="gsap.min.js"></script>
     <style>
-      @font-face { font-family: "Bellefair"; font-weight: 400; src: url("fonts/bellefair-hebrew-400-normal.woff2") format("woff2"); }
-      @font-face { font-family: "Bellefair"; font-weight: 400; src: url("fonts/bellefair-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+      @font-face { font-family: "Varela Round"; font-weight: 400; src: url("fonts/varela-round-hebrew-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Varela Round"; font-weight: 400; src: url("fonts/varela-round-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
       @font-face { font-family: "Heebo"; font-weight: 300; src: url("fonts/heebo-hebrew-300-normal.woff2") format("woff2"); }
 
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,15 +17,25 @@
       #sukkah { transform-origin: 50% 45%; }
       /* a soft dark veil behind the lyrics so white text reads on every shot */
       #veil { position: absolute; inset: 0; pointer-events: none;
-              background: linear-gradient(to bottom, rgba(10, 8, 9, 0.55) 0%, rgba(10, 8, 9, 0.46) 36%, rgba(10, 8, 9, 0) 58%); }
+              background: linear-gradient(to bottom, rgba(10, 8, 9, 0.58) 0%, rgba(10, 8, 9, 0.48) 40%, rgba(10, 8, 9, 0) 62%); }
       #fade { position: absolute; inset: 0; background: #0d0b0c; opacity: 0; }
 
-      .lyric { position: absolute; left: 70px; right: 70px; top: 470px; text-align: center; direction: rtl; }
-      .line { display: block; opacity: 0; font-family: "Bellefair", serif; font-size: 104px; line-height: 1.2;
-              color: #FBF8F2; letter-spacing: 1px; text-shadow: 0 0 2px rgba(0, 0, 0, 0.35), 0 2px 26px rgba(0, 0, 0, 0.65); }
-      .gold { color: #E6CB92; font-size: 168px; line-height: 1.1; }
-      .credit { display: block; opacity: 0; margin-top: 34px; font-family: "Heebo", sans-serif; font-weight: 300;
-                font-size: 40px; letter-spacing: 3px; color: rgba(251, 248, 242, 0.92); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8); }
+      /* three sizes, like Dana: small connector words, big key words, one gold word per line */
+      .lyric { position: absolute; left: 50px; right: 50px; top: 380px; direction: rtl; text-align: center;
+               font-family: "Varela Round", sans-serif; color: #FBF8F2; text-shadow: 0 0 2px rgba(0,0,0,0.3), 0 3px 28px rgba(0,0,0,0.6); }
+      .row { display: flex; justify-content: center; align-items: baseline; gap: 30px; direction: rtl; }
+      .w { display: inline-block; opacity: 0; }
+      .m { display: inline-block; overflow: hidden; padding: 0.06em 0.05em 0.16em; vertical-align: bottom; }
+      .m > .in { display: inline-block; }
+      .s { font-size: 96px; line-height: 1.15; opacity: 0; color: rgba(251, 248, 242, 0.9); }
+      .k { font-size: 176px; line-height: 1.02; }
+      .g { color: #E6CB92; }
+      .xl { font-size: 250px; line-height: 1; }
+      .letters { display: inline-flex; direction: rtl; }
+      .letters > span { display: inline-block; opacity: 0; }
+      #uline { height: 8px; width: 520px; margin: 6px auto 0; background: #E6CB92; border-radius: 4px; transform-origin: right center; }
+      .credit { display: block; opacity: 0; margin-top: 30px; font-family: "Heebo", sans-serif; font-weight: 300;
+                font-size: 42px; letter-spacing: 3px; color: rgba(251, 248, 242, 0.92); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8); }
     </style>
   </head>
   <body>
@@ -39,11 +49,29 @@
 
       <div id="veil"></div>
 
-      <div class="lyric" id="A"><span class="line" id="a1">אחרי החגים</span><span class="line" id="a2">יתחדש הכל</span></div>
-      <div class="lyric" id="B"><span class="line" id="b1">יתחדשו וישובו</span><span class="line" id="b2">ימי החול</span></div>
-      <div class="lyric" id="C"><span class="line" id="c1">האוויר, העפר,</span><span class="line" id="c2">המטר והאש</span></div>
-      <div class="lyric" id="D"><span class="line" id="d1">גם אתה,</span></div>
-      <div class="lyric" id="E"><span class="line" id="e1">גם אתה,</span><span class="line gold" id="e2">תתחדש</span><span class="credit" id="e3">נעמי שמר</span></div>
+      <div class="lyric" id="A">
+        <div class="row"><span class="w s" id="a1">אחרי</span></div>
+        <div class="row"><span class="m k" id="a2"><span class="in">החגים</span></span></div>
+        <div class="row"><span class="w s" id="a3" style="font-size:110px">יתחדש</span><span class="m k g" id="a4"><span class="in">הכל</span></span></div>
+      </div>
+      <div class="lyric" id="B">
+        <div class="row"><span class="w s" id="b1">יתחדשו</span><span class="w s" id="b2">וישובו</span></div>
+        <div class="row"><span class="w s" id="b3" style="font-size:120px">ימי</span><span class="m k g" id="b4"><span class="in">החול</span></span></div>
+      </div>
+      <div class="lyric" id="C">
+        <div class="row"><span class="m k" id="c1"><span class="in">האוויר,</span></span></div>
+        <div class="row"><span class="m k" id="c2"><span class="in">העפר,</span></span></div>
+        <div class="row"><span class="m k" id="c3"><span class="in">המטר</span></span><span class="m k g" id="c4"><span class="in">והאש</span></span></div>
+      </div>
+      <div class="lyric" id="D" style="top:520px">
+        <div class="row"><span class="m k" id="d1"><span class="in">גם</span></span><span class="m k" id="d2"><span class="in">אתה,</span></span></div>
+      </div>
+      <div class="lyric" id="E">
+        <div class="row"><span class="w s" id="e1" style="font-size:120px">גם אתה,</span></div>
+        <div class="row"><span class="letters xl g" id="e2"><span>ת</span><span>ת</span><span>ח</span><span>ד</span><span>ש</span></span></div>
+        <div id="uline"></div>
+        <span class="credit" id="e3">נעמי שמר</span>
+      </div>
 
       <div id="fade"></div>
     </div>
@@ -62,19 +90,23 @@
       tl.set("#lights", { opacity: 0 }, 14.7);
       tl.set("#shadow", { opacity: 0 }, 19.6);
 
-      // lyrics: slow, quiet entrances
-      const lineIn = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 22, filter: "blur(8px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.95, ease: "power2.out" }, t);
-      const blockOut = (sel, t) => tl.to(sel, { opacity: 0, filter: "blur(6px)", duration: 0.6, ease: "power1.in" }, t);
+      // lyrics, word by word with a different entrance per role
+      const conn = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 30, filter: "blur(8px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "power2.out" }, t);
+      const mask = (sel, t) => tl.fromTo(sel + " > .in", { yPercent: 115 }, { yPercent: 0, duration: 0.7, ease: "power3.out" }, t);
+      const accent = (sel, t) => tl.fromTo(sel + " > .in", { yPercent: 0, opacity: 0, scale: 1.35, filter: "blur(12px)" },
+        { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.85, ease: "expo.out" }, t);
+      const out = (sel, t) => tl.to(sel + " .row", { opacity: 0, y: -34, filter: "blur(6px)", duration: 0.42, ease: "power2.in", stagger: 0.07 }, t);
 
-      lineIn("#a1", 0.5); lineIn("#a2", 1.7); blockOut("#A", 4.3);
-      lineIn("#b1", 5.4); lineIn("#b2", 6.7); blockOut("#B", 9.2);
-      lineIn("#c1", 10.3); lineIn("#c2", 11.6); blockOut("#C", 13.6);
-      lineIn("#d1", 15.0); blockOut("#D", 18.4);
-      lineIn("#e1", 19.6);
-      tl.fromTo("#e2", { opacity: 0, y: 26, filter: "blur(10px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.3, ease: "power2.out" }, 21.4);
-      lineIn("#e3", 23.2);
+      conn("#a1", 0.35); mask("#a2", 0.75); conn("#a3", 1.6); accent("#a4", 2.15); out("#A", 4.25);
+      conn("#b1", 5.3); conn("#b2", 5.75); conn("#b3", 6.5); accent("#b4", 7.0); out("#B", 9.15);
+      mask("#c1", 10.2); mask("#c2", 10.75); mask("#c3", 11.45); accent("#c4", 12.05); out("#C", 13.55);
+      mask("#d1", 14.9); mask("#d2", 15.3); out("#D", 18.3);
+      conn("#e1", 19.5);
+      tl.fromTo("#e2 > span", { opacity: 0, y: 46, filter: "blur(10px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out", stagger: 0.11 }, 20.9);
+      tl.fromTo("#uline", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power2.inOut" }, 21.9);
+      conn("#e3", 23.2);
 
       // close softly to dark so the loop restarts on the sukkah
       tl.to("#fade", { opacity: 1, duration: 0.9, ease: "sine.in" }, 27.1);
