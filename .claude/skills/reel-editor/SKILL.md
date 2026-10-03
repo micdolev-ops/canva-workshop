@@ -120,5 +120,5 @@ bash $SK/scripts/inspect.sh <clip.mp4> <scratchpad>/inspect  # מדידה לפנ
 
 ## כיסויים לרילים
 
-כיסויים נעשים בקנבה דרך ה-MCP. תבנית הבועה: עיצוב `DAHVLvQLo8I`. התהליך: `copy-design`, אחר כך `read-design` עם `open_transaction`, אחר כך `edit-design` ו-`commit`.
+כיסויים נעשים בקנבה דרך ה-MCP. **העלאה לקנבה עובדת מ-3.10** (www.canva.com פתוח): `create-upload-url`, ואז `curl -X POST -H "Content-Type: application/octet-stream" --data-binary @file` מחזיר `mediaId`, ואז `insert_fill` ו-`layer_element` עם `back`. רקע לכיסוי של ריל: פריים חד מהסרטון (שונות לפלסיאן הכי גבוהה בחלון של שנייה) באותו גוון של הריל. מיכל העדיפה את השביל המואר על פני תמונת הסוכה, ואת הבועה במרכז הגובה. תבנית הבועה: עיצוב `DAHVLvQLo8I`. התהליך: `copy-design`, אחר כך `read-design` עם `open_transaction`, אחר כך `edit-design` ו-`commit`.
 בגריד חותכים כ-1/8 למעלה ולמטה מכיסוי 9:16, אז הטקסט באמצע. לפני שמכינים כיסוי, לבדוק שאין כבר אחד (חפשו לפי תאריך ולפי שם, לא רק "כיסוי רילס").
