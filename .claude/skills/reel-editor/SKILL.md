@@ -1,6 +1,6 @@
 ---
 name: reel-editor
-description: עריכת רילים לחשבון "במו ידייך" של מיכל דולב בסגנון מינימליסטי של דנה ישראלי, והכנת "ערכת ריל" (תסריט מנוקד, פרומפטים לג׳מיני/Flow, טקסט למסך, כיתוב, טקסט לכיסוי). Use whenever Michal sends a video clip to edit, asks for a reel, a reel kit, Veo/Gemini video prompts, or anything about editing her videos (HyperFrames, cutout, text animation, covers).
+description: עריכת רילים לחשבון "במו ידייך" של מיכל אלגרבלי בסגנון מינימליסטי של דנה ישראלי, והכנת "ערכת ריל" (תסריט מנוקד, פרומפטים לג׳מיני/Flow, טקסט למסך, כיתוב, טקסט לכיסוי). Use whenever Michal sends a video clip to edit, asks for a reel, a reel kit, Veo/Gemini video prompts, or anything about editing her videos (HyperFrames, cutout, text animation, covers).
 ---
 
 # עורך הרילים של במו ידייך
