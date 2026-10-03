@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="he" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Bellefair"; font-weight: 400; src: url("fonts/bellefair-hebrew-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Bellefair"; font-weight: 400; src: url("fonts/bellefair-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+      @font-face { font-family: "Heebo"; font-weight: 300; src: url("fonts/heebo-hebrew-300-normal.woff2") format("woff2"); }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0d0b0c; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+
+      .shot { position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover; opacity: 0; }
+      #sukkah { transform-origin: 50% 45%; }
+      /* a soft dark veil behind the lyrics so white text reads on every shot */
+      #veil { position: absolute; inset: 0; pointer-events: none;
+              background: linear-gradient(to bottom, rgba(10, 8, 9, 0.55) 0%, rgba(10, 8, 9, 0.46) 36%, rgba(10, 8, 9, 0) 58%); }
+      #fade { position: absolute; inset: 0; background: #0d0b0c; opacity: 0; }
+
+      .lyric { position: absolute; left: 70px; right: 70px; top: 470px; text-align: center; direction: rtl; }
+      .line { display: block; opacity: 0; font-family: "Bellefair", serif; font-size: 104px; line-height: 1.2;
+              color: #FBF8F2; letter-spacing: 1px; text-shadow: 0 0 2px rgba(0, 0, 0, 0.35), 0 2px 26px rgba(0, 0, 0, 0.65); }
+      .gold { color: #E6CB92; font-size: 168px; line-height: 1.1; }
+      .credit { display: block; opacity: 0; margin-top: 34px; font-family: "Heebo", sans-serif; font-weight: 300;
+                font-size: 40px; letter-spacing: 3px; color: rgba(251, 248, 242, 0.92); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="28" data-width="1080" data-height="1920">
+
+      <img id="sukkah" class="shot" src="media/sukkah.jpg" alt="" />
+      <video id="feet" class="shot" src="media/seg_feet.mp4" muted playsinline data-start="4.7" data-duration="5.5" data-track-index="0"></video>
+      <video id="lights" class="shot" src="media/seg_lights.mp4" muted playsinline data-start="9.6" data-duration="5" data-track-index="1"></video>
+      <video id="shadow" class="shot" src="media/seg_shadow.mp4" muted playsinline data-start="14" data-duration="5.5" data-track-index="0"></video>
+      <video id="path" class="shot" src="media/seg_path.mp4" muted playsinline data-start="18.9" data-duration="9.1" data-track-index="1"></video>
+
+      <div id="veil"></div>
+
+      <div class="lyric" id="A"><span class="line" id="a1">אחרי החגים</span><span class="line" id="a2">יתחדש הכל</span></div>
+      <div class="lyric" id="B"><span class="line" id="b1">יתחדשו וישובו</span><span class="line" id="b2">ימי החול</span></div>
+      <div class="lyric" id="C"><span class="line" id="c1">האוויר, העפר,</span><span class="line" id="c2">המטר והאש</span></div>
+      <div class="lyric" id="D"><span class="line" id="d1">גם אתה,</span></div>
+      <div class="lyric" id="E"><span class="line" id="e1">גם אתה,</span><span class="line gold" id="e2">תתחדש</span><span class="credit" id="e3">נעמי שמר</span></div>
+
+      <div id="fade"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // shots: each one dissolves in over the last (0.6s), the photo drifts in slowly
+      tl.set("#sukkah", { opacity: 1 }, 0);
+      tl.fromTo("#sukkah", { scale: 1.0 }, { scale: 1.09, duration: 5.4, ease: "none" }, 0);
+      [["#feet", 4.7], ["#lights", 9.6], ["#shadow", 14.0], ["#path", 18.9]].forEach(([id, t]) => {
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.inOut" }, t);
+      });
+      tl.set("#sukkah", { opacity: 0 }, 5.4);
+      tl.set("#feet", { opacity: 0 }, 10.3);
+      tl.set("#lights", { opacity: 0 }, 14.7);
+      tl.set("#shadow", { opacity: 0 }, 19.6);
+
+      // lyrics: slow, quiet entrances
+      const lineIn = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 22, filter: "blur(8px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.95, ease: "power2.out" }, t);
+      const blockOut = (sel, t) => tl.to(sel, { opacity: 0, filter: "blur(6px)", duration: 0.6, ease: "power1.in" }, t);
+
+      lineIn("#a1", 0.5); lineIn("#a2", 1.7); blockOut("#A", 4.3);
+      lineIn("#b1", 5.4); lineIn("#b2", 6.7); blockOut("#B", 9.2);
+      lineIn("#c1", 10.3); lineIn("#c2", 11.6); blockOut("#C", 13.6);
+      lineIn("#d1", 15.0); blockOut("#D", 18.4);
+      lineIn("#e1", 19.6);
+      tl.fromTo("#e2", { opacity: 0, y: 26, filter: "blur(10px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.3, ease: "power2.out" }, 21.4);
+      lineIn("#e3", 23.2);
+
+      // close softly to dark so the loop restarts on the sukkah
+      tl.to("#fade", { opacity: 1, duration: 0.9, ease: "sine.in" }, 27.1);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
